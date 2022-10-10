@@ -2,6 +2,7 @@ package com.example.starbucksclone.view.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -48,11 +49,14 @@ fun LoginScreen(routAction: RoutAction) {
         /** 바디 **/
         LoginBody(
             lazyListSate = lazyListSate,
+            routAction = routAction,
             modifier = Modifier
                 .weight(1f)
         )
         /** 풋터 **/
-        FooterWithButton(text = "로그인하기")
+        FooterWithButton(text = "로그인하기") {
+
+        }
     }
 }
 
@@ -60,6 +64,7 @@ fun LoginScreen(routAction: RoutAction) {
 @Composable
 fun LoginBody(
     lazyListSate: LazyListState,
+    routAction: RoutAction,
     modifier: Modifier = Modifier
 ) {
     val tempIdState = remember { mutableStateOf("") }
@@ -136,7 +141,12 @@ fun LoginBody(
                         .size(height = 8.dp, width = 2.dp)
                         .background(Gray)
                 )
-                Text(text = "회원가입", style = Typography.caption)
+                Text(
+                    text = "회원가입",
+                    style = Typography.caption,
+                    modifier = Modifier
+                        .clickable { routAction.goToTerms() }
+                )
                 Spacer(modifier = Modifier.weight(1f))
             }
         }

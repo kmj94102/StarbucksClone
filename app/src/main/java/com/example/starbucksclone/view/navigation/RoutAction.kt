@@ -8,8 +8,13 @@ class RoutAction(private val navController: NavController) {
         navController.popBackStack()
     }
 
+    fun goToTerms() {
+        navController.navigate(Terms)
+    }
+
     companion object {
         const val Login = "login"
+        const val Terms = "terms"
     }
 
 }

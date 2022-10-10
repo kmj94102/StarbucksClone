@@ -20,10 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.starbucksclone.R
-import com.example.starbucksclone.ui.theme.Gray
-import com.example.starbucksclone.ui.theme.MainColor
-import com.example.starbucksclone.ui.theme.Typography
-import com.example.starbucksclone.ui.theme.White
+import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.isScrolled
 import com.example.starbucksclone.util.nonRippleClickable
 
@@ -82,6 +79,7 @@ fun Title(
  * @param isOutline 아웃라인 형식 여부
  * @param buttonColor 버튼 색상
  * @param modifier Modifier
+ * @param onClick 버튼 클릭 리스너
  * **/
 @Composable
 fun RoundedButton(
@@ -90,13 +88,16 @@ fun RoundedButton(
     isEnabled: Boolean = true,
     isOutline: Boolean = false,
     buttonColor: Color = MainColor,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     OutlinedButton(
-        onClick = { },
+        onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = buttonColor,
             contentColor = White,
+            disabledContainerColor = Gray,
+            disabledContentColor = White
         ),
         enabled = isEnabled,
         shape = RoundedCornerShape(round),
@@ -126,7 +127,8 @@ fun FooterWithButton(
     round: Dp = 20.dp,
     isEnabled: Boolean = true,
     buttonColor: Color = MainColor,
-    buttonModifier: Modifier = Modifier
+    buttonModifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Surface(shadowElevation = 15.dp, color = White) {
         Box(
@@ -142,8 +144,10 @@ fun FooterWithButton(
                 round = round,
                 buttonColor = buttonColor,
                 modifier = buttonModifier
-                    .padding(vertical = 16.dp, horizontal = 23.dp)
-            )
+                    .padding(vertical = 16.dp, horizontal = 23.dp),
+            ) {
+                onClick()
+            }
         }
     }
 }
@@ -179,4 +183,46 @@ fun CommonTextField(
         },
         modifier = modifier
     )
+}
+
+@Composable
+fun CommonRadioButton(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    isNextButton: Boolean = false,
+    onNextClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.nonRippleClickable {
+            onClick()
+        }
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = onClick,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = MainColor,
+                unselectedColor = Gray
+            )
+        )
+        Text(
+            text = text,
+            style = Typography.body1,
+            modifier = Modifier
+                .weight(1f)
+        )
+        if (isNextButton) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_next),
+                contentDescription = "next",
+                tint = DarkGray,
+                modifier = Modifier.nonRippleClickable {
+                    onNextClick?.invoke()
+                }
+            )
+        }
+    }
 }
