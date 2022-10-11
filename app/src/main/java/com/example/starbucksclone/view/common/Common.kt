@@ -2,23 +2,33 @@ package com.example.starbucksclone.view.common
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.isScrolled
@@ -158,32 +168,126 @@ fun CommonTextField(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String,
+    enabled: Boolean = true,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    focusedIndicatorColor: Color = MainColor,
+    unfocusedIndicatorColor: Color = Gray,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Done,
     keyboardActions: KeyboardActions = KeyboardActions(),
     modifier: Modifier = Modifier
 ) {
-    TextField(
+    val interactionSource = remember { MutableInteractionSource() }
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
+    var isFocused by remember {
+        mutableStateOf(false)
+    }
+    BasicTextField(
         value = value,
+        modifier = modifier
+            .indicatorLine(
+                enabled,
+                false,
+                interactionSource,
+                TextFieldDefaults.textFieldColors(
+                    unfocusedIndicatorColor = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+                )
+            )
+            .focusRequester(focusRequester = focusRequester)
+            .onFocusChanged {
+                isFocused = it.isFocused
+            },
+        readOnly = false,
+        singleLine = true,
         onValueChange = onValueChange,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = White,
-            cursorColor = MainColor,
-            focusedIndicatorColor = MainColor,
-            unfocusedIndicatorColor = Gray
-        ),
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
             imeAction = imeAction
         ),
+        visualTransformation = visualTransformation,
+        enabled = enabled,
         keyboardActions = keyboardActions,
-        textStyle = Typography.body1,
-        placeholder = {
-            Text(text = hint, style = Typography.body1)
-        },
-        modifier = modifier
+        textStyle = Typography.body2,
+        cursorBrush = SolidColor(MainColor),
+        decorationBox = { innerTextField ->
+            TextFieldDefaults.TextFieldDecorationBox(
+                value = value,
+                innerTextField = innerTextField,
+                enabled = true,
+                singleLine = true,
+                visualTransformation = VisualTransformation.None,
+                interactionSource = interactionSource,
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 6.dp),
+                placeholder = {
+                    Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                }
+            )
+        }
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommonLabelTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    enabled: Boolean = true,
+    focusedIndicatorColor: Color = MainColor,
+    unfocusedIndicatorColor: Color = Gray,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Done,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    modifier: Modifier = Modifier
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
+    var isFocused by remember {
+        mutableStateOf(false)
+    }
+    BasicTextField(
+        value = value,
+        modifier = modifier
+            .indicatorLine(
+                enabled,
+                false,
+                interactionSource,
+                TextFieldDefaults.textFieldColors(
+                    unfocusedIndicatorColor = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+                )
+            )
+            .focusRequester(focusRequester = focusRequester)
+            .onFocusChanged {
+                isFocused = it.isFocused
+            },
+        readOnly = false,
+        singleLine = true,
+        onValueChange = onValueChange,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
+            imeAction = imeAction
+        ),
+        enabled = enabled,
+        keyboardActions = keyboardActions,
+        textStyle = Typography.body2,
+        cursorBrush = SolidColor(MainColor),
+        decorationBox = { innerTextField ->
+            TextFieldDefaults.TextFieldDecorationBox(
+                value = value,
+                innerTextField = innerTextField,
+                enabled = true,
+                singleLine = true,
+                visualTransformation = VisualTransformation.None,
+                interactionSource = interactionSource,
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 6.dp),
+                label = {
+                    Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                }
+            )
+        }
+    )
+}
+
 
 @Composable
 fun CommonRadioButton(
@@ -196,18 +300,17 @@ fun CommonRadioButton(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.nonRippleClickable {
-            onClick()
-        }
+        modifier = modifier
+            .padding(vertical = 10.dp)
+            .nonRippleClickable {
+                onClick()
+            }
     ) {
-        RadioButton(
-            selected = selected,
-            onClick = onClick,
-            colors = RadioButtonDefaults.colors(
-                selectedColor = MainColor,
-                unselectedColor = Gray
-            )
+        Image(
+            painter = painterResource(id = if (selected) R.drawable.ic_radio_check else R.drawable.ic_radio_unchecked),
+            contentDescription = "radio"
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
             style = Typography.body1,

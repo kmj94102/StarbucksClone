@@ -7,24 +7,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.Gray
-import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.ui.theme.Typography
-import com.example.starbucksclone.ui.theme.White
 import com.example.starbucksclone.util.isScrolled
-import com.example.starbucksclone.view.common.CommonTextField
+import com.example.starbucksclone.view.common.CommonLabelTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
@@ -98,7 +94,7 @@ fun LoginBody(
         }
         // 아이디 / 비밀번호 입력창
         item {
-            CommonTextField(
+            CommonLabelTextField(
                 value = tempIdState.value,
                 onValueChange = {
                     tempIdState.value = it
@@ -109,7 +105,7 @@ fun LoginBody(
                     .padding(top = 84.dp)
             )
 
-            CommonTextField(
+            CommonLabelTextField(
                 value = tempPwState.value,
                 onValueChange = {
                     tempPwState.value = it

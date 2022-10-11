@@ -1,15 +1,10 @@
-package com.example.starbucksclone.view.login.join
+package com.example.starbucksclone.view.login.sign_up
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,22 +15,16 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
 import com.example.starbucksclone.R
+import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
 import com.example.starbucksclone.ui.theme.Typography
 import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonRadioButton
 import com.example.starbucksclone.view.common.FooterWithButton
-import kotlinx.coroutines.delay
 
 @Composable
 fun TermsScreen(routAction: RoutAction) {
     val isEnabled = remember { mutableStateOf(false) }
-
-    // 임시
-    LaunchedEffect(Unit) {
-        delay(2000)
-        isEnabled.value = true
-    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         /** 타이틀 영역 **/
@@ -44,16 +33,16 @@ fun TermsScreen(routAction: RoutAction) {
             onLeftIconClick = { routAction.popupBackStack() }
         )
         /** 바디 영역 **/
-        TermsBody(modifier = Modifier.weight(1f))
+        TermsBody(state = isEnabled, modifier = Modifier.weight(1f))
         /** 풋터 영역 **/
         FooterWithButton(text = "다음", isEnabled = isEnabled.value) {
-
+            routAction.goToSignUp()
         }
     }
 }
 
 @Composable
-fun TermsBody(modifier: Modifier = Modifier) {
+fun TermsBody(state: MutableState<Boolean>, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -76,17 +65,19 @@ fun TermsBody(modifier: Modifier = Modifier) {
             )
         }
         /** 약관 동의 **/
-        TermsItem()
+        TermsItem(state)
     }
 }
 
 /** 약관 동의 **/
 @Composable
-fun TermsItem() {
+fun TermsItem(state: MutableState<Boolean>) {
     val termsOfServiceState = remember { mutableStateOf(false) }
     val privacyState = remember { mutableStateOf(false) }
     val pushState = remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    state.value = termsOfServiceState.value && privacyState.value
 
     ConstraintLayout(
         modifier = Modifier
@@ -100,9 +91,10 @@ fun TermsItem() {
             text = "약관 전체 동의",
             selected = termsOfServiceState.value && privacyState.value && pushState.value,
             onClick = {
-                termsOfServiceState.value = termsOfServiceState.value.not()
-                privacyState.value = privacyState.value.not()
-                pushState.value = pushState.value.not()
+                val isChecked = termsOfServiceState.value && privacyState.value && pushState.value
+                termsOfServiceState.value = isChecked.not()
+                privacyState.value = isChecked.not()
+                pushState.value = isChecked.not()
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,6 +155,7 @@ fun TermsItem() {
         Text(
             text = "다양한 프로모션 소식 및 신규 매장 정보를 보내 드립니다.",
             style = Typography.caption,
+            color = DarkGray,
             modifier = Modifier.constrainAs(guide) {
                 top.linkTo(push.bottom, (-10).dp)
                 start.linkTo(push.start, 47.dp)

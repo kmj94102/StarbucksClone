@@ -64,5 +64,6 @@ fun SplashScreen() {
     LaunchedEffect(Unit) {
 //        delay(3000)
         activity.startActivity(Intent(activity, MainActivity::class.java))
+        activity.finish()
     }
 }

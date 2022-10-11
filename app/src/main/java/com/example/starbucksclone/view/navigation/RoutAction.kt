@@ -11,10 +11,14 @@ class RoutAction(private val navController: NavController) {
     fun goToTerms() {
         navController.navigate(Terms)
     }
+    fun goToSignUp() {
+        navController.navigate(SignUp)
+    }
 
     companion object {
         const val Login = "login"
         const val Terms = "terms"
+        const val SignUp = "sign_up"
     }
 
 }
