@@ -5,13 +5,11 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.*
 import com.example.starbucksclone.view.login.LoginScreen
-import com.example.starbucksclone.view.login.sign_up.SignUpCompleteScreen
+import com.example.starbucksclone.view.login.sign_up.complete.SignUpCompleteScreen
 import com.example.starbucksclone.view.login.sign_up.SignUpScreen
-import com.example.starbucksclone.view.login.sign_up.TermsScreen
+import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -41,15 +39,23 @@ fun NavigationGraph() {
         }
         /** 회원가입 화면 **/
         customComposable(
-            route = RoutAction.SignUp
-        ) {
-            SignUpScreen(routAction = routAction)
+            route = "${RoutAction.SignUp}/{isPush}",
+            arguments = listOf(
+                navArgument("isPush") { type = NavType.BoolType }
+            )
+        ) { entry ->
+            val isPush = entry.arguments?.getBoolean("isPush") ?: false
+            SignUpScreen(routAction = routAction, isPush = isPush)
         }
         /** 회원가입 완료 화면 **/
         customComposable(
-            route = RoutAction.SignUpComplete
-        ) {
-            SignUpCompleteScreen(routAction = routAction)
+            route = "${RoutAction.SignUpComplete}/{isPush}",
+            arguments = listOf(
+                navArgument("isPush") { type = NavType.BoolType }
+            )
+        ) { entry ->
+            val isPush = entry.arguments?.getBoolean("isPush") ?: false
+            SignUpCompleteScreen(routAction = routAction, isPush = isPush)
         }
     }
 

@@ -9,25 +9,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.ui.theme.Typography
 import com.example.starbucksclone.util.nonRippleClickable
+import com.example.starbucksclone.view.common.FooterWithButton
 
 @Composable
 fun NicknameContainer(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    val temp = remember { mutableStateOf("") }
+    val nickname = remember { mutableStateOf("") }
     val isChecked = remember { mutableStateOf(false) }
 
     Column(modifier = modifier.padding(horizontal = 27.dp)) {
         CheckedTextField(
-            value = temp.value,
-            onValueChange = { temp.value = it },
+            value = nickname.value,
+            onValueChange = {
+                if (nickname.value.length <= 6) {
+                    nickname.value = it
+                }
+            },
             hint = "닉네임 (한글 6자리 이내)",
             isChecked = isChecked.value,
+            isPassword = false,
             modifier = Modifier.fillMaxWidth()
         )
         Text(
@@ -47,7 +54,15 @@ fun NicknameContainer(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 20.dp)
-                .nonRippleClickable { onClick() }
+                .nonRippleClickable { viewModel.event(SignUpEvent.Complete) }
         )
+    }
+
+    /** 풋터 영역 **/
+    FooterWithButton(
+        isEnabled = nickname.value.isNotEmpty() && nickname.value.length <= 6,
+        text = "다음"
+    ) {
+        viewModel.event(SignUpEvent.NicknameResult(nickname = nickname.value))
     }
 }

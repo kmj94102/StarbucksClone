@@ -11,11 +11,11 @@ class RoutAction(private val navController: NavController) {
     fun goToTerms() {
         navController.navigate(Terms)
     }
-    fun goToSignUp() {
-        navController.navigate(SignUp)
+    fun goToSignUp(isPush: Boolean) {
+        navController.navigate("$SignUp/$isPush")
     }
-    fun goToSignUpComplete() {
-        navController.navigate(SignUpComplete)
+    fun goToSignUpComplete(isPush: Boolean) {
+        navController.navigate("$SignUpComplete/$isPush")
     }
 
     companion object {

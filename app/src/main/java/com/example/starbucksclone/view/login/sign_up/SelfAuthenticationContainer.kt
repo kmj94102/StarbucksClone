@@ -6,35 +6,36 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.starbucksclone.R
-import com.example.starbucksclone.ui.theme.Black
-import com.example.starbucksclone.ui.theme.DarkGray
-import com.example.starbucksclone.ui.theme.Gray
-import com.example.starbucksclone.ui.theme.Typography
+import com.example.starbucksclone.database.entity.UserTemp
+import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
+import com.example.starbucksclone.util.specialCharacterRestrictions
 import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonRadioButton
 import com.example.starbucksclone.view.common.CommonTextField
+import com.example.starbucksclone.view.common.FooterWithButton
 
 @Composable
 fun SelfAuthenticationContainer(
+    viewModel: SignUpViewModel,
     modifier: Modifier = Modifier
 ) {
-    val selected = remember {
-        mutableStateOf(false)
-    }
+    val selected = remember { mutableStateOf(false) }
+    val userInfo = remember { mutableStateOf(UserTemp()) }
+    val certificationNumber = remember { mutableStateOf("") }
     val context = LocalContext.current
 
     LazyColumn(
@@ -81,7 +82,28 @@ fun SelfAuthenticationContainer(
         }// 본인 인증 서비스 약과 동의
 
         item {
-            SelfAuthentication()
+            SelfAuthentication(userInfo, certificationNumber, viewModel)
+        }
+    }
+
+    /** 풋터 영역 **/
+    FooterWithButton(
+        isEnabled = nextStateCheck(
+            selected = selected.value,
+            userInfo = userInfo.value
+        ),
+        text = "다음"
+    ) {
+        if (viewModel.certificationNumber.value != certificationNumber.value) {
+            context.toast("인증번호가 일치하지 않습니다.")
+        } else {
+            viewModel.event(
+                SignUpEvent.SelfAuthenticationResult(
+                    name = userInfo.value.name,
+                    birthday = userInfo.value.birthday,
+                    phone = userInfo.value.phone
+                )
+            )
         }
     }
 }
@@ -115,52 +137,71 @@ fun TermsItem(
 }
 
 @Composable
-fun SelfAuthentication() {
-    val tempName = remember { mutableStateOf("") }
-    val tempBirthday = remember { mutableStateOf("") }
+fun SelfAuthentication(
+    userInfo: MutableState<UserTemp>,
+    certificationNumber: MutableState<String>,
+    viewModel: SignUpViewModel
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         modifier = Modifier.padding(top = 15.dp)
     ) {
         // 이름
         CommonTextField(
-            value = tempName.value,
-            onValueChange = { tempName.value = it },
+            value = userInfo.value.name,
+            imeAction = ImeAction.Next,
+            onValueChange = { userInfo.value = userInfo.value.copy(name = it) },
             hint = "이름",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
         )
         CommonTextField(
-            value = tempBirthday.value,
-            onValueChange = { tempBirthday.value = it },
+            value = userInfo.value.birthday,
+            onValueChange = {
+                if (it.length <= 6 && specialCharacterRestrictions(it)) {
+                    userInfo.value = userInfo.value.copy(birthday = it)
+                }
+            },
+            imeAction = ImeAction.Next,
             hint = "생년월일 6자리",
+            keyboardType = KeyboardType.Number,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 28.dp)
         )
 
-        PhoneTextField()
+        PhoneTextField(
+            value = userInfo.value.phone,
+            onChange = {
+                if (it.length <= 11 && specialCharacterRestrictions(it)) {
+                    userInfo.value = userInfo.value.copy(phone = it)
+                }
+            },
+            viewModel = viewModel
+        )
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 28.dp)
-        ) {
-            CommonTextField(
-                value = tempBirthday.value,
-                onValueChange = { tempBirthday.value = it },
-                hint = "인증번호 6자리",
+        if (viewModel.certificationNumber.value.isNotEmpty()) {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-            )
-
-            Text(
-                text = "02:58",
-                style = Typography.body1,
-                fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.CenterEnd)
-            )
+                    .padding(horizontal = 28.dp)
+            ) {
+                CommonTextField(
+                    value = certificationNumber.value,
+                    onValueChange = { certificationNumber.value = it },
+                    keyboardType = KeyboardType.Number,
+                    hint = "인증번호 6자리",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = viewModel.certificationTime.value,
+                    style = Typography.body1,
+                    fontSize = 14.sp,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
+            }
         }
 
         Text(
@@ -173,15 +214,18 @@ fun SelfAuthentication() {
 }
 
 @Composable
-fun PhoneTextField() {
-    val temp = remember { mutableStateOf("") }
-
+fun PhoneTextField(
+    value: String,
+    onChange: (String) -> Unit,
+    viewModel: SignUpViewModel
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 28.dp)
     ) {
         val startGuideline = createGuidelineFromStart(0.3f)
+        val context = LocalContext.current
         val (phoneCarrier, phone, certification, divider) = createRefs()
 
         Row(
@@ -205,9 +249,10 @@ fun PhoneTextField() {
         }
 
         CommonTextField(
-            value = temp.value,
-            onValueChange = { temp.value = it },
+            value = value,
+            onValueChange = onChange,
             hint = "휴대폰 번호",
+            keyboardType = KeyboardType.Number,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             modifier = Modifier
@@ -221,17 +266,51 @@ fun PhoneTextField() {
                 }
         )
 
-        Text(
-            text = "인증요청",
-            style = Typography.body1,
-            fontSize = 14.sp,
-            color = DarkGray,
-            modifier = Modifier.constrainAs(certification) {
-                end.linkTo(parent.end)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            }
-        )
+        if (viewModel.certificationNumber.value.isEmpty()) {
+            Text(
+                text = "인증요청",
+                style = Typography.body1,
+                fontSize = 14.sp,
+                color = if (value.length in 10..11) MainColor else DarkGray,
+                modifier = Modifier
+                    .nonRippleClickable {
+                        if (value.length in 10..11) {
+                            viewModel.event(
+                                SignUpEvent.NewCertificationNumber {
+                                    context.toast("인증번호 : $it")
+                                }
+                            )
+                        }
+                    }
+                    .constrainAs(certification) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
+        } else {
+            Text(
+                text = "다시요청",
+                style = Typography.body1,
+                fontSize = 14.sp,
+                color = MainColor,
+                modifier = Modifier
+                    .nonRippleClickable {
+                        if (value.length in 10..11) {
+                            viewModel.event(
+                                SignUpEvent.NewCertificationNumber {
+                                    context.toast("인증번호 : $it")
+                                }
+                            )
+                        }
+                    }
+                    .constrainAs(certification) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -244,4 +323,14 @@ fun PhoneTextField() {
                     width = Dimension.fillToConstraints
                 })
     }
+}
+
+fun nextStateCheck(
+    selected: Boolean,
+    userInfo: UserTemp,
+): Boolean {
+    if (userInfo.name.length < 2) return false
+    if (userInfo.phone.length !in 10..11) return false
+    if (userInfo.birthday.length != 6) return false
+    return selected
 }

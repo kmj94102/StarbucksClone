@@ -1,4 +1,4 @@
-package com.example.starbucksclone.view.login.sign_up
+package com.example.starbucksclone.view.login.sign_up.complete
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,15 +15,16 @@ import androidx.compose.ui.unit.sp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
-import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.ui.theme.Typography
+import com.example.starbucksclone.util.today
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
 
 @Composable
 fun SignUpCompleteScreen(
-    routAction: RoutAction
+    routAction: RoutAction,
+    isPush: Boolean
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Title(
@@ -33,7 +34,7 @@ fun SignUpCompleteScreen(
             }
         )
 
-        SignUpCompleteBody(modifier = Modifier.weight(1f))
+        SignUpCompleteBody(isPush = isPush, modifier = Modifier.weight(1f))
 
         FooterWithButton(text = "스타벅스 카드등록 바로가기") {
 
@@ -43,7 +44,7 @@ fun SignUpCompleteScreen(
 }
 
 @Composable
-fun SignUpCompleteBody(modifier: Modifier = Modifier) {
+fun SignUpCompleteBody(isPush: Boolean, modifier: Modifier = Modifier) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 27.dp),
         modifier = modifier.fillMaxWidth()
@@ -72,7 +73,7 @@ fun SignUpCompleteBody(modifier: Modifier = Modifier) {
                     .padding(vertical = 10.dp)
             ) {
                 Text(
-                    text = "2021년 3월 5일 E-Mail 및 SMS\n광고성 정보 수신 여부 처리 결과",
+                    text = "${today()} E-Mail 및 SMS\n광고성 정보 수신 여부 처리 결과",
                     style = Typography.body1,
                     color = DarkGray,
                     modifier = Modifier
@@ -86,7 +87,8 @@ fun SignUpCompleteBody(modifier: Modifier = Modifier) {
                         .background(Gray)
                 )
                 Text(
-                    text = "수신 거부", style = Typography.body2,
+                    text = if(isPush) "수신 동의" else "수신 거부",
+                    style = Typography.body2,
                     modifier = Modifier
                         .padding(start = 30.dp)
                 )

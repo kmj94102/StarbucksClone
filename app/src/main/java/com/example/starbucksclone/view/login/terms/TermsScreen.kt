@@ -1,4 +1,4 @@
-package com.example.starbucksclone.view.login.sign_up
+package com.example.starbucksclone.view.login.terms
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
 import com.example.starbucksclone.R
@@ -23,9 +24,10 @@ import com.example.starbucksclone.view.common.CommonRadioButton
 import com.example.starbucksclone.view.common.FooterWithButton
 
 @Composable
-fun TermsScreen(routAction: RoutAction) {
-    val isEnabled = remember { mutableStateOf(false) }
-
+fun TermsScreen(
+    routAction: RoutAction,
+    viewModel: TermsViewModel = hiltViewModel()
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         /** 타이틀 영역 **/
         Title(
@@ -33,16 +35,16 @@ fun TermsScreen(routAction: RoutAction) {
             onLeftIconClick = { routAction.popupBackStack() }
         )
         /** 바디 영역 **/
-        TermsBody(state = isEnabled, modifier = Modifier.weight(1f))
+        TermsBody(viewModel = viewModel, modifier = Modifier.weight(1f))
         /** 풋터 영역 **/
-        FooterWithButton(text = "다음", isEnabled = isEnabled.value) {
-            routAction.goToSignUp()
+        FooterWithButton(text = "다음", isEnabled = viewModel.termsOfServiceState.value && viewModel.privacyState.value) {
+            routAction.goToSignUp(viewModel.pushState.value)
         }
     }
 }
 
 @Composable
-fun TermsBody(state: MutableState<Boolean>, modifier: Modifier = Modifier) {
+fun TermsBody(viewModel: TermsViewModel, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -65,19 +67,14 @@ fun TermsBody(state: MutableState<Boolean>, modifier: Modifier = Modifier) {
             )
         }
         /** 약관 동의 **/
-        TermsItem(state)
+        TermsItem(viewModel)
     }
 }
 
 /** 약관 동의 **/
 @Composable
-fun TermsItem(state: MutableState<Boolean>) {
-    val termsOfServiceState = remember { mutableStateOf(false) }
-    val privacyState = remember { mutableStateOf(false) }
-    val pushState = remember { mutableStateOf(false) }
+fun TermsItem(viewModel: TermsViewModel) {
     val context = LocalContext.current
-
-    state.value = termsOfServiceState.value && privacyState.value
 
     ConstraintLayout(
         modifier = Modifier
@@ -89,12 +86,9 @@ fun TermsItem(state: MutableState<Boolean>) {
 
         CommonRadioButton(
             text = "약관 전체 동의",
-            selected = termsOfServiceState.value && privacyState.value && pushState.value,
+            selected = viewModel.termsOfServiceState.value && viewModel.privacyState.value && viewModel.pushState.value,
             onClick = {
-                val isChecked = termsOfServiceState.value && privacyState.value && pushState.value
-                termsOfServiceState.value = isChecked.not()
-                privacyState.value = isChecked.not()
-                pushState.value = isChecked.not()
+                viewModel.event(TermsEvent.AllChange)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,8 +100,8 @@ fun TermsItem(state: MutableState<Boolean>) {
 
         CommonRadioButton(
             text = "이용약관 동의(필수)",
-            selected = termsOfServiceState.value,
-            onClick = { termsOfServiceState.value = termsOfServiceState.value.not() },
+            selected = viewModel.termsOfServiceState.value,
+            onClick = { viewModel.event(TermsEvent.TermsOfServiceChange) },
             isNextButton = true,
             onNextClick = { context.toast("준비중입니다.") },
             modifier = Modifier
@@ -120,8 +114,8 @@ fun TermsItem(state: MutableState<Boolean>) {
 
         CommonRadioButton(
             text = "개인정보 수집 및 이동동의(필수)",
-            selected = privacyState.value,
-            onClick = { privacyState.value = privacyState.value.not() },
+            selected = viewModel.privacyState.value,
+            onClick = { viewModel.event(TermsEvent.PrivacyChange) },
             isNextButton = true,
             onNextClick = { context.toast("준비중입니다.") },
             modifier = Modifier
@@ -134,8 +128,8 @@ fun TermsItem(state: MutableState<Boolean>) {
 
         CommonRadioButton(
             text = "E-mail 및 SMS 광고성 정보 수진동의(선택)",
-            selected = pushState.value,
-            onClick = { pushState.value = pushState.value.not() },
+            selected = viewModel.pushState.value,
+            onClick = { viewModel.event(TermsEvent.PushChange) },
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(push) {
