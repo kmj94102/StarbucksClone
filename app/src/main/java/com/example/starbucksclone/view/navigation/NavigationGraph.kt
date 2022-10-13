@@ -9,6 +9,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import com.example.starbucksclone.view.login.LoginScreen
+import com.example.starbucksclone.view.login.sign_up.SignUpCompleteScreen
 import com.example.starbucksclone.view.login.sign_up.SignUpScreen
 import com.example.starbucksclone.view.login.sign_up.TermsScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -43,6 +44,12 @@ fun NavigationGraph() {
             route = RoutAction.SignUp
         ) {
             SignUpScreen(routAction = routAction)
+        }
+        /** 회원가입 완료 화면 **/
+        customComposable(
+            route = RoutAction.SignUpComplete
+        ) {
+            SignUpCompleteScreen(routAction = routAction)
         }
     }
 

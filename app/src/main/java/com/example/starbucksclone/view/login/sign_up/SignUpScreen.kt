@@ -84,7 +84,12 @@ fun SignUpScreen(routAction: RoutAction) {
                     }
                 }
                 3 -> {
-
+                    NicknameContainer(modifier = Modifier.weight(1f)) {
+                        nextListener()
+                    }
+                    nextListener = {
+                        routAction.goToSignUpComplete()
+                    }
                 }
             }
             /** 풋터 영역 **/
