@@ -9,49 +9,75 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.Gray
 import com.example.starbucksclone.ui.theme.Typography
 import com.example.starbucksclone.util.isScrolled
-import com.example.starbucksclone.view.common.CommonLabelTextField
+import com.example.starbucksclone.util.toast
+import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun LoginScreen(routAction: RoutAction) {
+fun LoginScreen(
+    routAction: RoutAction,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    // 스테이터스 바 색상 지정
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(Color.White)
     systemUiController.statusBarDarkContentEnabled = true
 
     val lazyListSate = rememberLazyListState()
+    val context = LocalContext.current
+
+    val status = viewModel.status.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        /** 타이틀 **/
+        /** 타이틀 영역 **/
         Title(
             leftIconRes = R.drawable.ic_back,
             onLeftIconClick = { routAction.popupBackStack() },
             lazyListSate = lazyListSate,
             title = "로그인"
         )
-        /** 바디 **/
+        /** 바디 영역 **/
         LoginBody(
             lazyListSate = lazyListSate,
             routAction = routAction,
+            viewModel = viewModel,
             modifier = Modifier
                 .weight(1f)
         )
-        /** 풋터 **/
+        /** 풋터 영역 **/
         FooterWithButton(text = "로그인하기") {
+            val loginInfo = viewModel.loginInfo.value
+            if (loginInfo.id.isEmpty() || loginInfo.password.isEmpty()) {
+                context.toast("아이디 또는 패스워드를 입력해주세요")
+            }
+            viewModel.event(LoginEvent.Login)
+        }
+    }
 
+    when(status.value) {
+        is LoginViewModel.Status.Init -> {}
+        is LoginViewModel.Status.Failure -> {
+            context.toast("아이디 또는 패스워드를 확인해주세요")
+        }
+        is LoginViewModel.Status.Success -> {
+            context.toast("로그인 성공")
         }
     }
 }
@@ -61,11 +87,9 @@ fun LoginScreen(routAction: RoutAction) {
 fun LoginBody(
     lazyListSate: LazyListState,
     routAction: RoutAction,
+    viewModel: LoginViewModel,
     modifier: Modifier = Modifier
 ) {
-    val tempIdState = remember { mutableStateOf("") }
-    val tempPwState = remember { mutableStateOf("") }
-
     LazyColumn(
         contentPadding = PaddingValues(top = 41.dp, start = 16.dp, end = 16.dp, bottom = 100.dp),
         state = lazyListSate,
@@ -94,22 +118,26 @@ fun LoginBody(
         }
         // 아이디 / 비밀번호 입력창
         item {
-            CommonLabelTextField(
-                value = tempIdState.value,
+            CommonTextField(
+                value = viewModel.loginInfo.value.id,
                 onValueChange = {
-                    tempIdState.value = it
+                    viewModel.event(LoginEvent.IdChange(it))
                 },
+                imeAction = ImeAction.Next,
+                isLabel = true,
                 hint = "아이디",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 84.dp)
             )
 
-            CommonLabelTextField(
-                value = tempPwState.value,
+            CommonTextField(
+                value = viewModel.loginInfo.value.password,
                 onValueChange = {
-                    tempPwState.value = it
+                    viewModel.event(LoginEvent.PwChange(it))
                 },
+                visualTransformation = PasswordVisualTransformation(),
+                isLabel = true,
                 hint = "비밀번호",
                 modifier = Modifier
                     .fillMaxWidth()

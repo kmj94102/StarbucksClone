@@ -31,7 +31,11 @@ class UserRepository @Inject constructor(
         client.login(
             loginInfo = loginInfo,
             successListener = {
-                successListener()
+                if (it >= 1) {
+                    successListener()
+                } else {
+                    failureListener()
+                }
             },
             failureListener = failureListener
         )

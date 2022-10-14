@@ -24,7 +24,7 @@ import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.specialCharacterRestrictions
 import com.example.starbucksclone.util.toast
-import com.example.starbucksclone.view.common.CommonRadioButton
+import com.example.starbucksclone.view.common.CommonCheckBox
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 
@@ -44,7 +44,7 @@ fun SelfAuthenticationContainer(
     ) {
         // 본인 인증 서비스 약과 동의
         item {
-            CommonRadioButton(
+            CommonCheckBox(
                 text = "본인 인증 서비스 약관 전체동의",
                 selected = selected.value,
                 onClick = { selected.value = selected.value.not() },

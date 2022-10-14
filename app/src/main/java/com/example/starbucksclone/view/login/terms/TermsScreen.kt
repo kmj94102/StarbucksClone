@@ -20,7 +20,7 @@ import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
 import com.example.starbucksclone.ui.theme.Typography
 import com.example.starbucksclone.util.toast
-import com.example.starbucksclone.view.common.CommonRadioButton
+import com.example.starbucksclone.view.common.CommonCheckBox
 import com.example.starbucksclone.view.common.FooterWithButton
 
 @Composable
@@ -37,7 +37,10 @@ fun TermsScreen(
         /** 바디 영역 **/
         TermsBody(viewModel = viewModel, modifier = Modifier.weight(1f))
         /** 풋터 영역 **/
-        FooterWithButton(text = "다음", isEnabled = viewModel.termsOfServiceState.value && viewModel.privacyState.value) {
+        FooterWithButton(
+            text = "다음",
+            isEnabled = viewModel.termsOfServiceState.value && viewModel.privacyState.value
+        ) {
             routAction.goToSignUp(viewModel.pushState.value)
         }
     }
@@ -84,7 +87,7 @@ fun TermsItem(viewModel: TermsViewModel) {
 
         val (terms, privacy, push, all, divider, guide) = createRefs()
 
-        CommonRadioButton(
+        CommonCheckBox(
             text = "약관 전체 동의",
             selected = viewModel.termsOfServiceState.value && viewModel.privacyState.value && viewModel.pushState.value,
             onClick = {
@@ -98,7 +101,7 @@ fun TermsItem(viewModel: TermsViewModel) {
                 }
         )
 
-        CommonRadioButton(
+        CommonCheckBox(
             text = "이용약관 동의(필수)",
             selected = viewModel.termsOfServiceState.value,
             onClick = { viewModel.event(TermsEvent.TermsOfServiceChange) },
@@ -112,7 +115,7 @@ fun TermsItem(viewModel: TermsViewModel) {
                 }
         )
 
-        CommonRadioButton(
+        CommonCheckBox(
             text = "개인정보 수집 및 이동동의(필수)",
             selected = viewModel.privacyState.value,
             onClick = { viewModel.event(TermsEvent.PrivacyChange) },
@@ -126,7 +129,7 @@ fun TermsItem(viewModel: TermsViewModel) {
                 }
         )
 
-        CommonRadioButton(
+        CommonCheckBox(
             text = "E-mail 및 SMS 광고성 정보 수진동의(선택)",
             selected = viewModel.pushState.value,
             onClick = { viewModel.event(TermsEvent.PushChange) },

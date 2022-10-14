@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.util.toast
@@ -35,6 +36,7 @@ fun EmailSettingContainer(
                 value = email.value,
                 onValueChange = { email.value = it },
                 hint = "이메일을 입력해주세요",
+                keyboardType = KeyboardType.Email,
                 modifier = Modifier.fillMaxWidth()
             )
         }

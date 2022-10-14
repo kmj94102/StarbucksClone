@@ -24,7 +24,8 @@ import com.example.starbucksclone.view.navigation.RoutAction
 @Composable
 fun SignUpCompleteScreen(
     routAction: RoutAction,
-    isPush: Boolean
+    isPush: Boolean,
+    nickname: String
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Title(
@@ -34,7 +35,11 @@ fun SignUpCompleteScreen(
             }
         )
 
-        SignUpCompleteBody(isPush = isPush, modifier = Modifier.weight(1f))
+        SignUpCompleteBody(
+            isPush = isPush,
+            nickname = nickname,
+            modifier = Modifier.weight(1f)
+        )
 
         FooterWithButton(text = "스타벅스 카드등록 바로가기") {
 
@@ -44,14 +49,18 @@ fun SignUpCompleteScreen(
 }
 
 @Composable
-fun SignUpCompleteBody(isPush: Boolean, modifier: Modifier = Modifier) {
+fun SignUpCompleteBody(
+    isPush: Boolean,
+    nickname: String,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 27.dp),
         modifier = modifier.fillMaxWidth()
     ) {
         item {
             Text(
-                text = "김민재님,\n회원가입이 완료되었습니다.",
+                text = "${nickname}님,\n회원가입이 완료되었습니다.",
                 style = Typography.subtitle1,
                 lineHeight = 32.sp,
                 modifier = Modifier.padding(top = 20.dp)

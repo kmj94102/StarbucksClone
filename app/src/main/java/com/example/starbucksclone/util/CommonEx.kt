@@ -38,3 +38,8 @@ fun specialCharacterRestrictions(source: String): Boolean {
         true
     }
 }
+
+fun koreanCheck(value: String): Boolean {
+    val pattern = Pattern.compile("^[가-힣]*\$")
+    return pattern.matcher(value).matches()
+}

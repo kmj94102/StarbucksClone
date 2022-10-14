@@ -84,6 +84,7 @@ fun Title(
 /**
  * 라운드 버튼
  * @param text [필수] 버튼 문구
+ * @param textColor 텍스트 색상
  * @param round 버튼 라운드 값
  * @param isEnabled 활성화 여부
  * @param isOutline 아웃라인 형식 여부
@@ -94,6 +95,7 @@ fun Title(
 @Composable
 fun RoundedButton(
     text: String,
+    textColor: Color = White,
     round: Dp = 20.dp,
     isEnabled: Boolean = true,
     isOutline: Boolean = false,
@@ -104,8 +106,8 @@ fun RoundedButton(
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = buttonColor,
-            contentColor = White,
+            containerColor = if (isOutline) Color.Transparent else buttonColor,
+            contentColor = textColor,
             disabledContainerColor = Gray,
             disabledContentColor = White
         ),
@@ -168,6 +170,7 @@ fun CommonTextField(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String,
+    isLabel: Boolean = false,
     enabled: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     focusedIndicatorColor: Color = MainColor,
@@ -179,9 +182,9 @@ fun CommonTextField(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
-    var isFocused by remember {
-        mutableStateOf(false)
-    }
+    var isFocused by remember { mutableStateOf(false) }
+    val color = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+
     BasicTextField(
         value = value,
         modifier = modifier
@@ -190,7 +193,7 @@ fun CommonTextField(
                 false,
                 interactionSource,
                 TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+                    unfocusedIndicatorColor = color
                 )
             )
             .focusRequester(focusRequester = focusRequester)
@@ -217,80 +220,42 @@ fun CommonTextField(
                 singleLine = true,
                 visualTransformation = VisualTransformation.None,
                 interactionSource = interactionSource,
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 6.dp),
-                placeholder = {
-                    Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
+                placeholder = if (isLabel.not()) {
+                    {
+                        Text(
+                            text = hint,
+                            style = Typography.body1,
+                            fontSize = 14.sp,
+                            color = DarkGray
+                        )
+                    }
+                } else {
+                    null
+                },
+                label = if (isLabel) {
+                    {
+                        Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                    }
+                } else {
+                    null
                 }
             )
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * 커스텀 체크 박스
+ * @param text 체크박스 문구
+ * @param selected 체크박스 선택 여부
+ * @param onClick 체크박스 클릭 리스너
+ * @param isNextButton 체크박스 오른쪽에 더보기 버튼 여부
+ * @param onNextClick 더보기 버튼 클릭 리스너
+ * @param modifier Modifier
+ * **/
 @Composable
-fun CommonLabelTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    hint: String,
-    enabled: Boolean = true,
-    focusedIndicatorColor: Color = MainColor,
-    unfocusedIndicatorColor: Color = Gray,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction: ImeAction = ImeAction.Done,
-    keyboardActions: KeyboardActions = KeyboardActions(),
-    modifier: Modifier = Modifier
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val focusRequester by remember { mutableStateOf(FocusRequester()) }
-    var isFocused by remember {
-        mutableStateOf(false)
-    }
-    BasicTextField(
-        value = value,
-        modifier = modifier
-            .indicatorLine(
-                enabled,
-                false,
-                interactionSource,
-                TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
-                )
-            )
-            .focusRequester(focusRequester = focusRequester)
-            .onFocusChanged {
-                isFocused = it.isFocused
-            },
-        readOnly = false,
-        singleLine = true,
-        onValueChange = onValueChange,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        enabled = enabled,
-        keyboardActions = keyboardActions,
-        textStyle = Typography.body2,
-        cursorBrush = SolidColor(MainColor),
-        decorationBox = { innerTextField ->
-            TextFieldDefaults.TextFieldDecorationBox(
-                value = value,
-                innerTextField = innerTextField,
-                enabled = true,
-                singleLine = true,
-                visualTransformation = VisualTransformation.None,
-                interactionSource = interactionSource,
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 6.dp),
-                label = {
-                    Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
-                }
-            )
-        }
-    )
-}
-
-
-@Composable
-fun CommonRadioButton(
+fun CommonCheckBox(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
@@ -308,7 +273,7 @@ fun CommonRadioButton(
     ) {
         Image(
             painter = painterResource(id = if (selected) R.drawable.ic_radio_check else R.drawable.ic_radio_unchecked),
-            contentDescription = "radio"
+            contentDescription = "checkbox"
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(

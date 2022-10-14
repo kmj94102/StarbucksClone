@@ -68,6 +68,6 @@ data class UserTemp(
 }
 
 data class LoginInfo(
-    var id: String,
-    var password: String
+    var id: String = "",
+    var password: String = ""
 )

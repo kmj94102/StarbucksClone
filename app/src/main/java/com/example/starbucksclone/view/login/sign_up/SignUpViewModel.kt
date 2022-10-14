@@ -36,6 +36,7 @@ class SignUpViewModel @Inject constructor(
     val eventStatus: StateFlow<Event> = _eventStatus
 
     private val _userInfo = mutableStateOf(UserTemp())
+    val userInfo: State<UserTemp> = _userInfo
 
     init {
         savedStateHandle.get<Boolean>("isPush")?.let {

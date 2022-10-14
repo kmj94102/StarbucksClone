@@ -64,10 +64,13 @@ fun SignUpScreen(
         )
     }
     val status = viewModel.eventStatus.collectAsState()
-    when(status.value) {
+    when (status.value) {
         is SignUpViewModel.Event.Init -> {}
         is SignUpViewModel.Event.Success -> {
-            routAction.goToSignUpComplete(isPush = isPush)
+            routAction.goToSignUpComplete(
+                isPush = isPush,
+                nickname = viewModel.userInfo.value.nickname.ifEmpty { viewModel.userInfo.value.id }
+            )
         }
         is SignUpViewModel.Event.Failure -> {
             context.toast("오류가 발생하였습니다.")

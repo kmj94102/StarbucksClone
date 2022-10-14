@@ -12,10 +12,14 @@ class RoutAction(private val navController: NavController) {
         navController.navigate(Terms)
     }
     fun goToSignUp(isPush: Boolean) {
-        navController.navigate("$SignUp/$isPush")
+        navController.navigate("$SignUp/$isPush") {
+            popupBackStack()
+        }
     }
-    fun goToSignUpComplete(isPush: Boolean) {
-        navController.navigate("$SignUpComplete/$isPush")
+    fun goToSignUpComplete(isPush: Boolean, nickname: String) {
+        navController.navigate("$SignUpComplete/$isPush/$nickname") {
+            popupBackStack()
+        }
     }
 
     companion object {

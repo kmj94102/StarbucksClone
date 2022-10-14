@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -13,7 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.ui.theme.Typography
+import com.example.starbucksclone.util.koreanCheck
 import com.example.starbucksclone.util.nonRippleClickable
+import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.FooterWithButton
 
 @Composable
@@ -23,12 +26,13 @@ fun NicknameContainer(
 ) {
     val nickname = remember { mutableStateOf("") }
     val isChecked = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(modifier = modifier.padding(horizontal = 27.dp)) {
         CheckedTextField(
             value = nickname.value,
             onValueChange = {
-                if (nickname.value.length <= 6) {
+                if (it.length <= 6) {
                     nickname.value = it
                 }
             },
@@ -63,6 +67,10 @@ fun NicknameContainer(
         isEnabled = nickname.value.isNotEmpty() && nickname.value.length <= 6,
         text = "다음"
     ) {
-        viewModel.event(SignUpEvent.NicknameResult(nickname = nickname.value))
+        if (koreanCheck(nickname.value)) {
+            viewModel.event(SignUpEvent.NicknameResult(nickname = nickname.value))
+        } else {
+            context.toast("한글로만 6자입력해주세요.")
+        }
     }
 }

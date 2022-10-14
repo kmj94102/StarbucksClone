@@ -49,13 +49,15 @@ fun NavigationGraph() {
         }
         /** 회원가입 완료 화면 **/
         customComposable(
-            route = "${RoutAction.SignUpComplete}/{isPush}",
+            route = "${RoutAction.SignUpComplete}/{isPush}/{nickname}",
             arguments = listOf(
-                navArgument("isPush") { type = NavType.BoolType }
+                navArgument("isPush") { type = NavType.BoolType },
+                navArgument("nickname") { type = NavType.StringType },
             )
         ) { entry ->
             val isPush = entry.arguments?.getBoolean("isPush") ?: false
-            SignUpCompleteScreen(routAction = routAction, isPush = isPush)
+            val nickname = entry.arguments?.getString("nickname") ?: ""
+            SignUpCompleteScreen(routAction = routAction, isPush = isPush, nickname = nickname)
         }
     }
 
