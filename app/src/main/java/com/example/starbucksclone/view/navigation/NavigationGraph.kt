@@ -10,6 +10,7 @@ import com.example.starbucksclone.view.login.LoginScreen
 import com.example.starbucksclone.view.login.sign_up.complete.SignUpCompleteScreen
 import com.example.starbucksclone.view.login.sign_up.SignUpScreen
 import com.example.starbucksclone.view.login.terms.TermsScreen
+import com.example.starbucksclone.view.main.MainScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -23,8 +24,14 @@ fun NavigationGraph() {
 
     AnimatedNavHost(
         navController = navController,
-        startDestination = RoutAction.Login
+        startDestination = RoutAction.Main
     ) {
+        /** 메인 화면 **/
+        customComposable(
+            route = RoutAction.Main
+        ) {
+            MainScreen(routAction = routAction)
+        }
         /** 로그인 화면 **/
         customComposable(
             route = RoutAction.Login

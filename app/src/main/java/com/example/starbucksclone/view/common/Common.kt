@@ -114,8 +114,8 @@ fun RoundedButton(
         enabled = isEnabled,
         shape = RoundedCornerShape(round),
         border = BorderStroke(1.dp, if (isOutline) MainColor else Color.Transparent),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
         modifier = modifier
-            .fillMaxWidth()
     ) {
         Text(
             text = text,
@@ -156,6 +156,7 @@ fun FooterWithButton(
                 round = round,
                 buttonColor = buttonColor,
                 modifier = buttonModifier
+                    .fillMaxWidth()
                     .padding(vertical = 16.dp, horizontal = 23.dp),
             ) {
                 onClick()

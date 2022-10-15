@@ -8,6 +8,12 @@ class RoutAction(private val navController: NavController) {
         navController.popBackStack()
     }
 
+    fun goToMain() {
+        navController.navigate(Main)
+    }
+    fun goToLogin() {
+        navController.navigate(Login)
+    }
     fun goToTerms() {
         navController.navigate(Terms)
     }
@@ -23,6 +29,7 @@ class RoutAction(private val navController: NavController) {
     }
 
     companion object {
+        const val Main = "main"
         const val Login = "login"
         const val Terms = "terms"
         const val SignUp = "sign_up"

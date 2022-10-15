@@ -35,11 +35,6 @@ fun LoginScreen(
     routAction: RoutAction,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    // 스테이터스 바 색상 지정
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(Color.White)
-    systemUiController.statusBarDarkContentEnabled = true
-
     val lazyListSate = rememberLazyListState()
     val context = LocalContext.current
 
