@@ -24,7 +24,7 @@ fun NavigationGraph() {
 
     AnimatedNavHost(
         navController = navController,
-        startDestination = RoutAction.Main
+        startDestination = RoutAction.Login
     ) {
         /** 메인 화면 **/
         customComposable(

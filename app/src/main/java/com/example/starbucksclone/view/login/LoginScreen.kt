@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -26,9 +25,9 @@ import com.example.starbucksclone.util.isScrolled
 import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
+import com.example.starbucksclone.view.common.MotionTitle
 import com.example.starbucksclone.view.common.Title
 import com.example.starbucksclone.view.navigation.RoutAction
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun LoginScreen(
@@ -42,11 +41,11 @@ fun LoginScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         /** 타이틀 영역 **/
-        Title(
+        MotionTitle(
             leftIconRes = R.drawable.ic_back,
             onLeftIconClick = { routAction.popupBackStack() },
             lazyListSate = lazyListSate,
-            title = "로그인"
+            titleText = "로그인"
         )
         /** 바디 영역 **/
         LoginBody(
@@ -91,10 +90,6 @@ fun LoginBody(
         modifier = modifier
     ) {
 
-        // 타이틀
-        item {
-            Text(text = if (lazyListSate.isScrolled) "" else "로그인", style = Typography.subtitle1)
-        }
         // 로고
         item {
             Image(

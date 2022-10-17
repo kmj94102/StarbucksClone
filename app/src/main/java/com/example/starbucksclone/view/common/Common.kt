@@ -1,6 +1,8 @@
 package com.example.starbucksclone.view.common
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +23,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.*
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.isScrolled
@@ -77,6 +81,91 @@ fun Title(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+        }
+    }
+}
+
+/**
+ * 모션 상단 타이틀 : 스크롤 상태에 따라 움직이는 타이틀의 위치가 변하는 경우 사용
+ * @param leftIconRes 좌측 아이콘 이미지 res
+ * @param onLeftIconClick 좌측 아이콘 클릭 리스너
+ * @param titleText 상단 타이틀
+ * @param lazyListSate 스크롤 상태
+ * @param modifier Modifier
+ * **/
+@OptIn(ExperimentalMotionApi::class)
+@Composable
+fun MotionTitle(
+    @DrawableRes leftIconRes: Int = R.drawable.ic_back,
+    onLeftIconClick: () -> Unit,
+    titleText: String = "",
+    lazyListSate: LazyListState? = null,
+    modifier: Modifier = Modifier
+) {
+
+    val elevation = if (lazyListSate?.isScrolled == true) 6.dp else 0.dp
+
+    var animate by remember { mutableStateOf(true) }
+    val buttonAnimationProgress by animateFloatAsState(
+        targetValue = if (animate) 1f else 0f,
+        animationSpec = tween(500)
+    )
+    LaunchedEffect(lazyListSate?.isScrolled == true) {
+        animate = !animate
+    }
+
+    Surface(shadowElevation = elevation) {
+        MotionLayout(
+            start = ConstraintSet(
+                """
+                {
+                    icon: {
+                        start: ['parent', 'start', 7],
+                        top: ['parent', 'top', 7]
+                    },
+                    title: {
+                        start: ['parent', 'start', 16],
+                        top: ['parent', 'top', 50]
+                    }
+                }
+            """
+            ),
+            end = ConstraintSet(
+                """
+                {
+                    icon: {
+                        start: ['parent', 'start', 7],
+                        top: ['parent', 'top', 7],
+                        bottom: ['parent', 'bottom', 7]
+                    },
+                    title: {
+                        start: ['parent', 'start', 0],
+                        end: ['parent', 'end', 0],
+                        top: ['parent', 'top', 0],
+                        bottom: ['parent', 'bottom', 0]
+                    }
+                }
+            """
+            ),
+            progress = buttonAnimationProgress,
+            modifier = modifier
+                .fillMaxWidth()
+                .background(White)
+        ) {
+            Icon(
+                painter = painterResource(id = leftIconRes),
+                contentDescription = "leftIcon",
+                modifier = Modifier
+                    .nonRippleClickable {
+                        onLeftIconClick()
+                    }
+                    .layoutId("icon")
+            )
+            Text(
+                text = titleText,
+                style = if (lazyListSate?.isScrolled == true) Typography.body1 else Typography.subtitle1,
+                modifier = Modifier.layoutId("title")
+            )
         }
     }
 }
