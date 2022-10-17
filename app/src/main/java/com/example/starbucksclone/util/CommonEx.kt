@@ -1,6 +1,7 @@
 package com.example.starbucksclone.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.annotation.StringRes
 import java.time.LocalDateTime
@@ -43,3 +44,19 @@ fun koreanCheck(value: String): Boolean {
     val pattern = Pattern.compile("^[가-힣]*\$")
     return pattern.matcher(value).matches()
 }
+
+fun SharedPreferences.setLoginId(id: String) {
+    edit().putString("LoginId", id).apply()
+}
+
+fun SharedPreferences.getLoginId() =
+    getString("LoginId", null)
+
+fun SharedPreferences.setLoginNickname(id: String) {
+    edit().putString("Nickname", id).apply()
+}
+
+fun SharedPreferences.getLoginNickname() =
+    getString("Nickname", null)
+
+fun getEmoji(unicode: Int): String = String(Character.toChars(unicode))
