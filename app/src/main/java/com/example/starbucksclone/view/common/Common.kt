@@ -96,8 +96,8 @@ fun Title(
 @OptIn(ExperimentalMotionApi::class)
 @Composable
 fun MotionTitle(
-    @DrawableRes leftIconRes: Int = R.drawable.ic_back,
-    onLeftIconClick: () -> Unit,
+    @DrawableRes leftIconRes: Int? = R.drawable.ic_back,
+    onLeftIconClick: () -> Unit = {},
     titleText: String = "",
     lazyListSate: LazyListState? = null,
     modifier: Modifier = Modifier
@@ -134,6 +134,7 @@ fun MotionTitle(
                 """
                 {
                     icon: {
+                        height: 41,
                         start: ['parent', 'start', 7],
                         top: ['parent', 'top', 7],
                         bottom: ['parent', 'bottom', 7]
@@ -142,7 +143,7 @@ fun MotionTitle(
                         start: ['parent', 'start', 0],
                         end: ['parent', 'end', 0],
                         top: ['parent', 'top', 0],
-                        bottom: ['parent', 'bottom', 0]
+                        bottom: ['parent', 'bottom', 0],
                     }
                 }
             """
@@ -152,15 +153,17 @@ fun MotionTitle(
                 .fillMaxWidth()
                 .background(White)
         ) {
-            Icon(
-                painter = painterResource(id = leftIconRes),
-                contentDescription = "leftIcon",
-                modifier = Modifier
-                    .nonRippleClickable {
-                        onLeftIconClick()
-                    }
-                    .layoutId("icon")
-            )
+            leftIconRes?.let {
+                Icon(
+                    painter = painterResource(id = it),
+                    contentDescription = "leftIcon",
+                    modifier = Modifier
+                        .nonRippleClickable {
+                            onLeftIconClick()
+                        }
+                        .layoutId("icon")
+                )
+            }
             Text(
                 text = titleText,
                 style = if (lazyListSate?.isScrolled == true) Typography.body1 else Typography.subtitle1,
@@ -188,6 +191,8 @@ fun RoundedButton(
     round: Dp = 20.dp,
     isEnabled: Boolean = true,
     isOutline: Boolean = false,
+    horizontalPadding: Dp = 20.dp,
+    verticalPadding: Dp = 8.dp,
     buttonColor: Color = MainColor,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -203,7 +208,7 @@ fun RoundedButton(
         enabled = isEnabled,
         shape = RoundedCornerShape(round),
         border = BorderStroke(1.dp, if (isOutline) MainColor else Color.Transparent),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = verticalPadding),
         modifier = modifier
     ) {
         Text(
