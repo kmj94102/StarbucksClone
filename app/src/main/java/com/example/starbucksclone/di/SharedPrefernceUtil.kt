@@ -16,4 +16,30 @@ class SharedPreferencesUtil {
     @Singleton
     fun provedSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         context.getSharedPreferences("starbucks_clone", Context.MODE_PRIVATE)
+
+    companion object {
+        const val LoginId = "login_id"
+        const val Nickname = "nickname"
+        const val DatabaseVersion = "database_version"
+    }
 }
+
+fun SharedPreferences.setLoginId(id: String) {
+    edit().putString(SharedPreferencesUtil.LoginId, id).apply()
+}
+
+fun SharedPreferences.getLoginId() =
+    getString(SharedPreferencesUtil.LoginId, null)
+
+fun SharedPreferences.setLoginNickname(id: String) {
+    edit().putString(SharedPreferencesUtil.Nickname, id).apply()
+}
+
+fun SharedPreferences.getLoginNickname() =
+    getString(SharedPreferencesUtil.Nickname, null)
+
+fun SharedPreferences.setDatabaseVersion(version: Float) =
+    edit().putFloat(SharedPreferencesUtil.DatabaseVersion, version).apply()
+
+fun SharedPreferences.getDatabaseVersion() =
+    getFloat(SharedPreferencesUtil.DatabaseVersion, 0.0f)

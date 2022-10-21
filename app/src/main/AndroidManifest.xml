@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.starbucksclone">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".StarbucksClone"
         android:allowBackup="true"
@@ -18,7 +20,7 @@
         <activity
             android:name=".view.splash.SplashActivity"
             android:exported="true"
-            android:label="@string/title_activity_splash"
+            android:label="@string/app_name"
             android:theme="@style/Theme.StarbucksClone">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

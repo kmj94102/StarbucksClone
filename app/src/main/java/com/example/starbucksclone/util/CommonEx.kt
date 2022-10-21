@@ -1,9 +1,11 @@
 package com.example.starbucksclone.util
 
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.res.AssetManager
 import android.widget.Toast
 import androidx.annotation.StringRes
+import com.opencsv.CSVReader
+import java.io.InputStreamReader
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
@@ -45,18 +47,10 @@ fun koreanCheck(value: String): Boolean {
     return pattern.matcher(value).matches()
 }
 
-fun SharedPreferences.setLoginId(id: String) {
-    edit().putString("LoginId", id).apply()
-}
-
-fun SharedPreferences.getLoginId() =
-    getString("LoginId", null)
-
-fun SharedPreferences.setLoginNickname(id: String) {
-    edit().putString("Nickname", id).apply()
-}
-
-fun SharedPreferences.getLoginNickname() =
-    getString("Nickname", null)
-
 fun getEmoji(unicode: Int): String = String(Character.toChars(unicode))
+
+fun AssetManager.readCSV(fileName: String) =
+    CSVReader(InputStreamReader(open(fileName))).readAll()
+        .map { it.toList() }
+        .filterIndexed { index, _ -> index != 0 }
+

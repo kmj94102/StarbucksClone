@@ -1,11 +1,9 @@
 package com.example.starbucksclone.view.main.home
 
 import android.content.SharedPreferences
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.starbucksclone.util.getLoginId
-import com.example.starbucksclone.util.getLoginNickname
+import com.example.starbucksclone.di.getLoginId
+import com.example.starbucksclone.di.getLoginNickname
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

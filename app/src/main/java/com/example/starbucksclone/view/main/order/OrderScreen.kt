@@ -21,7 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.MotionTitle
@@ -31,7 +34,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OrderScreen() {
+fun OrderScreen(
+    viewModel: OrderViewModel = hiltViewModel()
+) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (title, tab, pager, info) = createRefs()
         val lazyListState = LazyListState()
@@ -51,6 +56,7 @@ fun OrderScreen() {
         /** 텝 영역 **/
         OderTab(
             pagerState = pagerState,
+            viewModel = viewModel,
             modifier = Modifier.constrainAs(tab) {
                 top.linkTo(title.bottom, 10.dp)
                 start.linkTo(parent.start)
@@ -62,6 +68,8 @@ fun OrderScreen() {
         /** 뷰페이져 **/
         OrderViewPager(
             pagerState = pagerState,
+            viewModel = viewModel,
+            lazyListState = lazyListState,
             modifier = Modifier.constrainAs(pager) {
                 top.linkTo(tab.bottom)
                 start.linkTo(parent.start)
@@ -113,6 +121,7 @@ fun OderTitle(
 @Composable
 fun OderTab(
     pagerState: PagerState,
+    viewModel: OrderViewModel,
     modifier: Modifier = Modifier
 ) {
     val tabItems = listOf("전체 메뉴", "나만의 메뉴")
@@ -194,6 +203,8 @@ fun OderTab(
 @Composable
 fun OrderViewPager(
     pagerState: PagerState,
+    viewModel: OrderViewModel,
+    lazyListState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     HorizontalPager(
@@ -203,7 +214,7 @@ fun OrderViewPager(
     ) {
         when (it) {
             0 -> {
-                AllMenu()
+                AllMenu(viewModel, lazyListState)
             }
             1 -> {
                 MyMenu()
@@ -214,29 +225,32 @@ fun OrderViewPager(
 
 /** 전체 메뉴 **/
 @Composable
-fun AllMenu(modifier: Modifier = Modifier) {
-    val select = remember { mutableStateOf(0) }
+fun AllMenu(
+    viewModel: OrderViewModel,
+    lazyListState: LazyListState,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.padding(start = 24.dp)) {
             MenuGroupItem(
-                isSelected = select.value == 0,
+                isSelected = viewModel.allMenuSelected.value == OrderViewModel.Drink,
                 text = "음료"
             ) {
-                select.value = 0
+                viewModel.event(OrderEvent.SelectGroup(OrderViewModel.Drink))
             }
 
             MenuGroupItem(
-                isSelected = select.value == 1,
+                isSelected = viewModel.allMenuSelected.value == OrderViewModel.Food,
                 text = "푸드"
             ) {
-                select.value = 1
+                viewModel.event(OrderEvent.SelectGroup(OrderViewModel.Food))
             }
 
             MenuGroupItem(
-                isSelected = select.value == 2,
+                isSelected = viewModel.allMenuSelected.value == OrderViewModel.Product,
                 text = "상품"
             ) {
-                select.value = 2
+                viewModel.event(OrderEvent.SelectGroup(OrderViewModel.Product))
             }
         }
 
@@ -245,50 +259,17 @@ fun AllMenu(modifier: Modifier = Modifier) {
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
+            state = lazyListState,
             contentPadding = PaddingValues(top = 28.dp, bottom = (57 + 28).dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            item {
-                AllMenuItem(
-                    title = "New",
-                    caption = ""
-                )
+
+            viewModel.allMenuItemList.forEach {
+                item {
+                    AllMenuItem(it)
+                }
             }
 
-            item {
-                AllMenuItem(
-                    title = "추천",
-                    caption = "Recommend"
-                )
-            }
-
-            item {
-                AllMenuItem(
-                    title = "콜드 브루",
-                    caption = "Cold Brew"
-                )
-            }
-
-            item {
-                AllMenuItem(
-                    title = "에스프레소",
-                    caption = "Espresso"
-                )
-            }
-
-            item {
-                AllMenuItem(
-                    title = "New",
-                    caption = ""
-                )
-            }
-
-            item {
-                AllMenuItem(
-                    title = "New",
-                    caption = ""
-                )
-            }
         }
     }
 }
@@ -314,8 +295,7 @@ fun MenuGroupItem(
 /** 전체 메뉴 아이템 **/
 @Composable
 fun AllMenuItem(
-    title: String,
-    caption: String?
+    menu: OrderMenuEntity
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -324,19 +304,26 @@ fun AllMenuItem(
             .padding(horizontal = 23.dp)
     ) {
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .clip(CircleShape)
                 .size(96.dp)
-                .background(MainColor)
-        )
+                .background(Color(android.graphics.Color.parseColor("#${menu.color}")))
+        ) {
+            AsyncImage(
+                model = menu.image,
+                contentDescription = "image",
+                modifier = Modifier.size(70.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Column {
-            Text(text = title, style = Typography.body2, color = Black)
-            caption?.let {
+            Text(text = menu.name, style = Typography.body2, color = Black)
+            if (menu.nameEng.isNotEmpty()) {
                 Text(
-                    text = it,
+                    text = menu.nameEng,
                     style = Typography.caption,
                     color = DarkGray,
                     modifier = Modifier.padding(top = 3.dp)

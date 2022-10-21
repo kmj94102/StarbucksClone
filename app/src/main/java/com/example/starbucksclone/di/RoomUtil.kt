@@ -20,7 +20,7 @@ class RoomUtil {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): StarbucksDatabase =
-        Room.databaseBuilder(context, StarbucksDatabase::class.java, StarbucksDatabase.Database_Name)
+        Room.databaseBuilder(context, StarbucksDatabase::class.java, StarbucksDatabase.DatabaseName)
             .build()
 
     @Provides
