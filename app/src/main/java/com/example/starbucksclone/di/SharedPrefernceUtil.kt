@@ -38,8 +38,8 @@ fun SharedPreferences.setLoginNickname(id: String) {
 fun SharedPreferences.getLoginNickname() =
     getString(SharedPreferencesUtil.Nickname, null)
 
-fun SharedPreferences.setDatabaseVersion(version: Float) =
-    edit().putFloat(SharedPreferencesUtil.DatabaseVersion, version).apply()
+fun SharedPreferences.setDatabaseVersion(type: String, version: Float) =
+    edit().putFloat("${type}_${SharedPreferencesUtil.DatabaseVersion}", version).apply()
 
-fun SharedPreferences.getDatabaseVersion() =
-    getFloat(SharedPreferencesUtil.DatabaseVersion, 0.0f)
+fun SharedPreferences.getDatabaseVersion(type: String) =
+    getFloat("${type}_${SharedPreferencesUtil.DatabaseVersion}", 0.0f)

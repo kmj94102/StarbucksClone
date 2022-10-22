@@ -5,24 +5,24 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class OrderMenuEntity(
+data class DrinkDetailEntity(
     @PrimaryKey val index: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "nameEng") val nameEng: String,
-    @ColumnInfo(name = "group") val group: String,
+    @ColumnInfo(name = "description") val description: String,
     @ColumnInfo(name = "image") val image: String,
-    @ColumnInfo(name = "color") val color: String
+    @ColumnInfo(name = "type") val type: String
 )
 
-fun createOrderMenuEntity(item: List<String>): OrderMenuEntity? =
+fun createDrinkDetailEntity(item: List<String>): DrinkDetailEntity? =
     try {
-        OrderMenuEntity(
+        DrinkDetailEntity(
             index = item[0],
             name = item[1],
             nameEng = item[2],
-            group = item[3],
+            description = item[3],
             image = item[4],
-            color = item[5]
+            type = item[5]
         )
     } catch (e: Exception) {
         null
