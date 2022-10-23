@@ -42,7 +42,7 @@ interface StarbucksDao {
     suspend fun insertDrinkDetails(detailList: List<DrinkDetailEntity>)
 
     /** 음료 상세 조회 **/
-    @Query("SELECT * FROM DrinkDetailEntity WHERE `index` in(:indexes)")
-    fun selectDrinkDetails(indexes: List<String>): Flow<List<DrinkDetailEntity>>
+    @Query("SELECT * FROM DrinkDetailEntity WHERE `index` = :index")
+    fun selectDrinkDetail(index: String): Flow<List<DrinkDetailEntity>>
 
 }

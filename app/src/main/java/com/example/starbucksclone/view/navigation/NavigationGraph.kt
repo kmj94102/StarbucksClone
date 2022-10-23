@@ -11,6 +11,7 @@ import com.example.starbucksclone.view.login.sign_up.complete.SignUpCompleteScre
 import com.example.starbucksclone.view.login.sign_up.SignUpScreen
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
+import com.example.starbucksclone.view.main.order.detail.OrderDetailScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -65,6 +66,16 @@ fun NavigationGraph() {
             val isPush = entry.arguments?.getBoolean("isPush") ?: false
             val nickname = entry.arguments?.getString("nickname") ?: ""
             SignUpCompleteScreen(routAction = routAction, isPush = isPush, nickname = nickname)
+        }
+        /** Order 상세화면 **/
+        customComposable(
+            route = "${RoutAction.OrderDetail}/{group}/{name}",
+            arguments = listOf(
+                navArgument("group") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType },
+            )
+        ) {
+            OrderDetailScreen(routAction = routAction)
         }
     }
 

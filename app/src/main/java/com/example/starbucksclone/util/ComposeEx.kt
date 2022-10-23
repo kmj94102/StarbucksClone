@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun Modifier.nonRippleClickable(
@@ -16,6 +17,10 @@ fun Modifier.nonRippleClickable(
 ) {
     onClick()
 }
+
+@Composable
+fun getColorFromHexCode(code: String) =
+    Color(android.graphics.Color.parseColor("#$code"))
 
 val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0

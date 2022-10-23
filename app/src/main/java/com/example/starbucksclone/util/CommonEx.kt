@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.opencsv.CSVReader
 import java.io.InputStreamReader
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
@@ -54,3 +55,4 @@ fun AssetManager.readCSV(fileName: String) =
         .map { it.toList() }
         .filterIndexed { index, _ -> index != 0 }
 
+fun Int.priceFormat() = DecimalFormat("###,###").format(this).plus("원")

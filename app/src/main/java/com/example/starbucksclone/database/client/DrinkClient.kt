@@ -3,6 +3,7 @@ package com.example.starbucksclone.database.client
 import com.example.starbucksclone.database.StarbucksDao
 import com.example.starbucksclone.database.entity.DrinkDetailEntity
 import com.example.starbucksclone.database.entity.DrinkEntity
+import com.example.starbucksclone.database.entity.OrderMenuEntity
 import javax.inject.Inject
 
 class DrinkClient @Inject constructor(
@@ -39,5 +40,9 @@ class DrinkClient @Inject constructor(
             failureListener()
         }
     }
+
+    suspend fun selectDrinks(
+        group: String,
+    ) = dao.selectDrinks(group = group)
 
 }

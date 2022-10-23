@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.OrderMenuEntity
@@ -29,12 +30,15 @@ import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.MotionTitle
 import com.example.starbucksclone.view.common.RoundedButton
+import com.example.starbucksclone.view.main.Screen
+import com.example.starbucksclone.view.navigation.RoutAction
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OrderScreen(
+    routAction: RoutAction,
     viewModel: OrderViewModel = hiltViewModel()
 ) {
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -70,6 +74,7 @@ fun OrderScreen(
             pagerState = pagerState,
             viewModel = viewModel,
             lazyListState = lazyListState,
+            routAction = routAction,
             modifier = Modifier.constrainAs(pager) {
                 top.linkTo(tab.bottom)
                 start.linkTo(parent.start)
@@ -205,6 +210,7 @@ fun OrderViewPager(
     pagerState: PagerState,
     viewModel: OrderViewModel,
     lazyListState: LazyListState,
+    routAction: RoutAction,
     modifier: Modifier = Modifier
 ) {
     HorizontalPager(
@@ -214,7 +220,7 @@ fun OrderViewPager(
     ) {
         when (it) {
             0 -> {
-                AllMenu(viewModel, lazyListState)
+                AllMenu(viewModel, lazyListState, routAction)
             }
             1 -> {
                 MyMenu()
@@ -228,6 +234,7 @@ fun OrderViewPager(
 fun AllMenu(
     viewModel: OrderViewModel,
     lazyListState: LazyListState,
+    routAction: RoutAction,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -266,7 +273,9 @@ fun AllMenu(
 
             viewModel.allMenuItemList.forEach {
                 item {
-                    AllMenuItem(it)
+                    AllMenuItem(it) { group, name ->
+                        routAction.goToOrderDetail(group, name)
+                    }
                 }
             }
 
@@ -295,13 +304,15 @@ fun MenuGroupItem(
 /** 전체 메뉴 아이템 **/
 @Composable
 fun AllMenuItem(
-    menu: OrderMenuEntity
+    menu: OrderMenuEntity,
+    onClick: (String, String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 23.dp)
+            .nonRippleClickable { onClick(menu.group, menu.name.replace("/", "@")) }
     ) {
         Box(
             contentAlignment = Alignment.Center,

@@ -27,6 +27,9 @@ class RoutAction(private val navController: NavController) {
             popupBackStack()
         }
     }
+    fun goToOrderDetail(group: String, name: String) {
+        navController.navigate("$OrderDetail/$group/$name")
+    }
 
     companion object {
         const val Main = "main"
@@ -34,6 +37,7 @@ class RoutAction(private val navController: NavController) {
         const val Terms = "terms"
         const val SignUp = "sign_up"
         const val SignUpComplete = "sign_up_complete"
+        const val OrderDetail = "order_detail"
     }
 
 }

@@ -33,4 +33,8 @@ class DrinkRepository @Inject constructor(
         )
     }
 
+    suspend fun selectDrinks(
+        group: String,
+    ) = client.selectDrinks(group)
+
 }
