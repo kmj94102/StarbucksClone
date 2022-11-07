@@ -1,16 +1,15 @@
 package com.example.starbucksclone.database.client
 
 import com.example.starbucksclone.database.StarbucksDao
-import com.example.starbucksclone.database.entity.DrinkDetailEntity
-import com.example.starbucksclone.database.entity.DrinkEntity
-import com.example.starbucksclone.database.entity.OrderMenuEntity
+import com.example.starbucksclone.database.entity.MenuDetailEntity
+import com.example.starbucksclone.database.entity.MenuEntity
 import javax.inject.Inject
 
-class DrinkClient @Inject constructor(
+class MenuClient @Inject constructor(
     private val dao: StarbucksDao
 ) {
     suspend fun insertDrink(
-        drinkList: List<DrinkEntity>,
+        drinkList: List<MenuEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
@@ -26,7 +25,7 @@ class DrinkClient @Inject constructor(
     }
 
     suspend fun insertDrinkDetails(
-        detailList: List<DrinkDetailEntity>,
+        detailList: List<MenuDetailEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
@@ -41,8 +40,13 @@ class DrinkClient @Inject constructor(
         }
     }
 
-    suspend fun selectDrinks(
+    fun selectDrinks(
         group: String,
     ) = dao.selectDrinks(group = group)
+
+    fun selectDrinkDetail(
+        firstIndex: String,
+        secondIndex: String
+    ) = dao.selectDrinkDetail(firstIndex = firstIndex, secondIndex = secondIndex)
 
 }

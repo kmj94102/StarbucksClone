@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.starbucksclone.database.entity.DrinkDetailEntity
-import com.example.starbucksclone.database.entity.DrinkEntity
+import com.example.starbucksclone.database.entity.MenuDetailEntity
+import com.example.starbucksclone.database.entity.MenuEntity
 import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.database.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
@@ -31,18 +31,18 @@ interface StarbucksDao {
 
     /** 음료 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrinks(drinkList: List<DrinkEntity>)
+    suspend fun insertDrinks(drinkList: List<MenuEntity>)
 
     /** 음료 조회 **/
-    @Query("SELECT * FROM DrinkEntity WHERE `group` = :group")
-    fun selectDrinks(group: String): Flow<List<DrinkEntity>>
+    @Query("SELECT * FROM MenuEntity WHERE `group` = :group")
+    fun selectDrinks(group: String): Flow<List<MenuEntity>>
 
     /** 음료 상세 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrinkDetails(detailList: List<DrinkDetailEntity>)
+    suspend fun insertDrinkDetails(detailList: List<MenuDetailEntity>)
 
     /** 음료 상세 조회 **/
-    @Query("SELECT * FROM DrinkDetailEntity WHERE `index` = :index")
-    fun selectDrinkDetail(index: String): Flow<List<DrinkDetailEntity>>
+    @Query("SELECT * FROM MenuDetailEntity WHERE `index` = :firstIndex OR `index` = :secondIndex")
+    fun selectDrinkDetail(firstIndex: String, secondIndex: String): Flow<List<MenuDetailEntity>>
 
 }

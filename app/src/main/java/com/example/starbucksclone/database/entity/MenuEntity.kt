@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class DrinkEntity(
+data class MenuEntity(
     @PrimaryKey val name: String,
     @ColumnInfo(name = "nameEng") val nameEng: String,
     @ColumnInfo(name = "indexes") val indexes: String,
@@ -19,12 +19,13 @@ data class DrinkEntity(
     @ColumnInfo(name = "isBest") val isBest: Boolean,
     @ColumnInfo(name = "isNew") val isNew: Boolean,
     @ColumnInfo(name = "isRecommendation") val isRecommendation: Boolean,
-    @ColumnInfo(name = "group") val group: String
+    @ColumnInfo(name = "group") val group: String,
+    @ColumnInfo(name = "orderGroup") val orderGroup: String
 )
 
-fun createDrinkEntity(item: List<String>): DrinkEntity? =
+fun createDrinkEntity(item: List<String>): MenuEntity? =
     try {
-        DrinkEntity(
+        MenuEntity(
             indexes = item[0],
             name = item[1],
             nameEng = item[2],
@@ -38,9 +39,9 @@ fun createDrinkEntity(item: List<String>): DrinkEntity? =
             isNew = item[10] == "true",
             isRecommendation = item[11] == "true",
             group = item[12],
+            orderGroup = item[13]
         )
     } catch (e: Exception) {
-        Log.e("+++++", "${e.message}")
         e.printStackTrace()
         null
     }

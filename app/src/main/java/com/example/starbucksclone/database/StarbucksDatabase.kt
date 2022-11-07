@@ -2,8 +2,8 @@ package com.example.starbucksclone.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.starbucksclone.database.entity.DrinkDetailEntity
-import com.example.starbucksclone.database.entity.DrinkEntity
+import com.example.starbucksclone.database.entity.MenuDetailEntity
+import com.example.starbucksclone.database.entity.MenuEntity
 import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.database.entity.UserEntity
 import com.example.starbucksclone.util.Constants
@@ -12,8 +12,8 @@ import com.example.starbucksclone.util.Constants
     entities = [
         UserEntity::class,
         OrderMenuEntity::class,
-        DrinkEntity::class,
-        DrinkDetailEntity::class
+        MenuEntity::class,
+        MenuDetailEntity::class
     ],
     version = 1
 )

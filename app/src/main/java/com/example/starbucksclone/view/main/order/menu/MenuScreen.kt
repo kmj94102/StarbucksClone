@@ -1,4 +1,4 @@
-package com.example.starbucksclone.view.main.order.detail
+package com.example.starbucksclone.view.main.order.menu
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.starbucksclone.database.entity.DrinkEntity
+import com.example.starbucksclone.database.entity.MenuEntity
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.Typography
 import com.example.starbucksclone.util.getColorFromHexCode
@@ -26,9 +26,9 @@ import com.example.starbucksclone.view.common.MotionTitle
 import com.example.starbucksclone.view.navigation.RoutAction
 
 @Composable
-fun OrderDetailScreen(
+fun MenuScreen(
     routAction: RoutAction,
-    viewModel: OrderDetailViewModel = hiltViewModel()
+    viewModel: MenuViewModel = hiltViewModel()
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -48,8 +48,8 @@ fun OrderDetailScreen(
         ) {
             viewModel.list.forEach {
                 item {
-                    OrderDetailItem(it) {
-                        it.indexes
+                    MenuItem(it) {
+                        routAction.goToOrderItem(it.indexes, it.type, it.color)
                     }
                 }
             }
@@ -58,9 +58,9 @@ fun OrderDetailScreen(
 }
 
 @Composable
-fun OrderDetailItem(
-    drinkEntity: DrinkEntity,
-    onClick: (DrinkEntity) -> Unit
+fun MenuItem(
+    drinkEntity: MenuEntity,
+    onClick: (MenuEntity) -> Unit
 ) {
     val style = TextStyle(
         fontSize = 14.sp,

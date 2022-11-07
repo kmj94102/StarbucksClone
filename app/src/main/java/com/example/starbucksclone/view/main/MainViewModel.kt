@@ -9,7 +9,7 @@ import com.example.starbucksclone.database.StarbucksDatabase
 import com.example.starbucksclone.database.entity.*
 import com.example.starbucksclone.di.getDatabaseVersion
 import com.example.starbucksclone.di.setDatabaseVersion
-import com.example.starbucksclone.repository.DrinkRepository
+import com.example.starbucksclone.repository.MenuRepository
 import com.example.starbucksclone.repository.OrderMenuRepository
 import com.example.starbucksclone.util.Constants
 import com.example.starbucksclone.util.readCSV
@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
     private val assetManager: AssetManager,
     private val pref: SharedPreferences,
     private val repository: OrderMenuRepository,
-    private val drinkRepository: DrinkRepository,
+    private val drinkRepository: MenuRepository,
 ) : ViewModel() {
 
     init {
@@ -38,7 +38,7 @@ class MainViewModel @Inject constructor(
         if (pref.getDatabaseVersion(Constants.Drink)
             < StarbucksDatabase.currentVersion(Constants.Drink)
         ) {
-            val drinkList = assetManager.readCSV(Constants.DrinkCSV).mapNotNull {
+            val drinkList = assetManager.readCSV(Constants.MenuCSV).mapNotNull {
                 createDrinkEntity(it)
             }
             insertDrink(drinkList)
@@ -48,7 +48,7 @@ class MainViewModel @Inject constructor(
         if (pref.getDatabaseVersion(Constants.DrinkDetail)
             < StarbucksDatabase.currentVersion(Constants.DrinkDetail)
         ) {
-            val drinkDetailList = assetManager.readCSV(Constants.DrinkDetailCSV).mapNotNull {
+            val drinkDetailList = assetManager.readCSV(Constants.MenuDetailCSV).mapNotNull {
                 createDrinkDetailEntity(it)
             }
             insertDrinkDetail(drinkDetailList)
@@ -75,7 +75,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun insertDrink(
-        drinkList: List<DrinkEntity>
+        drinkList: List<MenuEntity>
     ) = viewModelScope.launch {
         drinkRepository.insertDrinks(
             drinkList = drinkList,
@@ -93,7 +93,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun insertDrinkDetail(
-        detailList: List<DrinkDetailEntity>
+        detailList: List<MenuDetailEntity>
     ) = viewModelScope.launch {
         drinkRepository.insertDrinkDetails(
             detailList = detailList,

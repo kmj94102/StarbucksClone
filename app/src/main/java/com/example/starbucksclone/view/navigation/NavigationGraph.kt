@@ -11,7 +11,8 @@ import com.example.starbucksclone.view.login.sign_up.complete.SignUpCompleteScre
 import com.example.starbucksclone.view.login.sign_up.SignUpScreen
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
-import com.example.starbucksclone.view.main.order.detail.OrderDetailScreen
+import com.example.starbucksclone.view.main.order.menu.MenuScreen
+import com.example.starbucksclone.view.main.order.menu_detail.MenuDetailScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -75,7 +76,18 @@ fun NavigationGraph() {
                 navArgument("name") { type = NavType.StringType },
             )
         ) {
-            OrderDetailScreen(routAction = routAction)
+            MenuScreen(routAction = routAction)
+        }
+        /** 상품 주문 화면 **/
+        customComposable(
+            route = "${RoutAction.OrderItem}/{indexes}?{type},{color}",
+            arguments = listOf(
+                navArgument("indexes") { type = NavType.StringType },
+                navArgument("type") { type = NavType.StringType },
+                navArgument("color") { type = NavType.StringType },
+            )
+        ) {
+            MenuDetailScreen(routAction = routAction)
         }
     }
 
