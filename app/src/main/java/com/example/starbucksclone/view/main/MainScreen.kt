@@ -95,7 +95,7 @@ fun MainScreen(
                 HomeScreen()
             }
             composable(Screen.Pay.route) {
-                PayScreen()
+                PayScreen(routAction)
             }
             composable(Screen.Order.route) {
                 OrderScreen(routAction)

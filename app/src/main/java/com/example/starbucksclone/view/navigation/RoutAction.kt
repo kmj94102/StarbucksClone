@@ -33,6 +33,9 @@ class RoutAction(private val navController: NavController) {
     fun goToOrderItem(indexes: String, type: String, color: String) {
         navController.navigate("$OrderItem/$indexes?$type,$color")
     }
+    fun goToCardRegistration() {
+        navController.navigate(CardRegistration)
+    }
 
     companion object {
         const val Main = "main"
@@ -42,6 +45,7 @@ class RoutAction(private val navController: NavController) {
         const val SignUpComplete = "sign_up_complete"
         const val OrderDetail = "order_detail"
         const val OrderItem = "order_item"
+        const val CardRegistration = "card_registration"
     }
 
 }

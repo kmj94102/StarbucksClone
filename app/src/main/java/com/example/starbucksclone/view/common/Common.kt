@@ -18,11 +18,13 @@ import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +39,11 @@ import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.isScrolled
 import com.example.starbucksclone.util.nonRippleClickable
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * 상단 타이틀
@@ -267,77 +274,108 @@ fun CommonTextField(
     hint: String,
     isLabel: Boolean = false,
     enabled: Boolean = true,
+    isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     focusedIndicatorColor: Color = MainColor,
     unfocusedIndicatorColor: Color = Gray,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Done,
     keyboardActions: KeyboardActions = KeyboardActions(),
+    trailingIcons: List<Int> = listOf(),
+    supportText: String = "",
+    errorText: String = "",
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
     var isFocused by remember { mutableStateOf(false) }
-    val color = if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+    val color = if (isError) HotColor else if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
 
-    BasicTextField(
-        value = value,
-        modifier = modifier
-            .indicatorLine(
-                enabled,
-                false,
-                interactionSource,
-                TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = color
+    Column(modifier = modifier) {
+        BasicTextField(
+            value = value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .indicatorLine(
+                    enabled,
+                    false,
+                    interactionSource,
+                    TextFieldDefaults.textFieldColors(
+                        unfocusedIndicatorColor = color
+                    )
                 )
-            )
-            .focusRequester(focusRequester = focusRequester)
-            .onFocusChanged {
-                isFocused = it.isFocused
-            },
-        readOnly = false,
-        singleLine = true,
-        onValueChange = onValueChange,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        visualTransformation = visualTransformation,
-        enabled = enabled,
-        keyboardActions = keyboardActions,
-        textStyle = Typography.body2,
-        cursorBrush = SolidColor(MainColor),
-        decorationBox = { innerTextField ->
-            TextFieldDefaults.TextFieldDecorationBox(
-                value = value,
-                innerTextField = innerTextField,
-                enabled = true,
-                singleLine = true,
-                visualTransformation = VisualTransformation.None,
-                interactionSource = interactionSource,
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
-                placeholder = if (isLabel.not()) {
-                    {
-                        Text(
-                            text = hint,
-                            style = Typography.body1,
-                            fontSize = 14.sp,
-                            color = DarkGray
-                        )
-                    }
-                } else {
-                    null
+                .focusRequester(focusRequester = focusRequester)
+                .onFocusChanged {
+                    isFocused = it.isFocused
                 },
-                label = if (isLabel) {
-                    {
-                        Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+            readOnly = false,
+            singleLine = true,
+            onValueChange = onValueChange,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            visualTransformation = visualTransformation,
+            enabled = enabled,
+            keyboardActions = keyboardActions,
+            textStyle = Typography.body2,
+            cursorBrush = SolidColor(MainColor),
+            decorationBox = @Composable { innerTextField ->
+                TextFieldDefaults.TextFieldDecorationBox(
+                    value = value,
+                    innerTextField = innerTextField,
+                    enabled = true,
+                    singleLine = true,
+                    isError = isError,
+                    visualTransformation = VisualTransformation.None,
+                    interactionSource = interactionSource,
+                    contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
+                    placeholder = if (isLabel.not()) {
+                        {
+                            Text(
+                                text = hint,
+                                style = Typography.body1,
+                                fontSize = 14.sp,
+                                color = DarkGray
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    label = if (isLabel) {
+                        {
+                            Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                        }
+                    } else {
+                        null
+                    },
+                    trailingIcon = {
+                        Row {
+                            trailingIcons.forEach {
+                                when (it) {
+                                    R.drawable.ic_care -> {
+                                        if (isError) Image(
+                                            painter = painterResource(id = it),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    else -> Image(
+                                        painter = painterResource(id = it),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
                     }
-                } else {
-                    null
-                }
-            )
+                )
+            }
+        )
+        if (isError) {
+            Text(text = errorText, style = Typography.caption, color = HotColor, modifier = Modifier.padding(top = 9.dp))
+        } else {
+            Text(text = supportText, style = Typography.caption, modifier = Modifier.padding(top = 9.dp))
         }
-    )
+    }
 }
 
 /**
@@ -386,6 +424,68 @@ fun CommonCheckBox(
                     onNextClick?.invoke()
                 }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun CustomTabRow(
+    pagerState: PagerState,
+    tabItems: List<String>,
+    coroutineScope: CoroutineScope
+) {
+    Surface(
+        shadowElevation = 6.dp,
+        modifier = Modifier
+            .background(White)
+            .padding(bottom = 6.dp)
+            .drawWithContent {
+                val paddingPx = 6.dp.toPx()
+                clipRect(
+                    left = -paddingPx,
+                    top = 0f,
+                    right = size.width + paddingPx,
+                    bottom = size.height + paddingPx
+                ) {
+                    this@drawWithContent.drawContent()
+                }
+            }
+    ) {
+        androidx.compose.material.ScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            backgroundColor = White,
+            indicator = {
+                TabRowDefaults.Indicator(
+                    modifier = Modifier
+                        .pagerTabIndicatorOffset(pagerState, it),
+                    color = MainColor,
+                )
+            },
+            divider = {},
+            edgePadding = 0.dp
+        ) {
+            tabItems.forEachIndexed { index, value ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = { },
+                    unselectedContentColor = DarkGray,
+                    selectedContentColor = Black
+                ) {
+                    Text(
+                        text = value,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(vertical = 14.dp, horizontal = 23.dp)
+                            .nonRippleClickable {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                    )
+                }
+            }
         }
     }
 }

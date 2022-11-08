@@ -20,19 +20,6 @@ fun Context.toast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
 
-private const val Time_Format = "%02d:%02d"
-fun Long.formatTime(): String = String.format(
-    Time_Format,
-    TimeUnit.MILLISECONDS.toMinutes(this),
-    TimeUnit.MILLISECONDS.toSeconds(this) % 60
-)
-
-fun today(): String {
-    val format = DateTimeFormatter.ofPattern("yyyy년 MM월 dd")
-    val date = LocalDateTime.now()
-    return date.format(format)
-}
-
 fun specialCharacterRestrictions(source: String): Boolean {
     return try {
         val pattern = Pattern.compile("^[0-9]*$")
@@ -47,8 +34,6 @@ fun koreanCheck(value: String): Boolean {
     val pattern = Pattern.compile("^[가-힣]*\$")
     return pattern.matcher(value).matches()
 }
-
-fun getEmoji(unicode: Int): String = String(Character.toChars(unicode))
 
 fun AssetManager.readCSV(fileName: String) =
     CSVReader(InputStreamReader(open(fileName))).readAll()
