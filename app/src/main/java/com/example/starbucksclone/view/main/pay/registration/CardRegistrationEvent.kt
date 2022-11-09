@@ -7,4 +7,7 @@ sealed class CardRegistrationEvent {
         val info: String
     ): CardRegistrationEvent()
 
+    object AgreeTermsCheck: CardRegistrationEvent()
+    object CardRegistration: CardRegistrationEvent()
+
 }

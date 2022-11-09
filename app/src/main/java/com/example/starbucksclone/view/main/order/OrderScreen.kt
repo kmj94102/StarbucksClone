@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.OrderMenuEntity
@@ -30,7 +29,6 @@ import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.MotionTitle
 import com.example.starbucksclone.view.common.RoundedButton
-import com.example.starbucksclone.view.main.Screen
 import com.example.starbucksclone.view.navigation.RoutAction
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch

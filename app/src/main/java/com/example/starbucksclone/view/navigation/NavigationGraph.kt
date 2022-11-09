@@ -94,7 +94,7 @@ fun NavigationGraph() {
         customComposable(
             route = RoutAction.CardRegistration
         ) {
-            CardRegistrationScreen()
+            CardRegistrationScreen(routAction)
         }
     }
 

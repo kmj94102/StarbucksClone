@@ -2,10 +2,7 @@ package com.example.starbucksclone.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.starbucksclone.database.entity.MenuDetailEntity
-import com.example.starbucksclone.database.entity.MenuEntity
-import com.example.starbucksclone.database.entity.OrderMenuEntity
-import com.example.starbucksclone.database.entity.UserEntity
+import com.example.starbucksclone.database.entity.*
 import com.example.starbucksclone.util.Constants
 
 @Database(
@@ -13,7 +10,9 @@ import com.example.starbucksclone.util.Constants
         UserEntity::class,
         OrderMenuEntity::class,
         MenuEntity::class,
-        MenuDetailEntity::class
+        MenuDetailEntity::class,
+        CardEntity::class,
+        UsageHistoryEntity::class
     ],
     version = 1
 )

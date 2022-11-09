@@ -4,10 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.starbucksclone.database.entity.MenuDetailEntity
-import com.example.starbucksclone.database.entity.MenuEntity
-import com.example.starbucksclone.database.entity.OrderMenuEntity
-import com.example.starbucksclone.database.entity.UserEntity
+import com.example.starbucksclone.database.entity.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -44,5 +41,9 @@ interface StarbucksDao {
     /** 음료 상세 조회 **/
     @Query("SELECT * FROM MenuDetailEntity WHERE `index` = :firstIndex OR `index` = :secondIndex")
     fun selectDrinkDetail(firstIndex: String, secondIndex: String): Flow<List<MenuDetailEntity>>
+
+    /** 카드 등록 **/
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCard(cardEntity: CardEntity)
 
 }
