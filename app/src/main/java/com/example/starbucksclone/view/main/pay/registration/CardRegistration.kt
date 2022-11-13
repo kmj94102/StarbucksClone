@@ -26,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.CardRegistrationInfo
 import com.example.starbucksclone.ui.theme.*
@@ -37,6 +38,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun CardRegistrationScreen(
@@ -58,7 +61,10 @@ fun CardRegistrationScreen(
         is CardRegistrationViewModel.Status.Loading -> {}
         is CardRegistrationViewModel.Status.Success -> {
             context.toast("카드 등록이 완료되었습니다.")
-            routAction.popupBackStack()
+            viewModel.viewModelScope.launch {
+                delay(500)
+                routAction.popupBackStack()
+            }
         }
         is CardRegistrationViewModel.Status.Failure -> {
             context.toast("카드 등록에 실패하였습니다.")

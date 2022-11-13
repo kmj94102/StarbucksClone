@@ -1,7 +1,9 @@
 package com.example.starbucksclone.util
 
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val Time_Format = "%02d:%02d"
@@ -15,6 +17,12 @@ fun today(): String {
     val format = DateTimeFormatter.ofPattern("yyyy년 MM월 dd")
     val date = LocalDateTime.now()
     return date.format(format)
+}
+
+fun Long.toPriceFormat(): String = DecimalFormat("###,###").format(this).plus("원")
+
+fun String.toSecretFormat(): String {
+    return "****_****_**${substring(10, 12)}-${substring(12, lastIndex+1)}"
 }
 
 fun getEmoji(unicode: Int): String = String(Character.toChars(unicode))
@@ -47,6 +55,6 @@ fun getStarbucksCardImage(): String {
         "https://image.istarbucks.co.kr/cardImg/20211213/008667_WEB.png",
         "https://image.istarbucks.co.kr/cardImg/20211213/008666_WEB.png"
     )
-
-    return list.random()
+    val random = Random()
+    return list[random.nextInt(list.size)]
 }

@@ -20,4 +20,7 @@ class CardClient @Inject constructor(
         failureListener()
     }
 
+    /** 카드 리스트 조회 **/
+    fun selectCardList() = dao.selectCardList()
+
 }

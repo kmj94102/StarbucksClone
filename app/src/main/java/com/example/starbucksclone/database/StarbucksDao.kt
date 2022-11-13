@@ -46,4 +46,8 @@ interface StarbucksDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCard(cardEntity: CardEntity)
 
+    /** 카드 리스트 조회 **/
+    @Query("SELECT * FROM CardEntity")
+    fun selectCardList(): Flow<List<CardEntity>>
+
 }

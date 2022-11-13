@@ -29,4 +29,6 @@ class CardRepository @Inject constructor(
         )
     }
 
+    fun selectCardList() = client.selectCardList()
+
 }

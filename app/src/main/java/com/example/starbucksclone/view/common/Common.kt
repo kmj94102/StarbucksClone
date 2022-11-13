@@ -1,18 +1,23 @@
 package com.example.starbucksclone.view.common
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
@@ -27,6 +32,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -208,7 +214,6 @@ fun RoundedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = if (isOutline) Color.Transparent else buttonColor,
-            contentColor = textColor,
             disabledContainerColor = Gray,
             disabledContentColor = White
         ),
@@ -221,6 +226,7 @@ fun RoundedButton(
         Text(
             text = text,
             style = Typography.body1,
+            color = textColor,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
@@ -327,6 +333,9 @@ fun CommonTextField(
                     enabled = true,
                     singleLine = true,
                     isError = isError,
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = White
+                    ),
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
                     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
@@ -466,11 +475,15 @@ fun CustomTabRow(
             edgePadding = 0.dp
         ) {
             tabItems.forEachIndexed { index, value ->
-                Tab(
+                CommonTab(
                     selected = pagerState.currentPage == index,
-                    onClick = { },
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
                     unselectedContentColor = DarkGray,
-                    selectedContentColor = Black
+                    selectedContentColor = Black,
                 ) {
                     Text(
                         text = value,
@@ -478,14 +491,72 @@ fun CustomTabRow(
                         fontSize = 14.sp,
                         modifier = Modifier
                             .padding(vertical = 14.dp, horizontal = 23.dp)
-                            .nonRippleClickable {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            }
                     )
                 }
             }
         }
     }
+}
+
+@Composable
+fun CommonTab(
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    selectedContentColor: Color = LocalContentColor.current,
+    unselectedContentColor: Color = selectedContentColor,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable ColumnScope.() -> Unit
+) {
+
+    TabTransition(selectedContentColor, unselectedContentColor, selected) {
+        Column(
+            modifier = modifier
+                .selectable(
+                    selected = selected,
+                    onClick = onClick,
+                    enabled = enabled,
+                    role = Role.Tab,
+                    interactionSource = interactionSource,
+                    indication = null
+                )
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            content = content
+        )
+    }
+}
+
+@Composable
+private fun TabTransition(
+    activeColor: Color,
+    inactiveColor: Color,
+    selected: Boolean,
+    content: @Composable () -> Unit
+) {
+    val transition = updateTransition(selected, label = "")
+    val color by transition.animateColor(
+        transitionSpec = {
+            if (false isTransitioningTo true) {
+                tween(
+                    durationMillis = 150,
+                    delayMillis = 100,
+                    easing = LinearEasing
+                )
+            } else {
+                tween(
+                    durationMillis = 100,
+                    easing = LinearEasing
+                )
+            }
+        }, label = ""
+    ) {
+        if (it) activeColor else inactiveColor
+    }
+    CompositionLocalProvider(
+        LocalContentColor provides color,
+        content = content
+    )
 }
