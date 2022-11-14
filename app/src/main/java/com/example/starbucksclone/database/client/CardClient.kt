@@ -23,4 +23,21 @@ class CardClient @Inject constructor(
     /** 카드 리스트 조회 **/
     fun selectCardList() = dao.selectCardList()
 
+    /** 대표카드 업데이트 **/
+    suspend fun updateRepresentative(
+        cardNumber: String,
+        isRepresentative: Boolean,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        dao.updateRepresentative(
+            cardNumber = cardNumber,
+            isRepresentative = isRepresentative
+        )
+        successListener()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
 }

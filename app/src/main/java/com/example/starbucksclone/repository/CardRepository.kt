@@ -31,4 +31,18 @@ class CardRepository @Inject constructor(
 
     fun selectCardList() = client.selectCardList()
 
+    suspend fun updateRepresentative(
+        cardNumber: String,
+        isRepresentative: Boolean,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.updateRepresentative(
+            cardNumber = cardNumber,
+            isRepresentative = isRepresentative,
+            successListener = successListener,
+            failureListener = failureListener
+        )
+    }
+
 }

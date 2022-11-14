@@ -35,7 +35,17 @@ class PayViewModel @Inject constructor(
     private fun selectCardList() {
         _cardList.clear()
         repository.selectCardList()
-            .onEach { _cardList.addAll(it) }
+            .onEach {
+                _cardList.addAll(it)
+                if (_cardList.none { card -> card.representative }) {
+                    repository.updateRepresentative(
+                        cardNumber = _cardList[0].cardNumber,
+                        isRepresentative = true,
+                        successListener = {},
+                        failureListener = {}
+                    )
+                }
+            }
             .catch { _cardList.clear() }
             .launchIn(viewModelScope)
     }

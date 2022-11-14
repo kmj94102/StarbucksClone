@@ -19,3 +19,10 @@ data class CardRegistrationInfo(
     val cardNumber: String = "",
     val pinNumber: String = ""
 )
+
+data class CardListInfo(
+    val cardNumber: String,
+    val name: String,
+    val balance: Long,
+    val image: String
+)

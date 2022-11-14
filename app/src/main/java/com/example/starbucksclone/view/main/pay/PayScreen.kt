@@ -64,7 +64,7 @@ fun PayScreen(
                         .align(Alignment.TopEnd)
                         .padding(top = 7.dp, end = 17.dp)
                         .nonRippleClickable {
-                            routAction.goToCardRegistration()
+                            routAction.goToCardList()
                         }
                 )
             }

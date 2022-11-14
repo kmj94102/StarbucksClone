@@ -102,6 +102,8 @@ fun Title(
  * 모션 상단 타이틀 : 스크롤 상태에 따라 움직이는 타이틀의 위치가 변하는 경우 사용
  * @param leftIconRes 좌측 아이콘 이미지 res
  * @param onLeftIconClick 좌측 아이콘 클릭 리스너
+ * @param rightIconRes 우측 아이콘 이미지 res
+ * @param onRightIconClick 우측 아이콘 클릭 리스너
  * @param titleText 상단 타이틀
  * @param lazyListSate 스크롤 상태
  * @param modifier Modifier
@@ -110,7 +112,9 @@ fun Title(
 @Composable
 fun MotionTitle(
     @DrawableRes leftIconRes: Int? = R.drawable.ic_back,
+    @DrawableRes rightIconRes: Int? = null,
     onLeftIconClick: () -> Unit = {},
+    onRightIconClick: () -> Unit = {},
     titleText: String = "",
     lazyListSate: LazyListState? = null,
     modifier: Modifier = Modifier
@@ -136,6 +140,10 @@ fun MotionTitle(
                         start: ['parent', 'start', 7],
                         top: ['parent', 'top', 7]
                     },
+                    rightIcon: {
+                        end: ['parent', 'end', 17],
+                        top: ['parent', 'top', 7]
+                    },
                     title: {
                         start: ['parent', 'start', 16],
                         top: ['parent', 'top', 50]
@@ -152,6 +160,10 @@ fun MotionTitle(
                         top: ['parent', 'top', 7],
                         bottom: ['parent', 'bottom', 7]
                     },
+                    rightIcon: {
+                        end: ['parent', 'end', 17],
+                        top: ['parent', 'top', 7]
+                    },
                     title: {
                         start: ['parent', 'start', 0],
                         end: ['parent', 'end', 0],
@@ -167,7 +179,7 @@ fun MotionTitle(
                 .background(White)
         ) {
             leftIconRes?.let {
-                Icon(
+                Image(
                     painter = painterResource(id = it),
                     contentDescription = "leftIcon",
                     modifier = Modifier
@@ -175,6 +187,17 @@ fun MotionTitle(
                             onLeftIconClick()
                         }
                         .layoutId("icon")
+                )
+            }
+            rightIconRes?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = "rightIcon",
+                    modifier = Modifier
+                        .nonRippleClickable {
+                            onRightIconClick()
+                        }
+                        .layoutId("rightIcon")
                 )
             }
             Text(
