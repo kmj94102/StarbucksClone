@@ -39,6 +39,9 @@ class RoutAction(private val navController: NavController) {
     fun goToCardList() {
         navController.navigate(CardList)
     }
+    fun goToCardDetail(cardNumber: String) {
+        navController.navigate("$CardDetail/$cardNumber")
+    }
 
     companion object {
         const val Main = "main"
@@ -50,6 +53,7 @@ class RoutAction(private val navController: NavController) {
         const val OrderItem = "order_item"
         const val CardRegistration = "card_registration"
         const val CardList = "card_list"
+        const val CardDetail = "card_detail"
     }
 
 }

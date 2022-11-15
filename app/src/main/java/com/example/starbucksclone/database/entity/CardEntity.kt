@@ -12,7 +12,14 @@ data class CardEntity(
     @ColumnInfo(name = "cardImage") val cardImage: String,
     @ColumnInfo(name = "balance") val balance: Long,
     @ColumnInfo(name = "representative") val representative: Boolean,
-)
+) {
+    fun mapper() = CardInfo(
+        cardNumber = cardNumber,
+        name = cardName,
+        balance = balance,
+        image = cardImage
+    )
+}
 
 data class CardRegistrationInfo(
     val cardName: String = "",
@@ -20,9 +27,9 @@ data class CardRegistrationInfo(
     val pinNumber: String = ""
 )
 
-data class CardListInfo(
-    val cardNumber: String,
-    val name: String,
-    val balance: Long,
-    val image: String
+data class CardInfo(
+    val cardNumber: String = "",
+    val name: String = "",
+    val balance: Long = 0,
+    val image: String = ""
 )

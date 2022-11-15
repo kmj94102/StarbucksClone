@@ -1,9 +1,8 @@
 package com.example.starbucksclone.view.main.pay.list
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.starbucksclone.database.entity.CardListInfo
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -14,31 +13,33 @@ import javax.inject.Inject
 @HiltViewModel
 class CardListViewModel @Inject constructor(
     private val repository: CardRepository
-): ViewModel() {
+) : ViewModel() {
 
-    private val _cardList = mutableStateListOf<CardListInfo>()
-    val cardList: List<CardListInfo> = _cardList
+    var cardList: List<CardInfo> = listOf()
+        private set
 
     init {
         selectCardList()
     }
 
     private fun selectCardList() {
-        _cardList.clear()
         repository.selectCardList()
             .onEach {
-                _cardList.addAll(
-                    it.map { entity ->
-                        CardListInfo(
-                            cardNumber = entity.cardNumber,
-                            name = "${entity.cardName}(${entity.cardNumber.substring(10, entity.cardNumber.length)})",
-                            image = entity.cardImage,
-                            balance = entity.balance
-                        )
-                    }
-                )
+                cardList = it.map { entity ->
+                    CardInfo(
+                        cardNumber = entity.cardNumber,
+                        name = "${entity.cardName}(${
+                            entity.cardNumber.substring(
+                                10,
+                                entity.cardNumber.length
+                            )
+                        })",
+                        image = entity.cardImage,
+                        balance = entity.balance
+                    )
+                }
             }
-            .catch { _cardList.clear() }
+            .catch {  }
             .launchIn(viewModelScope)
     }
 

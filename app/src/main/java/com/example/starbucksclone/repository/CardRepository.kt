@@ -2,6 +2,7 @@ package com.example.starbucksclone.repository
 
 import com.example.starbucksclone.database.client.CardClient
 import com.example.starbucksclone.database.entity.CardEntity
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.database.entity.CardRegistrationInfo
 import com.example.starbucksclone.util.getStarbucksCardImage
 import javax.inject.Inject
@@ -40,6 +41,34 @@ class CardRepository @Inject constructor(
         client.updateRepresentative(
             cardNumber = cardNumber,
             isRepresentative = isRepresentative,
+            successListener = successListener,
+            failureListener = failureListener
+        )
+    }
+
+    suspend fun selectCardInfo(
+        cardNumber: String,
+        successListener: (CardInfo) -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.selectCardInfo(
+            cardNumber = cardNumber,
+            successListener = {
+                successListener(it.mapper())
+            },
+            failureListener = failureListener
+        )
+    }
+
+    suspend fun updateCardNumber(
+        cardNumber: String,
+        cardName: String,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.updateCardName(
+            cardNumber = cardNumber,
+            cardName = cardName,
             successListener = successListener,
             failureListener = failureListener
         )

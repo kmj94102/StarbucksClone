@@ -40,4 +40,33 @@ class CardClient @Inject constructor(
         failureListener()
     }
 
+    /** 카드 정보 조회 **/
+    suspend fun selectCardInfo(
+        cardNumber: String,
+        successListener: (CardEntity) -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        successListener(dao.selectCardInfo(cardNumber = cardNumber))
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
+    /** 카드 이름 수정 **/
+    suspend fun updateCardName(
+        cardNumber: String,
+        cardName: String,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        dao.updateCardName(
+            cardNumber = cardNumber,
+            cardName = cardName
+        )
+        successListener()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
 }

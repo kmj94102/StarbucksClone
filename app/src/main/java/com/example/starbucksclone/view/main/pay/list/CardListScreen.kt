@@ -16,10 +16,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
-import com.example.starbucksclone.database.entity.CardListInfo
-import com.example.starbucksclone.ui.theme.BorderColor
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.ui.theme.Gray
 import com.example.starbucksclone.ui.theme.Typography
+import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.toPriceFormat
 import com.example.starbucksclone.view.common.MotionTitle
 import com.example.starbucksclone.view.navigation.RoutAction
@@ -49,10 +49,14 @@ fun CardListScreen(
             viewModel.cardList.forEachIndexed { index, cardListInfo ->
                 when (index) {
                     0 -> {
-                        PayCardFirstItem(cardListInfo = cardListInfo)
+                        PayCardFirstItem(cardListInfo = cardListInfo) {
+                            routAction.goToCardDetail(it)
+                        }
                     }
                     else -> {
-                        PayCardItem(cardListInfo = cardListInfo)
+                        PayCardItem(cardListInfo = cardListInfo) {
+                            routAction.goToCardDetail(it)
+                        }
                     }
                 }
             }
@@ -62,12 +66,16 @@ fun CardListScreen(
 
 @Composable
 fun PayCardFirstItem(
-    cardListInfo: CardListInfo
+    cardListInfo: CardInfo,
+    onClickListener: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 23.dp)
+            .nonRippleClickable {
+                onClickListener(cardListInfo.cardNumber)
+            }
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -114,11 +122,17 @@ fun PayCardFirstItem(
 }
 
 @Composable
-fun PayCardItem(cardListInfo: CardListInfo) {
+fun PayCardItem(
+    cardListInfo: CardInfo,
+    onClickListener: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 23.dp)
+            .nonRippleClickable {
+                onClickListener(cardListInfo.cardNumber)
+            }
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
