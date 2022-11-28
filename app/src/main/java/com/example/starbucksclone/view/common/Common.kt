@@ -2,13 +2,11 @@ package com.example.starbucksclone.view.common
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -17,12 +15,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -210,12 +211,80 @@ fun MotionTitle(
 }
 
 /**
+ * 공용 타이틀
+ * @param leftIconRes 좌측 아이콘 Res
+ * @param rightContents 우측 영역 컨텐츠, Composable 형식
+ * @param onLeftIconClick 좌측 아이콘 클릭 리스너
+ * @param titleText 타이틀 텍스트
+ * @param isExpand 타이틀 영역 확장 여부
+ * @param isShadowVisible 타이틀 영역이 축소되어있을 때 그림자 여부
+ * @param modifier Modifier
+ * **/
+@Composable
+fun MainTitle(
+    @DrawableRes leftIconRes: Int? = R.drawable.ic_back,
+    rightContents: @Composable (BoxScope.() -> Unit)? = null,
+    onLeftIconClick: () -> Unit = {},
+    titleText: String,
+    isExpand: Boolean = true,
+    isShadowVisible: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shadowElevation = if (isShadowVisible && isExpand.not()) 6.dp else 0.dp,
+        color = White,
+        modifier = modifier
+    ) {
+        val alignment by animateAlignmentAsState(
+            if (isExpand) Alignment.TopStart else Alignment.TopCenter
+        )
+        val paddingTop by animateDpAsState(
+            if (isExpand) 51.dp else 10.dp
+        )
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            leftIconRes?.let {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(top = 9.dp, start = 8.dp)
+                        .nonRippleClickable { onLeftIconClick() }
+                )
+            }
+            rightContents?.let { it() }
+            Text(
+                text = titleText,
+                style = if (isExpand) Typography.subtitle1 else Typography.body1,
+                modifier = Modifier.align(alignment)
+                    .padding(top = paddingTop, start = 16.dp, end = 16.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Alignment 상태 변화 애니메이션
+ * **/
+@Composable
+fun animateAlignmentAsState(
+    targetAlignment: Alignment,
+): State<Alignment> {
+    val biased = targetAlignment as BiasAlignment
+    val horizontal by animateFloatAsState(biased.horizontalBias)
+    val vertical by animateFloatAsState(biased.verticalBias)
+    return derivedStateOf { BiasAlignment(horizontal, vertical) }
+}
+
+/**
  * 라운드 버튼
- * @param text [필수] 버튼 문구
+ * @param text [필수] 버튼 텍스트
  * @param textColor 텍스트 색상
+ * @param textStyle 텍스트 스타일
  * @param round 버튼 라운드 값
  * @param isEnabled 활성화 여부
  * @param isOutline 아웃라인 형식 여부
+ * @param padding 패딩
  * @param buttonColor 버튼 색상
  * @param modifier Modifier
  * @param onClick 버튼 클릭 리스너
@@ -224,11 +293,11 @@ fun MotionTitle(
 fun RoundedButton(
     text: String,
     textColor: Color = White,
+    textStyle: TextStyle = Typography.body1,
     round: Dp = 20.dp,
     isEnabled: Boolean = true,
     isOutline: Boolean = false,
-    horizontalPadding: Dp = 20.dp,
-    verticalPadding: Dp = 8.dp,
+    padding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
     buttonColor: Color = MainColor,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
@@ -242,16 +311,105 @@ fun RoundedButton(
         ),
         enabled = isEnabled,
         shape = RoundedCornerShape(round),
-        border = BorderStroke(1.dp, if (isOutline) MainColor else Color.Transparent),
-        contentPadding = PaddingValues(horizontal = horizontalPadding, vertical = verticalPadding),
+        border = BorderStroke(1.dp, if (isOutline) buttonColor else Color.Transparent),
+        contentPadding = padding,
         modifier = modifier
     ) {
         Text(
             text = text,
-            style = Typography.body1,
+            style = textStyle,
             color = textColor,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
+    }
+}
+
+/**
+ * 버튼 모양의 라디오 버튼
+ * @param isSelected 선택 여부
+ * @param text 버튼 텍스트
+ * @param textStyle 텍스트 스타일
+ * @param unselectedTextColor 미선택된 텍스트 색상
+ * @param selectedTextColor 선택된 텍스트
+ * @param unselectedColor 미선택된 버튼 보더 색상
+ * @param selectedColor 선택된 버튼 색상
+ * @param padding 패딩
+ * @param modifier Modifier
+ * @param onClick 버튼 클릭 리스너
+ * **/
+@Composable
+fun SelectButton(
+    isSelected: Boolean,
+    text: String,
+    textStyle: TextStyle = TextStyle(fontSize = 14.sp),
+    unselectedTextColor: Color = DarkGray,
+    selectedTextColor: Color = White,
+    unselectedColor: Color = BorderColor,
+    selectedColor: Color = MainColor,
+    padding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 11.dp),
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    OutlinedButton(
+        shape = RoundedCornerShape(4.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = if (isSelected) selectedColor else Color.Transparent
+        ),
+        border = BorderStroke(1.dp, if (isSelected) Color.Transparent else unselectedColor),
+        contentPadding = padding,
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Text(
+            text = text,
+            style = textStyle,
+            color = if (isSelected) selectedTextColor else unselectedTextColor
+        )
+    }
+}
+
+/**
+ * 분활 선택 버튼
+ * @param contentList SegmentButton 에 사용할 버튼 리스트
+ * @param selectedValue 선택 된 아이템
+ * @param round 좌우측 라운드값
+ * @param modifier Modifier
+ * @param selectedChangeListener 선택 변경 리스너
+ * **/
+@Composable
+fun SegmentButton(
+    contentList: List<String>,
+    selectedValue: String,
+    round: Dp = 20.dp,
+    modifier: Modifier = Modifier,
+    selectedChangeListener: (String) -> Unit
+) {
+    OutlinedCard(
+        border = BorderStroke(1.dp, Color(0xFFAAAAAA)),
+        shape = RoundedCornerShape(round),
+        modifier = modifier.height(35.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            contentList.forEach {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .background(if (selectedValue == it) MainColor else Color.Transparent)
+                        .border(BorderStroke(0.5.dp, Color(0xFFAAAAAA)))
+                        .nonRippleClickable {
+                            selectedChangeListener(it)
+                        }
+                ) {
+                    Text(
+                        text = it,
+                        color = if (selectedValue == it) White else Black,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+            }
+        }
     }
 }
 
@@ -262,6 +420,7 @@ fun RoundedButton(
  * @param isEnabled 버튼 활성화 여부
  * @param buttonColor 버튼 색상
  * @param buttonModifier 버튼 Modifier
+ * @param onClick 버튼 클릭 리스너
  * **/
 @Composable
 fun FooterWithButton(
@@ -318,7 +477,8 @@ fun CommonTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val focusRequester by remember { mutableStateOf(FocusRequester()) }
     var isFocused by remember { mutableStateOf(false) }
-    val color = if (isError) HotColor else if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
+    val color =
+        if (isError) HotColor else if (isFocused) focusedIndicatorColor else unfocusedIndicatorColor
 
     Column(modifier = modifier) {
         BasicTextField(
@@ -376,7 +536,12 @@ fun CommonTextField(
                     },
                     label = if (isLabel) {
                         {
-                            Text(text = hint, style = Typography.body1, fontSize = 14.sp, color = Black)
+                            Text(
+                                text = hint,
+                                style = Typography.body1,
+                                fontSize = 14.sp,
+                                color = Black
+                            )
                         }
                     } else {
                         null
@@ -403,9 +568,18 @@ fun CommonTextField(
             }
         )
         if (isError) {
-            Text(text = errorText, style = Typography.caption, color = HotColor, modifier = Modifier.padding(top = 9.dp))
+            Text(
+                text = errorText,
+                style = Typography.caption,
+                color = HotColor,
+                modifier = Modifier.padding(top = 9.dp)
+            )
         } else {
-            Text(text = supportText, style = Typography.caption, modifier = Modifier.padding(top = 9.dp))
+            Text(
+                text = supportText,
+                style = Typography.caption,
+                modifier = Modifier.padding(top = 9.dp)
+            )
         }
     }
 }
@@ -413,18 +587,25 @@ fun CommonTextField(
 /**
  * 커스텀 체크 박스
  * @param text 체크박스 문구
+ * @param textStyle 첵크박스 문구 스타일
  * @param selected 체크박스 선택 여부
  * @param onClick 체크박스 클릭 리스너
+ * @param checkedIcon 체크박스 선택된 체크박스 아이콘
+ * @param uncheckedIcon 체크박스 선택 안된 체크박스 아이콘
  * @param isNextButton 체크박스 오른쪽에 더보기 버튼 여부
  * @param onNextClick 더보기 버튼 클릭 리스너
  * @param modifier Modifier
  * **/
 @Composable
-fun CommonCheckBox(
+fun CustomCheckBox(
     text: String,
+    textStyle: TextStyle = Typography.body1,
     selected: Boolean,
     onClick: () -> Unit,
+    @DrawableRes checkedIcon: Int = R.drawable.ic_radio_check,
+    @DrawableRes uncheckedIcon: Int = R.drawable.ic_radio_unchecked,
     isNextButton: Boolean = false,
+    nextIconTint: Color = DarkGray,
     onNextClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -437,13 +618,13 @@ fun CommonCheckBox(
             }
     ) {
         Image(
-            painter = painterResource(id = if (selected) R.drawable.ic_radio_check else R.drawable.ic_radio_unchecked),
+            painter = painterResource(id = if (selected) checkedIcon else uncheckedIcon),
             contentDescription = "checkbox"
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            style = Typography.body1,
+            style = textStyle,
             modifier = Modifier
                 .weight(1f)
         )
@@ -451,7 +632,7 @@ fun CommonCheckBox(
             Icon(
                 painter = painterResource(id = R.drawable.ic_next),
                 contentDescription = "next",
-                tint = DarkGray,
+                tint = nextIconTint,
                 modifier = Modifier.nonRippleClickable {
                     onNextClick?.invoke()
                 }
@@ -582,4 +763,42 @@ private fun TabTransition(
         LocalContentColor provides color,
         content = content
     )
+}
+
+/**
+ * 프로그래스바
+ * @param current 프로그래스의 현재 값
+ * @param max 프로그래스의 최대 값
+ * @param modifier Modifier
+ * **/
+@Composable
+fun Progressbar(
+    current: Int,
+    max: Int,
+    modifier: Modifier = Modifier
+) {
+    val isStart = remember { mutableStateOf(false) }
+    val progress = animateFloatAsState(
+        targetValue = if (isStart.value) current.toFloat() / max else 0f,
+        animationSpec = tween(durationMillis = 1000)
+    )
+
+    LaunchedEffect(Unit) {
+        isStart.value = true
+    }
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .height(8.dp)
+            .background(LightGray)
+    ) {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .height(8.dp)
+                .fillMaxWidth(progress.value)
+                .background(MainColor)
+        )
+    }
 }
