@@ -8,6 +8,10 @@ class RoutAction(private val navController: NavController) {
         navController.popBackStack()
     }
 
+    fun goToScreen(page: String) {
+        navController.navigate(page)
+    }
+
     companion object {
         const val Main = "main"
     }

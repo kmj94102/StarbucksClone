@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -29,6 +30,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
+import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.nonRippleClickable
@@ -639,6 +642,29 @@ fun Progressbar(
                 .height(8.dp)
                 .fillMaxWidth(progress.value)
                 .background(MainColor)
+        )
+    }
+}
+
+@Composable
+fun CircleImage(
+    imageURL: String,
+    backgroundColor: Color = White,
+    size: Dp = 126.dp,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .size(size)
+    ) {
+        AsyncImage(
+            model = imageURL,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.align(Alignment.Center)
+                .size(size)
         )
     }
 }
