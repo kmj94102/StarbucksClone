@@ -5,17 +5,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.*
-import com.example.starbucksclone.view.login.LoginScreen
-import com.example.starbucksclone.view.login.sign_up.complete.SignUpCompleteScreen
-import com.example.starbucksclone.view.login.sign_up.SignUpScreen
-import com.example.starbucksclone.view.login.terms.TermsScreen
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import com.example.starbucksclone.view.main.MainScreen
-import com.example.starbucksclone.view.main.order.menu.MenuScreen
-import com.example.starbucksclone.view.main.order.menu_detail.MenuDetailScreen
-import com.example.starbucksclone.view.main.pay.card_detail.CardDetailScreen
-import com.example.starbucksclone.view.main.pay.list.CardListScreen
-import com.example.starbucksclone.view.main.pay.registration.CardRegistrationScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -37,82 +30,7 @@ fun NavigationGraph() {
         ) {
             MainScreen(routAction = routAction)
         }
-        /** 로그인 화면 **/
-        customComposable(
-            route = RoutAction.Login
-        ) {
-            LoginScreen(routAction = routAction)
-        }
-        /** 약관 동의 화면 **/
-        customComposable(
-            route = RoutAction.Terms
-        ) {
-            TermsScreen(routAction = routAction)
-        }
-        /** 회원가입 화면 **/
-        customComposable(
-            route = "${RoutAction.SignUp}/{isPush}",
-            arguments = listOf(
-                navArgument("isPush") { type = NavType.BoolType }
-            )
-        ) { entry ->
-            val isPush = entry.arguments?.getBoolean("isPush") ?: false
-            SignUpScreen(routAction = routAction, isPush = isPush)
-        }
-        /** 회원가입 완료 화면 **/
-        customComposable(
-            route = "${RoutAction.SignUpComplete}/{isPush}/{nickname}",
-            arguments = listOf(
-                navArgument("isPush") { type = NavType.BoolType },
-                navArgument("nickname") { type = NavType.StringType },
-            )
-        ) { entry ->
-            val isPush = entry.arguments?.getBoolean("isPush") ?: false
-            val nickname = entry.arguments?.getString("nickname") ?: ""
-            SignUpCompleteScreen(routAction = routAction, isPush = isPush, nickname = nickname)
-        }
-        /** Order 상세화면 **/
-        customComposable(
-            route = "${RoutAction.OrderDetail}/{group}/{name}",
-            arguments = listOf(
-                navArgument("group") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType },
-            )
-        ) {
-            MenuScreen(routAction = routAction)
-        }
-        /** 상품 주문 화면 **/
-        customComposable(
-            route = "${RoutAction.OrderItem}/{indexes}?{type},{color}",
-            arguments = listOf(
-                navArgument("indexes") { type = NavType.StringType },
-                navArgument("type") { type = NavType.StringType },
-                navArgument("color") { type = NavType.StringType },
-            )
-        ) {
-            MenuDetailScreen(routAction = routAction)
-        }
-        /** 카드 추가 **/
-        customComposable(
-            route = RoutAction.CardRegistration
-        ) {
-            CardRegistrationScreen(routAction)
-        }
-        /** 카드 리스트 **/
-        customComposable(
-            route = RoutAction.CardList
-        ) {
-            CardListScreen(routAction = routAction)
-        }
-        /** 카드 상세 **/
-        customComposable(
-            route = "${RoutAction.CardDetail}/{cardNumber}",
-            arguments = listOf(
-                navArgument("cardNumber") { type = NavType.StringType }
-            )
-        ) {
-            CardDetailScreen(routAction = routAction)
-        }
+
     }
 
 }

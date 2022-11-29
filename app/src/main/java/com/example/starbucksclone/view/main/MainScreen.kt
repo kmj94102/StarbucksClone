@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -47,42 +48,7 @@ fun MainScreen(
             BottomNavigation(
                 backgroundColor = Color(0xFFF8F8F8)
             ) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                val items = listOf(Screen.Home, Screen.Pay, Screen.Order, Screen.Gift, Screen.Other)
-
-                items.forEach { screen ->
-                    val currentRoute = navBackStackEntry?.destination?.route
-                    val selected = currentRoute == screen.route
-
-                    BottomNavigationItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = screen.icon),
-                                contentDescription = screen.label
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = screen.label,
-                                color = if (selected) MainColor else DarkGray,
-                                fontSize = 12.sp
-                            )
-                        },
-                        unselectedContentColor = DarkGray,
-                        selectedContentColor = MainColor,
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    )
-                }
+                BottomNavigationContent(navController)
             }
         }
     ) {
@@ -95,10 +61,10 @@ fun MainScreen(
                 HomeScreen()
             }
             composable(Screen.Pay.route) {
-                PayScreen(routAction)
+                PayScreen()
             }
             composable(Screen.Order.route) {
-                OrderScreen(routAction)
+                OrderScreen()
             }
             composable(Screen.Gift.route) {
                 GiftScreen()
@@ -109,6 +75,46 @@ fun MainScreen(
         }
     }
 
+}
+
+@Composable
+fun RowScope.BottomNavigationContent(navController: NavHostController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val items = listOf(Screen.Home, Screen.Pay, Screen.Order, Screen.Gift, Screen.Other)
+
+    items.forEach { screen ->
+        val currentRoute = navBackStackEntry?.destination?.route
+        val selected = currentRoute == screen.route
+
+        BottomNavigationItem(
+            icon = {
+                Icon(
+                    painter = painterResource(id = screen.icon),
+                    contentDescription = screen.label
+                )
+            },
+            label = {
+                Text(
+                    text = screen.label,
+                    color = if (selected) MainColor else DarkGray,
+                    fontSize = 12.sp
+                )
+            },
+            unselectedContentColor = DarkGray,
+            selectedContentColor = MainColor,
+            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+            onClick = {
+                navController.navigate(screen.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
+    }
 }
 
 sealed class Screen(
