@@ -28,14 +28,15 @@ import androidx.constraintlayout.compose.Dimension
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getEmoji
+import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CircleImage
 import com.example.starbucksclone.view.common.Progressbar
 import com.example.starbucksclone.view.common.RoundedButton
-import com.example.starbucksclone.view.common.animateAlignmentAsState
+import com.example.starbucksclone.view.navigation.RoutAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(routAction: RoutAction) {
     val state = rememberLazyListState()
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -45,7 +46,7 @@ fun HomeScreen() {
             /** 로그인을 하지 않은 유저 화면 **/
 //            item { guestHomeInfo(state) }
             /** 로그인 한 유저 화면 **/
-            item { userHomeInfo() }
+            item { userHomeInfo(routAction) }
 
             /** What's New 스크롤 후 고정 영역 **/
             stickyHeader {
@@ -167,7 +168,7 @@ fun guestHomeInfo(
 
 /** 로그인한 유저 화면 **/
 @Composable
-fun userHomeInfo() {
+fun userHomeInfo(routAction: RoutAction) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -279,11 +280,13 @@ fun userHomeInfo() {
                 }
                 append("30")
             },
-            style = Typography.body1,
+            style = Typography.subtitle1,
             color = MainColor,
             modifier = Modifier.constrainAs(progressText) {
                 end.linkTo(star.start, 2.dp)
                 bottom.linkTo(parent.bottom, (-6).dp)
+            }.nonRippleClickable {
+                routAction.goToScreen(RoutAction.Rewords)
             }
         )
     }

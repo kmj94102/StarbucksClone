@@ -58,7 +58,7 @@ fun MainScreen(
             modifier = Modifier.padding(it)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen()
+                HomeScreen(routAction = routAction)
             }
             composable(Screen.Pay.route) {
                 PayScreen()

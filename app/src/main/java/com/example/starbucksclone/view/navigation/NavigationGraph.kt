@@ -9,6 +9,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import com.example.starbucksclone.view.main.MainScreen
+import com.example.starbucksclone.view.main.home.rewards.RewordScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -30,7 +31,12 @@ fun NavigationGraph() {
         ) {
             MainScreen(routAction = routAction)
         }
-
+        /** 리워드 화면 **/
+        customComposable(
+            route = RoutAction.Rewords
+        ) {
+            RewordScreen(routAction = routAction)
+        }
     }
 
 }

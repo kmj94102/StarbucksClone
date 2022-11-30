@@ -90,7 +90,7 @@ fun MainTitle(
                     painter = painterResource(id = it),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(top = 9.dp, start = 8.dp)
+                        .padding(top = 9.dp, start = 8.dp, bottom = 9.dp)
                         .nonRippleClickable { onLeftIconClick() }
                 )
             }
@@ -489,6 +489,7 @@ fun CustomCheckBox(
 fun CustomTabRow(
     pagerState: PagerState,
     tabItems: List<String>,
+    indicatorColor: Color = MainColor,
     coroutineScope: CoroutineScope
 ) {
     Surface(
@@ -515,7 +516,7 @@ fun CustomTabRow(
                 TabRowDefaults.Indicator(
                     modifier = Modifier
                         .pagerTabIndicatorOffset(pagerState, it),
-                    color = MainColor,
+                    color = indicatorColor,
                 )
             },
             divider = {},
