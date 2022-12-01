@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import com.example.starbucksclone.view.login.LoginScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -36,6 +37,12 @@ fun NavigationGraph() {
             route = RoutAction.Rewords
         ) {
             RewordScreen(routAction = routAction)
+        }
+        /** 로그인 화면 **/
+        customComposable(
+            route = RoutAction.Login
+        ) {
+            LoginScreen(routAction = routAction)
         }
     }
 

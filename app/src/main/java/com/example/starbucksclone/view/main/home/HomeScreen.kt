@@ -44,9 +44,9 @@ fun HomeScreen(routAction: RoutAction) {
             state = state
         ) {
             /** 로그인을 하지 않은 유저 화면 **/
-//            item { guestHomeInfo(state) }
+            item { guestHomeInfo(routAction) }
             /** 로그인 한 유저 화면 **/
-            item { userHomeInfo(routAction) }
+//            item { userHomeInfo(routAction) }
 
             /** What's New 스크롤 후 고정 영역 **/
             stickyHeader {
@@ -114,7 +114,7 @@ fun HomeScreen(routAction: RoutAction) {
 /** 로그인을 하지 않은 유저 화면 **/
 @Composable
 fun guestHomeInfo(
-    state: LazyListState
+    routAction: RoutAction
 ) {
     Text(
         text = "안녕하세요.\n스타벅스입니다.",
@@ -150,7 +150,7 @@ fun guestHomeInfo(
                 isOutline = true,
                 modifier = Modifier.padding(top = 120.dp, start = 130.dp)
             ) {
-
+                routAction.goToScreen(RoutAction.Login)
             }
 
             Image(

@@ -264,6 +264,7 @@ fun SegmentButton(
  * @param buttonColor 버튼 색상
  * @param buttonModifier 버튼 Modifier
  * @param onClick 버튼 클릭 리스너
+ * @param modifier Modifier
  * **/
 @Composable
 fun FooterWithButton(
@@ -272,9 +273,14 @@ fun FooterWithButton(
     isEnabled: Boolean = true,
     buttonColor: Color = MainColor,
     buttonModifier: Modifier = Modifier,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Surface(shadowElevation = 15.dp, color = White) {
+    Surface(
+        shadowElevation = 15.dp,
+        color = White,
+        modifier = modifier
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -664,7 +670,8 @@ fun CircleImage(
             model = imageURL,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.Center)
                 .size(size)
         )
     }

@@ -15,6 +15,7 @@ class RoutAction(private val navController: NavController) {
     companion object {
         const val Main = "main"
         const val Rewords = "rewords"
+        const val Login = "login"
     }
 
 }
