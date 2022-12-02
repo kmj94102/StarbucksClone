@@ -16,6 +16,8 @@ class RoutAction(private val navController: NavController) {
         const val Main = "main"
         const val Rewords = "rewords"
         const val Login = "login"
+        const val Terms = "terms"
+        const val Signup = "signup"
     }
 
 }

@@ -141,7 +141,7 @@ fun guestHomeInfo(
                 text = "회원가입",
                 modifier = Modifier.padding(top = 120.dp, start = 30.dp, bottom = 35.dp)
             ) {
-
+                routAction.goToScreen(RoutAction.Terms)
             }
 
             RoundedButton(

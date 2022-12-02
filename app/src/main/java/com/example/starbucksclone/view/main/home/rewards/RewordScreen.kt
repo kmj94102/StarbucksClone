@@ -22,9 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
-import com.example.starbucksclone.util.Constants
 import com.example.starbucksclone.util.getTextStyle
-import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CustomTabRow
 import com.example.starbucksclone.view.common.MainTitle
 import com.example.starbucksclone.view.common.Progressbar
@@ -110,7 +108,7 @@ fun MyRewardsArea() {
                 }
                 append("30★")
             },
-            style = getTextStyle(type = Constants.Text_24_Bold),
+            style = getTextStyle(24, true),
             color = MainColor,
             modifier = Modifier.padding(top = 30.dp, start = 22.dp)
         )
@@ -131,27 +129,27 @@ fun MyRewardsArea() {
         ) {
             Text(
                 text = "Gold Level까지 21개의 별이 남았습니다.",
-                style = getTextStyle(type = Constants.Text_12),
+                style = getTextStyle(12),
                 modifier = Modifier.padding(horizontal = 23.dp, vertical = 20.dp)
             )
         }
 
         Text(
             text = "회원 등급 변경 및 쿠폰 발행은 최대 24시간이 걸릴 수 있습니다.",
-            style = getTextStyle(type = Constants.Text_12),
+            style = getTextStyle(12),
             color = DarkGray,
             modifier = Modifier.padding(top = 10.dp, start = 23.dp, end = 23.dp)
         )
 
         Text(
             text = "멤버십 등급",
-            style = getTextStyle(type = Constants.Text_16_Bold),
+            style = getTextStyle(16, true),
             modifier = Modifier.padding(top = 16.dp, start = 23.dp)
         )
 
         Text(
             text = "Green Level",
-            style = getTextStyle(Constants.Text_26_Bold, MainColor),
+            style = getTextStyle(16, true, MainColor),
             modifier = Modifier.padding(top = 16.dp, start = 23.dp)
         )
 
@@ -165,7 +163,7 @@ fun MyRewardsArea() {
 
         Text(
             text = "등급별 혜택",
-            style = getTextStyle(Constants.Text_16_Bold),
+            style = getTextStyle(16, true),
             modifier = Modifier.padding(start = 23.dp, top = 32.dp)
         )
 
@@ -173,7 +171,7 @@ fun MyRewardsArea() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(top = 21.dp, start = 23.dp)
         ) {
-            Text(text = "Welcome", style = getTextStyle(Constants.Text_16, DarkGray))
+            Text(text = "Welcome", style = getTextStyle(size = 16, color = DarkGray))
             Spacer(modifier = Modifier.width(12.dp))
             Box(
                 modifier = Modifier
@@ -181,7 +179,7 @@ fun MyRewardsArea() {
                     .background(DarkGray)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "Green", style = getTextStyle(Constants.Text_16_Bold))
+            Text(text = "Green", style = getTextStyle(16, true))
             Spacer(modifier = Modifier.width(12.dp))
             Box(
                 modifier = Modifier
@@ -190,7 +188,7 @@ fun MyRewardsArea() {
                     .padding(horizontal = 12.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "Gold", style = getTextStyle(Constants.Text_16, DarkGray))
+            Text(text = "Gold", style = getTextStyle(size = 16, color = DarkGray))
         }
 
         BenefitsByLevel(
@@ -239,7 +237,7 @@ fun BenefitsByLevel(
     ) {
         Text(
             text = text,
-            style = getTextStyle(Constants.Text_12_Bold),
+            style = getTextStyle(12, true),
             modifier = Modifier.padding(top = 11.dp, start = 14.dp, end = 14.dp)
         )
         Row(
@@ -284,7 +282,7 @@ fun HowItWorksArea() {
             .padding(horizontal = 23.dp)
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Text(text = "반갑습니다!", style = getTextStyle(Constants.Text_20_Bold), lineHeight = 20.sp)
+        Text(text = "반갑습니다!", style = getTextStyle(20, true), lineHeight = 20.sp)
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(text = "Starbucks Rewards 회원은 스타벅스 카드로 결제/주문할 때마다 다양한 별 적립 혜택을 받을 수 있습니다.")
@@ -335,11 +333,11 @@ fun HowItWorksItem(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
-            Text(text = "$number", style = getTextStyle(Constants.Text_20_Bold))
+            Text(text = "$number", style = getTextStyle(20, true))
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = content,
-                style = getTextStyle(Constants.Text_12),
+                style = getTextStyle(12),
                 lineHeight = 20.sp
             )
         }

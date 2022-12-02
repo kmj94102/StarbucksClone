@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.BorderColor
-import com.example.starbucksclone.util.Constants
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.isScrolled
 import com.example.starbucksclone.view.common.CommonTextField
@@ -82,7 +81,7 @@ fun LoginGuideArea() {
 
         Text(
             text = "회원 서비스 이용을 위해 로그인 해주세요.",
-            style = getTextStyle(Constants.Text_14),
+            style = getTextStyle(14),
             modifier = Modifier.padding(top = 10.dp, start = 22.dp)
         )
     }
@@ -128,7 +127,7 @@ fun LoginArea(modifier: Modifier = Modifier) {
         ) {
             Text(
                 text = "아이디 찾기",
-                style = getTextStyle(Constants.Text_12),
+                style = getTextStyle(12),
                 modifier = Modifier
             )
             Box(
@@ -138,7 +137,7 @@ fun LoginArea(modifier: Modifier = Modifier) {
             )
             Text(
                 text = "비밀번호 찾기",
-                style = getTextStyle(Constants.Text_12),
+                style = getTextStyle(12),
                 modifier = Modifier
             )
             Box(
@@ -148,7 +147,7 @@ fun LoginArea(modifier: Modifier = Modifier) {
             )
             Text(
                 text = "회원가입",
-                style = getTextStyle(Constants.Text_12),
+                style = getTextStyle(12),
                 modifier = Modifier
             )
         }

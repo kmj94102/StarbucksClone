@@ -34,7 +34,7 @@ data class UserEntity(
     @ColumnInfo(name = "shakePayConsent") val shakePayConsent: Boolean
 )
 
-data class UserTemp(
+data class SignupInfo(
     var id: String = "",
     var password: String = "",
     var appPassword: String = "",

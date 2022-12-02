@@ -30,17 +30,11 @@ val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 0 || firstVisibleItemScrollOffset > 0
 
 fun getTextStyle(
-    type: String,
+    size: Int = 14,
+    isBold: Boolean = false,
     color: Color = Black
-): TextStyle {
-    val size = type.replace("text", "")
-        .replace("bold", "")
-        .trim()
-        .toInt().sp
-
-    return TextStyle(
-        fontSize = size,
-        fontWeight = if (type.contains("bold")) FontWeight.Bold else FontWeight.Normal,
-        color = color
-    )
-}
+) = TextStyle(
+    fontSize = size.sp,
+    fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
+    color = color
+)
