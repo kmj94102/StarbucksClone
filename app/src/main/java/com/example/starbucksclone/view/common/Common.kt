@@ -318,7 +318,7 @@ fun CommonTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Done,
     keyboardActions: KeyboardActions = KeyboardActions(),
-    trailingIcons: List<Int> = listOf(),
+    trailingIcons: @Composable () -> Unit = {},
     supportText: String = "",
     errorText: String = "",
     modifier: Modifier = Modifier
@@ -368,7 +368,7 @@ fun CommonTextField(
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = White
                     ),
-                    visualTransformation = VisualTransformation.None,
+                    visualTransformation = visualTransformation,
                     interactionSource = interactionSource,
                     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
                     placeholder = if (isLabel.not()) {
@@ -396,22 +396,7 @@ fun CommonTextField(
                         null
                     },
                     trailingIcon = {
-                        Row {
-                            trailingIcons.forEach {
-                                when (it) {
-                                    R.drawable.ic_care -> {
-                                        if (isError) Image(
-                                            painter = painterResource(id = it),
-                                            contentDescription = null
-                                        )
-                                    }
-                                    else -> Image(
-                                        painter = painterResource(id = it),
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        }
+                        trailingIcons()
                     }
                 )
             }

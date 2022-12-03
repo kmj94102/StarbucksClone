@@ -5,11 +5,10 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.*
 import com.example.starbucksclone.view.login.LoginScreen
 import com.example.starbucksclone.view.login.signup.SignupScreen
+import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScreen
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
@@ -54,9 +53,18 @@ fun NavigationGraph() {
         }
         /** 회원가입 화면 **/
         customComposable(
-            route = RoutAction.Signup
+            route = "${RoutAction.Signup}?{isPushConsent}",
+            arguments = listOf(
+                navArgument("isPushConsent") { type = NavType.BoolType }
+            )
         ) {
             SignupScreen(routAction = routAction)
+        }
+        /** 회원가입 완료 화면 **/
+        customComposable(
+            route = RoutAction.SignupComplete
+        ) {
+            SignupCompleteScreen(routAction = routAction)
         }
     }
 

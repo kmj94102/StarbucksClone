@@ -12,10 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.starbucksclone.R
-import com.example.starbucksclone.ui.theme.BorderColor
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
-import com.example.starbucksclone.ui.theme.LightGray
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CustomCheckBox
@@ -30,7 +28,7 @@ fun TermsScreen(routAction: RoutAction) {
     val collectionConsent = remember {
         mutableStateOf(false)
     }
-    val adConsent = remember {
+    val pushConsent = remember {
         mutableStateOf(false)
     }
 
@@ -52,13 +50,13 @@ fun TermsScreen(routAction: RoutAction) {
                 .padding(horizontal = 27.dp)
         )
         /** 약관 동의 영역 **/
-        TermsArea(termsOfService, collectionConsent, adConsent)
+        TermsArea(termsOfService, collectionConsent, pushConsent)
         /** 풋터 : 다음 버튼 **/
         FooterWithButton(
             text = "다음",
             isEnabled = termsOfService.value && collectionConsent.value
         ) {
-            routAction.goToScreen(RoutAction.Signup)
+            routAction.goToSignup(pushConsent.value)
         }
     }
 }
@@ -89,19 +87,19 @@ fun WelcomeMessage(modifier: Modifier = Modifier) {
 fun TermsArea(
     termsOfService: MutableState<Boolean>,
     collectionConsent: MutableState<Boolean>,
-    adConsent: MutableState<Boolean>
+    pushConsent: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         CustomCheckBox(
             text = "약관 전체 동의",
             textStyle = getTextStyle(14),
-            selected = termsOfService.value && collectionConsent.value && adConsent.value,
+            selected = termsOfService.value && collectionConsent.value && pushConsent.value,
             onClick = {
                 val value =
-                    (termsOfService.value && collectionConsent.value && adConsent.value).not()
+                    (termsOfService.value && collectionConsent.value && pushConsent.value).not()
                 termsOfService.value = value
                 collectionConsent.value = value
-                adConsent.value = value
+                pushConsent.value = value
             },
             modifier = Modifier.padding(start = 24.dp)
         )
@@ -130,8 +128,8 @@ fun TermsArea(
         CustomCheckBox(
             text = "E-mail 및 SMS 광고성 정보 수신동의(선택)",
             textStyle = getTextStyle(14),
-            selected = adConsent.value,
-            onClick = { adConsent.value = adConsent.value.not() },
+            selected = pushConsent.value,
+            onClick = { pushConsent.value = pushConsent.value.not() },
             modifier = Modifier.padding(start = 24.dp, top = 14.dp)
         )
         Text(

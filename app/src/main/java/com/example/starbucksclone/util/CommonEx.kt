@@ -30,11 +30,6 @@ fun specialCharacterRestrictions(source: String): Boolean {
     }
 }
 
-fun koreanCheck(value: String): Boolean {
-    val pattern = Pattern.compile("^[가-힣]*\$")
-    return pattern.matcher(value).matches()
-}
-
 fun AssetManager.readCSV(fileName: String) =
     CSVReader(InputStreamReader(open(fileName))).readAll()
         .map { it.toList() }

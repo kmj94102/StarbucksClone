@@ -17,4 +17,6 @@ sealed class SignupEvent {
     ) : SignupEvent()
 
     object NewCertificationNumber: SignupEvent()
+
+    object Signup: SignupEvent()
 }
