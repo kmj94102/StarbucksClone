@@ -71,3 +71,15 @@ data class LoginInfo(
     var id: String = "",
     var password: String = ""
 )
+
+data class SignupCompleteInfo(
+    val name: String = "",
+    val nickname: String = "",
+    val pushConsent: Boolean = false
+)
+
+data class BriefUserInfo(
+    val id: String = "",
+    val name: String = "",
+    val nickname: String = ""
+)

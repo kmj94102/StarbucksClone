@@ -15,8 +15,12 @@ interface StarbucksDao {
     suspend fun insertUser(user: UserEntity)
 
     /** 로그인 **/
-    @Query("SELECT COUNT(*) FROM UserEntity WHERE id = :id AND password = :password")
-    suspend fun login(id: String, password: String): Int
+    @Query("SELECT id, name, nickname FROM UserEntity WHERE id = :id AND password = :password LIMIT 1")
+    suspend fun login(id: String, password: String): BriefUserInfo?
+
+    /** 회원가입 완료 정보 조회 **/
+    @Query("SELECT name, nickname, pushConsent FROM UserEntity WHERE id = :id")
+    suspend fun selectSignupCompleteInfo(id: String): SignupCompleteInfo
 
     /** Order 메뉴 아이템 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)

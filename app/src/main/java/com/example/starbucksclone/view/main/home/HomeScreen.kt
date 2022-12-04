@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getEmoji
@@ -36,17 +37,29 @@ import com.example.starbucksclone.view.navigation.RoutAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(routAction: RoutAction) {
+fun HomeScreen(
+    routAction: RoutAction,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val state = rememberLazyListState()
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             state = state
         ) {
-            /** 로그인을 하지 않은 유저 화면 **/
-            item { guestHomeInfo(routAction) }
-            /** 로그인 한 유저 화면 **/
-//            item { userHomeInfo(routAction) }
+            if (viewModel.isLogin.value) {
+                /** 로그인 한 유저 화면 **/
+                item {
+                    userHomeInfo(routAction, viewModel.nickname.value) {
+                        viewModel.event(
+                            HomeEvent.Logout
+                        )
+                    }
+                }
+            } else {
+                /** 로그인을 하지 않은 유저 화면 **/
+                item { guestHomeInfo(routAction) }
+            }
 
             /** What's New 스크롤 후 고정 영역 **/
             stickyHeader {
@@ -168,7 +181,11 @@ fun guestHomeInfo(
 
 /** 로그인한 유저 화면 **/
 @Composable
-fun userHomeInfo(routAction: RoutAction) {
+fun userHomeInfo(
+    routAction: RoutAction,
+    nickname: String,
+    logout: () -> Unit
+) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,12 +216,14 @@ fun userHomeInfo(routAction: RoutAction) {
         )
 
         Text(
-            text = "알렌보이스님과 함께\nDream Away ${getEmoji(0x1F31F)}",
+            text = "${nickname}님과 함께\nDream Away ${getEmoji(0x1F31F)}",
             style = Typography.subtitle1,
-            modifier = Modifier.constrainAs(title) {
-                top.linkTo(parent.top, 52.dp)
-                start.linkTo(parent.start, 23.dp)
-            }
+            modifier = Modifier
+                .nonRippleClickable { logout() }
+                .constrainAs(title) {
+                    top.linkTo(parent.top, 52.dp)
+                    start.linkTo(parent.start, 23.dp)
+                }
         )
 
         Text(
@@ -282,12 +301,14 @@ fun userHomeInfo(routAction: RoutAction) {
             },
             style = Typography.subtitle1,
             color = MainColor,
-            modifier = Modifier.constrainAs(progressText) {
-                end.linkTo(star.start, 2.dp)
-                bottom.linkTo(parent.bottom, (-6).dp)
-            }.nonRippleClickable {
-                routAction.goToScreen(RoutAction.Rewords)
-            }
+            modifier = Modifier
+                .constrainAs(progressText) {
+                    end.linkTo(star.start, 2.dp)
+                    bottom.linkTo(parent.bottom, (-6).dp)
+                }
+                .nonRippleClickable {
+                    routAction.goToScreen(RoutAction.Rewords)
+                }
         )
     }
     Spacer(modifier = Modifier.height(20.dp))

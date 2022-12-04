@@ -3,7 +3,7 @@ package com.example.starbucksclone.util
 import java.util.regex.Pattern
 
 fun String.isEmailFormat(): Boolean {
-    return Pattern.compile("^[a-zA-Z0-9]+@[a-zA-Z0-9]+\$").matcher(this).matches()
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
 
 fun String.isKoreanFormat(): Boolean {

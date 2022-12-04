@@ -8,19 +8,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.BorderColor
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.isScrolled
+import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.MainTitle
@@ -28,8 +34,13 @@ import com.example.starbucksclone.view.navigation.RoutAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LoginScreen(routAction: RoutAction) {
+fun LoginScreen(
+    routAction: RoutAction,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
     val state = rememberLazyListState()
+    val status = viewModel.status.collectAsState().value
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -46,7 +57,10 @@ fun LoginScreen(routAction: RoutAction) {
                 /** 로그인 안내 영역 **/
                 LoginGuideArea()
                 /** 로그인 영역 **/
-                LoginArea(modifier = Modifier.wrapContentHeight())
+                LoginArea(
+                    viewModel = viewModel,
+                    modifier = Modifier.wrapContentHeight()
+                )
             }
         }
         /** 풋터 영역 **/
@@ -54,7 +68,17 @@ fun LoginScreen(routAction: RoutAction) {
             text = "로그인하기",
             modifier = Modifier.fillMaxWidth()
         ) {
+            viewModel.event(LoginEvent.Login)
+        }
+    }
 
+    when(status) {
+        is LoginViewModel.LoginStatus.Init -> {}
+        is LoginViewModel.LoginStatus.Success -> {
+            routAction.goToMain()
+        }
+        is LoginViewModel.LoginStatus.Failure -> {
+            context.toast("아이디 또는 비밀번호를 확인해주세요.")
         }
     }
 }
@@ -89,13 +113,10 @@ fun LoginGuideArea() {
 
 /** 로그인 영역 **/
 @Composable
-fun LoginArea(modifier: Modifier = Modifier) {
-    val id = remember {
-        mutableStateOf("")
-    }
-    val pw = remember {
-        mutableStateOf("")
-    }
+fun LoginArea(
+    viewModel: LoginViewModel,
+    modifier: Modifier = Modifier
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -103,21 +124,23 @@ fun LoginArea(modifier: Modifier = Modifier) {
             .padding(horizontal = 22.dp, vertical = 80.dp)
     ) {
         CommonTextField(
-            value = id.value,
+            value = viewModel.id.value,
             onValueChange = {
-                id.value = it
+                viewModel.event(LoginEvent.IdChange(it))
             },
             hint = "아이디",
-            isLabel = true
+            isLabel = true,
+            imeAction = ImeAction.Next
         )
 
         CommonTextField(
-            value = pw.value,
+            value = viewModel.password.value,
             onValueChange = {
-                pw.value = it
+                viewModel.event(LoginEvent.PasswordChange(it))
             },
             hint = "비밀번호",
-            isLabel = true
+            isLabel = true,
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(20.dp))
 

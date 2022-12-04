@@ -1,5 +1,6 @@
 package com.example.starbucksclone.view.login.signup
 
+import android.content.SharedPreferences
 import android.os.CountDownTimer
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -7,6 +8,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.SignupInfo
+import com.example.starbucksclone.di.setLoginId
+import com.example.starbucksclone.di.setLoginNickname
 import com.example.starbucksclone.repository.UserRepository
 import com.example.starbucksclone.util.formatTime
 import com.example.starbucksclone.util.isEmailFormat
@@ -22,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val repository: UserRepository,
+    private val pref: SharedPreferences,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -214,6 +218,8 @@ class SignupViewModel @Inject constructor(
         repository.insertUser(
             user = signupInfo.value.mapper(),
             successListener = {
+                pref.setLoginId(_signupInfo.value.id)
+                pref.setLoginNickname(_signupInfo.value.nickname.ifEmpty { _signupInfo.value.name })
                 _status.value = SignupStatus.SignupComplete
             },
             failureListener = {

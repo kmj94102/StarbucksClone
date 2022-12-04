@@ -68,7 +68,7 @@ fun SignupScreen(
             context.toast(status.message)
         }
         is SignupViewModel.SignupStatus.SignupComplete -> {
-            routAction.goToScreen(RoutAction.SignupComplete)
+            routAction.goToScreen(RoutAction.SignupComplete, true)
         }
     }
 }
@@ -544,7 +544,7 @@ fun NicknameBody(
             CommonTextField(
                 value = viewModel.signupInfo.value.nickname,
                 onValueChange = {
-                    if (it.length <= 6 && it.isKoreanFormat()) {
+                    if (it.length <= 6) {
                         viewModel.event(
                             SignupEvent.TextChange(
                                 text = it,

@@ -24,7 +24,7 @@ fun CommonTitleDialog(
     cancelText: String = "아니오",
     okClickListener: (() -> Unit)? = null,
     cancelClickListener: (() -> Unit)? = null,
-    contents: @Composable () -> Unit
+    contents: @Composable () -> Unit = {}
 ) {
     if (isShow) {
         Dialog(
