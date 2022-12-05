@@ -40,11 +40,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
+import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -84,7 +86,7 @@ fun MainTitle(
             if (isExpand) 51.dp else 10.dp
         )
 
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth().heightIn(min = 42.dp)) {
             leftIconRes?.let {
                 Image(
                     painter = painterResource(id = it),
@@ -433,7 +435,7 @@ fun CommonTextField(
 @Composable
 fun CustomCheckBox(
     text: String,
-    textStyle: TextStyle = Typography.body1,
+    textStyle: TextStyle = getTextStyle(16),
     selected: Boolean,
     onClick: () -> Unit,
     @DrawableRes checkedIcon: Int = R.drawable.ic_radio_check,

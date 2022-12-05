@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class CardEntity(
     @PrimaryKey val cardNumber: String,
+    @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "cardName") val cardName: String,
     @ColumnInfo(name = "pinNumber") val pinNumber: String,
     @ColumnInfo(name = "cardImage") val cardImage: String,

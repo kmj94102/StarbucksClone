@@ -21,7 +21,7 @@ class CardClient @Inject constructor(
     }
 
     /** 카드 리스트 조회 **/
-    fun selectCardList() = dao.selectCardList()
+    fun selectCardList(id: String) = dao.selectCardList(id)
 
     /** 대표카드 업데이트 **/
     suspend fun updateRepresentative(

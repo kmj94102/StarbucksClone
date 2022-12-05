@@ -12,12 +12,14 @@ class CardRepository @Inject constructor(
 ) {
 
     suspend fun createCard(
+        id: String,
         info: CardRegistrationInfo,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
         client.insertCard(
             cardEntity = CardEntity(
+                id = id,
                 cardName = info.cardName,
                 cardNumber = info.cardNumber,
                 cardImage = getStarbucksCardImage(),
@@ -30,7 +32,7 @@ class CardRepository @Inject constructor(
         )
     }
 
-    fun selectCardList() = client.selectCardList()
+    fun selectCardList(id: String) = client.selectCardList(id)
 
     suspend fun updateRepresentative(
         cardNumber: String,

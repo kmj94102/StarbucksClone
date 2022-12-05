@@ -51,8 +51,8 @@ interface StarbucksDao {
     suspend fun insertCard(cardEntity: CardEntity)
 
     /** 카드 리스트 조회 **/
-    @Query("SELECT * FROM CardEntity ORDER BY representative DESC")
-    fun selectCardList(): Flow<List<CardEntity>>
+    @Query("SELECT * FROM CardEntity WHERE id = :id ORDER BY representative DESC")
+    fun selectCardList(id: String): Flow<List<CardEntity>>
 
     /** 대표 카드 수정 **/
     @Query("UPDATE CardEntity SET representative = :isRepresentative WHERE cardNumber = :cardNumber")
