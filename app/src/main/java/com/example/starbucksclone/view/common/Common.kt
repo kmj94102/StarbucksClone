@@ -477,17 +477,76 @@ fun CustomCheckBox(
     }
 }
 
+/**
+ * 커스텀 체크 박스
+ * @param text 체크박스 문구
+ * @param textStyle 첵크박스 문구 스타일
+ * @param selected 체크박스 선택 여부
+ * @param onClick 체크박스 클릭 리스너
+ * @param checkedIcon 체크박스 선택된 체크박스 아이콘
+ * @param uncheckedIcon 체크박스 선택 안된 체크박스 아이콘
+ * @param isNextButton 체크박스 오른쪽에 더보기 버튼 여부
+ * @param onNextClick 더보기 버튼 클릭 리스너
+ * @param modifier Modifier
+ * **/
+@Composable
+fun CustomCheckBox(
+    text: String,
+    textStyle: TextStyle = getTextStyle(16),
+    selected: Boolean,
+    onClick: () -> Unit,
+    checkedIcon: @Composable () -> Unit,
+    uncheckedIcon: @Composable () -> Unit,
+    isNextButton: Boolean = false,
+    nextIconTint: Color = DarkGray,
+    onNextClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .padding(vertical = 10.dp)
+            .nonRippleClickable {
+                onClick()
+            }
+    ) {
+        if (selected) {
+            checkedIcon()
+        } else {
+            uncheckedIcon()
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            style = textStyle,
+            modifier = Modifier
+                .weight(1f)
+        )
+        if (isNextButton) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_next),
+                contentDescription = "next",
+                tint = nextIconTint,
+                modifier = Modifier.nonRippleClickable {
+                    onNextClick?.invoke()
+                }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CustomTabRow(
     pagerState: PagerState,
     tabItems: List<String>,
     indicatorColor: Color = MainColor,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    modifier: Modifier = Modifier
 ) {
     Surface(
         shadowElevation = 6.dp,
-        modifier = Modifier
+        modifier = modifier
             .background(White)
             .padding(bottom = 6.dp)
             .drawWithContent {

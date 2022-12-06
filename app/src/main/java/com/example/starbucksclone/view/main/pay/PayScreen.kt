@@ -263,7 +263,7 @@ fun PayEmptyCardBody(routAction: RoutAction) {
                 .fillMaxWidth()
                 .height(420.dp)
                 .nonRippleClickable {
-
+                    routAction.goToScreen(RoutAction.CardRegistration)
                 }
         ) {
             Image(

@@ -15,12 +15,17 @@ class CardRepository @Inject constructor(
         id: String,
         info: CardRegistrationInfo,
         successListener: () -> Unit,
-        failureListener: () -> Unit
+        failureListener: (String) -> Unit
     ) {
+        if (id.isEmpty()) {
+            failureListener("로그인 후 이용해주세요.")
+            return
+        }
+
         client.insertCard(
             cardEntity = CardEntity(
                 id = id,
-                cardName = info.cardName,
+                cardName = info.cardName.ifEmpty { "스타벅스 카드" },
                 cardNumber = info.cardNumber,
                 cardImage = getStarbucksCardImage(),
                 pinNumber = info.pinNumber,
@@ -28,7 +33,9 @@ class CardRepository @Inject constructor(
                 representative = false
             ),
             successListener = successListener,
-            failureListener = failureListener
+            failureListener = {
+                failureListener("카드 등록에 실패하였습니다.")
+            }
         )
     }
 
