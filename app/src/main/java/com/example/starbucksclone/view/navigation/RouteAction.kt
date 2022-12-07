@@ -23,6 +23,10 @@ class RouteAction(private val navController: NavController) {
         navController.navigate("$Signup?$isPushConsent")
     }
 
+    fun goToCardDetail(cardNumber: String) {
+        navController.navigate("$CardDetail?$cardNumber")
+    }
+
     fun goToMain() {
         navController.navigate(Main) {
             popUpTo(0)
@@ -38,6 +42,7 @@ class RouteAction(private val navController: NavController) {
         const val SignupComplete = "signup complete"
         const val CardRegistration = "card registration"
         const val CardList = "card list"
+        const val CardDetail = "card detail"
     }
 
 }

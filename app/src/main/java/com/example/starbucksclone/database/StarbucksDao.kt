@@ -70,4 +70,8 @@ interface StarbucksDao {
     @Query("UPDATE CardEntity SET cardName = :cardName WHERE cardNumber = :cardNumber")
     suspend fun updateCardName(cardNumber: String, cardName: String)
 
+    /** 카드 삭제 **/
+    @Query("DELETE FROM CardEntity WHERE cardNumber = :cardNumber")
+    suspend fun deleteCard(cardNumber: String)
+
 }

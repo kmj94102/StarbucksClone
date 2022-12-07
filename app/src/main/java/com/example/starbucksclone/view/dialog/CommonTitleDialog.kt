@@ -51,7 +51,6 @@ fun CommonTitleDialog(
 
                     Spacer(modifier = Modifier.height(33.dp))
                     contents()
-                    Spacer(modifier = Modifier.height(28.dp))
 
                     Row(
                         modifier = Modifier

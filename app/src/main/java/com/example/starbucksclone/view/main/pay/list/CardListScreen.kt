@@ -116,7 +116,7 @@ fun CardListBody(
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 20.dp, start = 23.dp, end = 18.dp)
                     .nonRippleClickable {
-
+                        routeAction.goToCardDetail(cardNumber = cardInfo.cardNumber)
                     }
             )
             Box(
@@ -135,7 +135,7 @@ fun CardListBody(
             Text(
                 text = "대표카드로 설정할 경우, 리스트 최상단에 고정됩니다.",
                 style = getTextStyle(14),
-                modifier = Modifier.padding(horizontal = 30.dp)
+                modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 28.dp)
             )
         },
         isShow = isShow.value,

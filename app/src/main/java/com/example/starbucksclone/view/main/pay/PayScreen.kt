@@ -117,7 +117,7 @@ fun PayCardListBody(
             contentPadding = PaddingValues(start = 12.dp, end = 26.dp),
             itemSpacing = 12.dp
         ) {
-            PayCardItem(card = cardList[it])
+            PayCardItem(card = cardList[it], routeAction = routeAction)
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -149,7 +149,8 @@ fun PayCardListBody(
 /** 스타벅스 카드 리스트 아이템 **/
 @Composable
 fun PayCardItem(
-    card: CardEntity
+    card: CardEntity,
+    routeAction: RouteAction
 ) {
     Surface(
         elevation = 6.dp,
@@ -158,6 +159,9 @@ fun PayCardItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
+                .nonRippleClickable {
+                    routeAction.goToCardDetail(cardNumber = card.cardNumber)
+                }
         ) {
             AsyncImage(
                 model = card.cardImage,

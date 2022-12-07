@@ -85,4 +85,17 @@ class CardRepository @Inject constructor(
         )
     }
 
+    /** 카드 삭제 **/
+    suspend fun deleteCard(
+        cardNumber: String,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.deleteCard(
+            cardNumber = cardNumber,
+            successListener = successListener,
+            failureListener = failureListener
+        )
+    }
+
 }

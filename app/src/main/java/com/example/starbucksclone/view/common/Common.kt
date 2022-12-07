@@ -747,6 +747,7 @@ fun CircleImage(
 @Composable
 fun CardItem(
     cardInfo: CardInfo,
+    title: String = "",
     isBigSize: Boolean = true,
     isRepresentativeVisible: Boolean = false,
     isCardNumberVisible: Boolean = false,
@@ -768,7 +769,7 @@ fun CardItem(
                 .weight(1f)
                 .padding(horizontal = if (isBigSize) 13.dp else 9.dp)
         ) {
-            Text(text = cardInfo.name, style = getTextStyle(12))
+            Text(text = title.ifEmpty { cardInfo.name }, style = getTextStyle(12))
             Spacer(modifier = Modifier.height(if (isBigSize) 7.dp else 3.dp))
             Text(
                 text = cardInfo.balance.toPriceFormat(),

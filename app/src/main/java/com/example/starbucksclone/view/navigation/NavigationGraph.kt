@@ -12,6 +12,7 @@ import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScree
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
+import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
 import com.example.starbucksclone.view.main.pay.list.CardListScreen
 import com.example.starbucksclone.view.main.pay.registration.CardRegistrationScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -79,6 +80,15 @@ fun NavigationGraph() {
             route = RouteAction.CardList
         ) {
             CardListScreen(routeAction = routeAction)
+        }
+        /** 카드 상세 화면 **/
+        customComposable(
+            route = "${RouteAction.CardDetail}?{cardNumber}",
+            arguments = listOf(
+                navArgument("cardNumber") { type = NavType.StringType }
+            )
+        ) {
+            CardDetailScreen(routeAction = routeAction)
         }
     }
 

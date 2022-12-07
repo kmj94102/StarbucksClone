@@ -79,4 +79,17 @@ class CardClient @Inject constructor(
         failureListener()
     }
 
+    /** 카드 삭제 **/
+    suspend fun deleteCard(
+        cardNumber: String,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        dao.deleteCard(cardNumber)
+        successListener()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
 }
