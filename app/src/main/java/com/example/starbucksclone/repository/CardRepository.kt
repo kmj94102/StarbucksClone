@@ -22,6 +22,8 @@ class CardRepository @Inject constructor(
             return
         }
 
+        val isRepresentative = client.selectCountRepresentative(id) == 0
+
         client.insertCard(
             cardEntity = CardEntity(
                 id = id,
@@ -30,7 +32,7 @@ class CardRepository @Inject constructor(
                 cardImage = getStarbucksCardImage(),
                 pinNumber = info.pinNumber,
                 balance = 0,
-                representative = false
+                representative = isRepresentative
             ),
             successListener = successListener,
             failureListener = {

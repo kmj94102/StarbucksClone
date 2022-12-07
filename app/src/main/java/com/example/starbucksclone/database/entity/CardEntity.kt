@@ -14,11 +14,12 @@ data class CardEntity(
     @ColumnInfo(name = "balance") val balance: Long,
     @ColumnInfo(name = "representative") val representative: Boolean,
 ) {
-    fun mapper() = CardInfo(
+    fun mapper(isCardNumberVisible: Boolean = false) = CardInfo(
         cardNumber = cardNumber,
-        name = cardName,
+        name = if (isCardNumberVisible) "$cardName(${cardNumber.drop(10)})" else cardName,
         balance = balance,
-        image = cardImage
+        image = cardImage,
+        representative = representative
     )
 }
 
@@ -32,5 +33,6 @@ data class CardInfo(
     val cardNumber: String = "",
     val name: String = "",
     val balance: Long = 0,
-    val image: String = ""
+    val image: String = "",
+    val representative: Boolean = false,
 )

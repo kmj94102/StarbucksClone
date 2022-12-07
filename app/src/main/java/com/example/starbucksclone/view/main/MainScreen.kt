@@ -35,7 +35,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun MainScreen(
     routAction: RoutAction,
-    viewModel: MainViewModel = hiltViewModel()
+//    viewModel: MainViewModel = hiltViewModel()
 ) {
     // 스테이터스 바 색상 지정
     val systemUiController = rememberSystemUiController()

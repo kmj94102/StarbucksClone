@@ -84,6 +84,7 @@ fun CardRegistrationScreen(
         }
         is CardRegistrationViewModel.CardRegistrationStatus.Success -> {
             context.toast("카드 등록을 완료하였습니다.")
+            routAction.popupBackStack()
         }
     }
 

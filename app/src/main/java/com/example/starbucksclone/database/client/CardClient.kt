@@ -23,6 +23,16 @@ class CardClient @Inject constructor(
     /** 카드 리스트 조회 **/
     fun selectCardList(id: String) = dao.selectCardList(id)
 
+    /** 대표 카드 존재 여부 체크 **/
+    suspend fun selectCountRepresentative(
+        id: String
+    ): Int = try {
+        dao.selectCountRepresentative(id)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        -1
+    }
+
     /** 대표카드 업데이트 **/
     suspend fun updateRepresentative(
         cardNumber: String,

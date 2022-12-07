@@ -45,9 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
+import com.example.starbucksclone.util.toPriceFormat
+import com.example.starbucksclone.util.toSecretFormat
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -86,7 +89,11 @@ fun MainTitle(
             if (isExpand) 51.dp else 10.dp
         )
 
-        Box(modifier = Modifier.fillMaxWidth().heightIn(min = 42.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 42.dp)
+        ) {
             leftIconRes?.let {
                 Image(
                     painter = painterResource(id = it),
@@ -699,6 +706,13 @@ fun Progressbar(
     }
 }
 
+/**
+ * 원형 이미지
+ * @param imageURL 이미지 URL
+ * @param backgroundColor 원 배경
+ * @param size 원 사이즈
+ * @param modifier Modifier
+ * **/
 @Composable
 fun CircleImage(
     imageURL: String,
@@ -720,5 +734,77 @@ fun CircleImage(
                 .align(Alignment.Center)
                 .size(size)
         )
+    }
+}
+
+/**
+ * 카드 아이템
+ * @param cardInfo 카드 정보
+ * @param isBigSize 큰사이 즈여부
+ * @param isRepresentativeVisible 대표카드 아이콘 표시 여부
+ * @param isCardNumberVisible 카드 번호 표시 여부
+ * **/
+@Composable
+fun CardItem(
+    cardInfo: CardInfo,
+    isBigSize: Boolean = true,
+    isRepresentativeVisible: Boolean = false,
+    isCardNumberVisible: Boolean = false,
+    representativeClickListener: (String, String) -> Unit = { _, _ -> },
+    modifier: Modifier = Modifier
+) {
+    val with = if (isBigSize) 115.dp else 56.dp
+    val height = if (isBigSize) 72.dp else 35.dp
+
+    Row(modifier = modifier) {
+        AsyncImage(
+            model = cardInfo.image,
+            contentDescription = "starbucks card",
+            modifier = Modifier.size(with, height)
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = if (isBigSize) 13.dp else 9.dp)
+        ) {
+            Text(text = cardInfo.name, style = getTextStyle(12))
+            Spacer(modifier = Modifier.height(if (isBigSize) 7.dp else 3.dp))
+            Text(
+                text = cardInfo.balance.toPriceFormat(),
+                style = getTextStyle(
+                    size = if (isBigSize) 20 else 16,
+                    isBold = true
+                )
+            )
+            if (isCardNumberVisible) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = cardInfo.cardNumber.toSecretFormat(),
+                    style = getTextStyle(size = 12, color = DarkGray)
+                )
+            }
+        }
+
+        if (isRepresentativeVisible) {
+            Image(
+                painter = painterResource(
+                    if (cardInfo.representative) {
+                        R.drawable.ic_star_circle_selected
+                    } else {
+                        R.drawable.ic_star_circle
+                    }
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(41.dp)
+                    .align(Alignment.CenterVertically)
+                    .nonRippleClickable {
+                        if (cardInfo.representative.not()) {
+                            representativeClickListener(cardInfo.cardNumber, cardInfo.name)
+                        }
+                    }
+            )
+        }
     }
 }

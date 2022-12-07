@@ -54,6 +54,10 @@ interface StarbucksDao {
     @Query("SELECT * FROM CardEntity WHERE id = :id ORDER BY representative DESC")
     fun selectCardList(id: String): Flow<List<CardEntity>>
 
+    /** 대표 카드 존재 여부 확인 **/
+    @Query("SELECT COUNT(*) FROM CardEntity WHERE id = :id")
+    fun selectCountRepresentative(id: String): Int
+
     /** 대표 카드 수정 **/
     @Query("UPDATE CardEntity SET representative = :isRepresentative WHERE cardNumber = :cardNumber")
     suspend fun updateRepresentative(cardNumber: String, isRepresentative: Boolean)

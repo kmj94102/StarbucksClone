@@ -47,7 +47,7 @@ fun PayScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         /** 해더 영역 **/
-        stickyHeader { PayHeader(state.isScrolled ) }
+        stickyHeader { PayHeader(state.isScrolled.not(), routAction) }
         /** 바디 영역 **/
         item {
             PayBody(
@@ -62,7 +62,10 @@ fun PayScreen(
 
 /** 해더 영역 **/
 @Composable
-fun PayHeader(isExpand: Boolean) {
+fun PayHeader(
+    isExpand: Boolean,
+    routAction: RoutAction
+) {
     MainTitle(
         titleText = "Pay",
         isExpand = isExpand,
@@ -74,6 +77,9 @@ fun PayHeader(isExpand: Boolean) {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 10.dp, end = 17.dp)
+                    .nonRippleClickable {
+                        routAction.goToScreen(RoutAction.CardList)
+                    }
             )
         }
     )
@@ -295,6 +301,7 @@ fun PayEmptyCardBody(routAction: RoutAction) {
 fun PayFooter(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
+            .padding(bottom = 100.dp)
             .fillMaxWidth()
             .background(Color(0xFFFFF7E6))
     ) {

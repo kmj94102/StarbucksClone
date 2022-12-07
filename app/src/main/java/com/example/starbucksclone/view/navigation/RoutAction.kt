@@ -24,7 +24,7 @@ class RoutAction(private val navController: NavController) {
     }
 
     fun goToMain() {
-        navController.navigate(RoutAction.Main) {
+        navController.navigate(Main) {
             popUpTo(0)
         }
     }
@@ -37,6 +37,7 @@ class RoutAction(private val navController: NavController) {
         const val Signup = "signup"
         const val SignupComplete = "signup complete"
         const val CardRegistration = "card registration"
+        const val CardList = "card list"
     }
 
 }
