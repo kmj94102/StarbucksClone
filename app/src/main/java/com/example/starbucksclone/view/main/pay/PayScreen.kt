@@ -29,14 +29,14 @@ import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.ui.theme.White
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.MainTitle
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PayScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: PayViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
@@ -47,11 +47,11 @@ fun PayScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         /** 해더 영역 **/
-        stickyHeader { PayHeader(state.isScrolled.not(), routAction) }
+        stickyHeader { PayHeader(state.isScrolled.not(), routeAction) }
         /** 바디 영역 **/
         item {
             PayBody(
-                routAction = routAction,
+                routeAction = routeAction,
                 viewModel = viewModel,
             )
         }
@@ -64,7 +64,7 @@ fun PayScreen(
 @Composable
 fun PayHeader(
     isExpand: Boolean,
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     MainTitle(
         titleText = "Pay",
@@ -78,7 +78,7 @@ fun PayHeader(
                     .align(Alignment.TopEnd)
                     .padding(top = 10.dp, end = 17.dp)
                     .nonRippleClickable {
-                        routAction.goToScreen(RoutAction.CardList)
+                        routeAction.goToScreen(RouteAction.CardList)
                     }
             )
         }
@@ -88,17 +88,17 @@ fun PayHeader(
 /** 바디 영역 **/
 @Composable
 fun PayBody(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: PayViewModel,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         if (viewModel.cardList.isEmpty()) {
-            PayEmptyCardBody(routAction)
+            PayEmptyCardBody(routeAction)
         } else {
             PayCardListBody(
                 cardList = viewModel.cardList,
-                routAction = routAction
+                routeAction = routeAction
             )
         }
     }
@@ -109,7 +109,7 @@ fun PayBody(
 @Composable
 fun PayCardListBody(
     cardList: List<CardEntity>,
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     Column(Modifier.fillMaxWidth()) {
         HorizontalPager(
@@ -257,7 +257,7 @@ fun PayCardItem(
 
 /** 스타벅스 카드가 없을 때 화면 **/
 @Composable
-fun PayEmptyCardBody(routAction: RoutAction) {
+fun PayEmptyCardBody(routeAction: RouteAction) {
     Surface(
         elevation = 6.dp,
         color = White,
@@ -269,7 +269,7 @@ fun PayEmptyCardBody(routAction: RoutAction) {
                 .fillMaxWidth()
                 .height(420.dp)
                 .nonRippleClickable {
-                    routAction.goToScreen(RoutAction.CardRegistration)
+                    routeAction.goToScreen(RouteAction.CardRegistration)
                 }
         ) {
             Image(

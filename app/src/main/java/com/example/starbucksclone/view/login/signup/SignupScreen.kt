@@ -27,11 +27,11 @@ import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.CustomCheckBox
 import com.example.starbucksclone.view.common.FooterWithButton
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 
 @Composable
 fun SignupScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: SignupViewModel = hiltViewModel()
 ) {
     val status = viewModel.status.collectAsState().value
@@ -43,7 +43,7 @@ fun SignupScreen(
         SignupHeader(
             step = step,
             viewModel = viewModel,
-            routAction = routAction
+            routeAction = routeAction
         )
         /** 바디 영역 **/
         SignupBody(
@@ -68,7 +68,7 @@ fun SignupScreen(
             context.toast(status.message)
         }
         is SignupViewModel.SignupStatus.SignupComplete -> {
-            routAction.goToScreen(RoutAction.SignupComplete, true)
+            routeAction.goToScreen(RouteAction.SignupComplete, true)
         }
     }
 }
@@ -76,7 +76,7 @@ fun SignupScreen(
 /** 해더 영역 **/
 @Composable
 fun SignupHeader(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: SignupViewModel,
     step: Int
 ) {
@@ -87,7 +87,7 @@ fun SignupHeader(
                 contentDescription = "close",
                 modifier = Modifier
                     .padding(top = 9.dp, start = 16.dp)
-                    .nonRippleClickable { routAction.popupBackStack() }
+                    .nonRippleClickable { routeAction.popupBackStack() }
             )
             StepProgress(
                 step = step,

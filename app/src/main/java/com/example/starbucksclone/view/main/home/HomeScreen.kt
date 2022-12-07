@@ -33,12 +33,12 @@ import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CircleImage
 import com.example.starbucksclone.view.common.Progressbar
 import com.example.starbucksclone.view.common.RoundedButton
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
@@ -50,7 +50,7 @@ fun HomeScreen(
             if (viewModel.isLogin.value) {
                 /** 로그인 한 유저 화면 **/
                 item {
-                    userHomeInfo(routAction, viewModel.nickname.value) {
+                    userHomeInfo(routeAction, viewModel.nickname.value) {
                         viewModel.event(
                             HomeEvent.Logout
                         )
@@ -58,7 +58,7 @@ fun HomeScreen(
                 }
             } else {
                 /** 로그인을 하지 않은 유저 화면 **/
-                item { guestHomeInfo(routAction) }
+                item { guestHomeInfo(routeAction) }
             }
 
             /** What's New 스크롤 후 고정 영역 **/
@@ -127,7 +127,7 @@ fun HomeScreen(
 /** 로그인을 하지 않은 유저 화면 **/
 @Composable
 fun guestHomeInfo(
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     Text(
         text = "안녕하세요.\n스타벅스입니다.",
@@ -154,7 +154,7 @@ fun guestHomeInfo(
                 text = "회원가입",
                 modifier = Modifier.padding(top = 120.dp, start = 30.dp, bottom = 35.dp)
             ) {
-                routAction.goToScreen(RoutAction.Terms)
+                routeAction.goToScreen(RouteAction.Terms)
             }
 
             RoundedButton(
@@ -163,7 +163,7 @@ fun guestHomeInfo(
                 isOutline = true,
                 modifier = Modifier.padding(top = 120.dp, start = 130.dp)
             ) {
-                routAction.goToScreen(RoutAction.Login)
+                routeAction.goToScreen(RouteAction.Login)
             }
 
             Image(
@@ -182,7 +182,7 @@ fun guestHomeInfo(
 /** 로그인한 유저 화면 **/
 @Composable
 fun userHomeInfo(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     nickname: String,
     logout: () -> Unit
 ) {
@@ -307,7 +307,7 @@ fun userHomeInfo(
                     bottom.linkTo(parent.bottom, (-6).dp)
                 }
                 .nonRippleClickable {
-                    routAction.goToScreen(RoutAction.Rewords)
+                    routeAction.goToScreen(RouteAction.Rewords)
                 }
         )
     }

@@ -27,7 +27,7 @@ import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.*
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -36,7 +36,7 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun CardRegistrationScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: CardRegistrationViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
@@ -55,7 +55,7 @@ fun CardRegistrationScreen(
             /** 해더 영역 **/
             stickyHeader {
                 CardRegistrationHeader(
-                    routAction = routAction,
+                    routeAction = routeAction,
                     isScrolled = state.isScrolled,
                     pagerState = pagerState,
                     tabItems = tabItems
@@ -65,7 +65,7 @@ fun CardRegistrationScreen(
             item {
                 CardRegistrationBody(
                     pagerState = pagerState,
-                    routAction = routAction,
+                    routeAction = routeAction,
                     tabItems = tabItems,
                     viewModel = viewModel
                 )
@@ -84,7 +84,7 @@ fun CardRegistrationScreen(
         }
         is CardRegistrationViewModel.CardRegistrationStatus.Success -> {
             context.toast("카드 등록을 완료하였습니다.")
-            routAction.popupBackStack()
+            routeAction.popupBackStack()
         }
     }
 
@@ -94,7 +94,7 @@ fun CardRegistrationScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CardRegistrationHeader(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     isScrolled: Boolean,
     pagerState: PagerState,
     tabItems: List<String>
@@ -104,7 +104,7 @@ fun CardRegistrationHeader(
         MainTitle(
             titleText = "카드 추가",
             onLeftIconClick = {
-                routAction.popupBackStack()
+                routeAction.popupBackStack()
             },
             isExpand = isScrolled.not()
         )
@@ -123,7 +123,7 @@ fun CardRegistrationHeader(
 @Composable
 fun CardRegistrationBody(
     pagerState: PagerState,
-    routAction: RoutAction,
+    routeAction: RouteAction,
     tabItems: List<String>,
     viewModel: CardRegistrationViewModel
 ) {
@@ -138,12 +138,12 @@ fun CardRegistrationBody(
             when (it) {
                 0 -> {
                     StarbucksCard(
-                        routAction = routAction,
+                        routeAction = routeAction,
                         viewModel = viewModel,
                     )
                 }
                 1 -> {
-                    CardCoupon(routAction)
+                    CardCoupon(routeAction)
                 }
             }
         }
@@ -153,7 +153,7 @@ fun CardRegistrationBody(
 /** 스타벅스 카드 **/
 @Composable
 fun StarbucksCard(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: CardRegistrationViewModel
 ) {
     Column(
@@ -243,7 +243,7 @@ fun StarbucksCard(
 
 /** 카드 교환권 **/
 @Composable
-fun CardCoupon(routAction: RoutAction) {
+fun CardCoupon(routeAction: RouteAction) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {

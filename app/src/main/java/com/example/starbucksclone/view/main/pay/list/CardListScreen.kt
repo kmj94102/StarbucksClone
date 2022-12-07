@@ -23,12 +23,12 @@ import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CardItem
 import com.example.starbucksclone.view.common.MainTitle
 import com.example.starbucksclone.view.dialog.CommonTitleDialog
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardListScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: CardListViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
@@ -40,14 +40,14 @@ fun CardListScreen(
         stickyHeader {
             CardListHeader(
                 isExpand = state.isScrolled.not(),
-                routAction = routAction
+                routeAction = routeAction
             )
         }
         /** 바디 영역 **/
         item {
             CardListBody(
                 viewModel = viewModel,
-                routAction = routAction
+                routeAction = routeAction
             )
         }
     }
@@ -57,12 +57,12 @@ fun CardListScreen(
 @Composable
 fun CardListHeader(
     isExpand: Boolean,
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     MainTitle(
         titleText = "카드",
         onLeftIconClick = {
-            routAction.popupBackStack()
+            routeAction.popupBackStack()
         },
         rightContents = {
             Image(
@@ -72,7 +72,7 @@ fun CardListHeader(
                     .align(Alignment.TopEnd)
                     .padding(top = 12.dp, end = 18.dp)
                     .nonRippleClickable {
-                        routAction.goToScreen(RoutAction.CardRegistration)
+                        routeAction.goToScreen(RouteAction.CardRegistration)
                     }
             )
         },
@@ -85,7 +85,7 @@ fun CardListHeader(
 @Composable
 fun CardListBody(
     viewModel: CardListViewModel,
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     val isShow = remember {
         mutableStateOf(false)

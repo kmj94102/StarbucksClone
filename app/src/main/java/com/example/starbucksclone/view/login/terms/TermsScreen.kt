@@ -18,10 +18,10 @@ import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CustomCheckBox
 import com.example.starbucksclone.view.common.FooterWithButton
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 
 @Composable
-fun TermsScreen(routAction: RoutAction) {
+fun TermsScreen(routeAction: RouteAction) {
     val termsOfService = remember {
         mutableStateOf(false)
     }
@@ -40,7 +40,7 @@ fun TermsScreen(routAction: RoutAction) {
             modifier = Modifier
                 .padding(top = 9.dp, start = 16.dp)
                 .nonRippleClickable {
-                    routAction.popupBackStack()
+                    routeAction.popupBackStack()
                 }
         )
         /** 환영 메시지 **/
@@ -56,7 +56,7 @@ fun TermsScreen(routAction: RoutAction) {
             text = "다음",
             isEnabled = termsOfService.value && collectionConsent.value
         ) {
-            routAction.goToSignup(pushConsent.value)
+            routeAction.goToSignup(pushConsent.value)
         }
     }
 }

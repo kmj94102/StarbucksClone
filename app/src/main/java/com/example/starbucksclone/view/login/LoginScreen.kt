@@ -9,8 +9,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -30,12 +28,12 @@ import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.MainTitle
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LoginScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
@@ -75,7 +73,7 @@ fun LoginScreen(
     when(status) {
         is LoginViewModel.LoginStatus.Init -> {}
         is LoginViewModel.LoginStatus.Success -> {
-            routAction.goToMain()
+            routeAction.goToMain()
         }
         is LoginViewModel.LoginStatus.Failure -> {
             context.toast("아이디 또는 비밀번호를 확인해주세요.")

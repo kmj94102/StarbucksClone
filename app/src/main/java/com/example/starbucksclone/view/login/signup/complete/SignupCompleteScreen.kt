@@ -19,13 +19,12 @@ import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.FooterWithButton
-import com.example.starbucksclone.view.dialog.CommonTitleDialog
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 import kotlinx.coroutines.delay
 
 @Composable
 fun SignupCompleteScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     viewModel: SignupCompleteViewModel = hiltViewModel()
 ) {
     val status = viewModel.status.collectAsState().value
@@ -34,7 +33,7 @@ fun SignupCompleteScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         /** 해더 영역 **/
         SignupCompleteHeader(
-            routAction = routAction,
+            routeAction = routeAction,
             name = viewModel.name.value,
             isPush = viewModel.isPushConsent.value,
         )
@@ -43,18 +42,18 @@ fun SignupCompleteScreen(
             modifier = Modifier.weight(1f)
         )
         /** 풋터 영역 **/
-        SignupCompleteFooter(routAction = routAction)
+        SignupCompleteFooter(routeAction = routeAction)
     }
     
     BackPressHandler {
-        routAction.goToMain()
+        routeAction.goToMain()
     }
 
     if (status == SignupCompleteViewModel.SignupCompleteStatus.Error) {
         LaunchedEffect(true) {
             context.toast("회원가입 중 오류가 발생하였습니다.")
             delay(1500)
-            routAction.popupBackStack()
+            routeAction.popupBackStack()
         }
     }
 }
@@ -62,7 +61,7 @@ fun SignupCompleteScreen(
 /** 해더 영역 **/
 @Composable
 fun SignupCompleteHeader(
-    routAction: RoutAction,
+    routeAction: RouteAction,
     name: String,
     isPush: Boolean,
 ) {
@@ -72,7 +71,7 @@ fun SignupCompleteHeader(
         modifier = Modifier
             .padding(top = 9.dp, start = 16.dp)
             .nonRippleClickable {
-                routAction.goToMain()
+                routeAction.goToMain()
             }
     )
 
@@ -165,9 +164,9 @@ fun SignupCompleteBody(
 /** 풋터 영역 **/
 @Composable
 fun SignupCompleteFooter(
-    routAction: RoutAction
+    routeAction: RouteAction
 ) {
     FooterWithButton(text = "스타벅스 카드등록 바로가기") {
-        routAction.goToMain()
+        routeAction.goToMain()
     }
 }

@@ -26,14 +26,14 @@ import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.view.common.CustomTabRow
 import com.example.starbucksclone.view.common.MainTitle
 import com.example.starbucksclone.view.common.Progressbar
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
-fun RewordScreen(routAction: RoutAction) {
+fun RewordScreen(routeAction: RouteAction) {
     val state = rememberLazyListState()
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
@@ -48,7 +48,7 @@ fun RewordScreen(routAction: RoutAction) {
                 titleText = "Starbucks Rewards",
                 isExpand = state.firstVisibleItemIndex < 1,
                 onLeftIconClick = {
-                    routAction.popupBackStack()
+                    routeAction.popupBackStack()
                 }
             )
         }

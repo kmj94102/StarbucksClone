@@ -23,62 +23,62 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 @Composable
 fun NavigationGraph() {
     val navController = rememberAnimatedNavController()
-    val routAction = remember(RoutAction) { RoutAction(navController) }
+    val routeAction = remember(RouteAction) { RouteAction(navController) }
 
     AnimatedNavHost(
         navController = navController,
-        startDestination = RoutAction.Main
+        startDestination = RouteAction.Main
     ) {
         /** 메인 화면 **/
         customComposable(
-            route = RoutAction.Main
+            route = RouteAction.Main
         ) {
-            MainScreen(routAction = routAction)
+            MainScreen(routeAction = routeAction)
         }
         /** 리워드 화면 **/
         customComposable(
-            route = RoutAction.Rewords
+            route = RouteAction.Rewords
         ) {
-            RewordScreen(routAction = routAction)
+            RewordScreen(routeAction = routeAction)
         }
         /** 로그인 화면 **/
         customComposable(
-            route = RoutAction.Login
+            route = RouteAction.Login
         ) {
-            LoginScreen(routAction = routAction)
+            LoginScreen(routeAction = routeAction)
         }
         /** 이용약관 화면 **/
         customComposable(
-            route = RoutAction.Terms
+            route = RouteAction.Terms
         ) {
-            TermsScreen(routAction = routAction)
+            TermsScreen(routeAction = routeAction)
         }
         /** 회원가입 화면 **/
         customComposable(
-            route = "${RoutAction.Signup}?{isPushConsent}",
+            route = "${RouteAction.Signup}?{isPushConsent}",
             arguments = listOf(
                 navArgument("isPushConsent") { type = NavType.BoolType }
             )
         ) {
-            SignupScreen(routAction = routAction)
+            SignupScreen(routeAction = routeAction)
         }
         /** 회원가입 완료 화면 **/
         customComposable(
-            route = RoutAction.SignupComplete
+            route = RouteAction.SignupComplete
         ) {
-            SignupCompleteScreen(routAction = routAction)
+            SignupCompleteScreen(routeAction = routeAction)
         }
         /** 카드 등록 화면 **/
         customComposable(
-            route = RoutAction.CardRegistration
+            route = RouteAction.CardRegistration
         ) {
-            CardRegistrationScreen(routAction = routAction)
+            CardRegistrationScreen(routeAction = routeAction)
         }
         /** 카드 리스트 화면 **/
         customComposable(
-            route = RoutAction.CardList
+            route = RouteAction.CardList
         ) {
-            CardListScreen(routAction = routAction)
+            CardListScreen(routeAction = routeAction)
         }
     }
 

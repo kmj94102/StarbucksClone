@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -29,12 +28,12 @@ import com.example.starbucksclone.view.main.home.HomeScreen
 import com.example.starbucksclone.view.main.order.OrderScreen
 import com.example.starbucksclone.view.main.other.OtherScreen
 import com.example.starbucksclone.view.main.pay.PayScreen
-import com.example.starbucksclone.view.navigation.RoutAction
+import com.example.starbucksclone.view.navigation.RouteAction
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun MainScreen(
-    routAction: RoutAction,
+    routeAction: RouteAction,
 //    viewModel: MainViewModel = hiltViewModel()
 ) {
     // 스테이터스 바 색상 지정
@@ -58,10 +57,10 @@ fun MainScreen(
             modifier = Modifier.padding(it)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen(routAction = routAction)
+                HomeScreen(routeAction = routeAction)
             }
             composable(Screen.Pay.route) {
-                PayScreen(routAction = routAction)
+                PayScreen(routeAction = routeAction)
             }
             composable(Screen.Order.route) {
                 OrderScreen()
