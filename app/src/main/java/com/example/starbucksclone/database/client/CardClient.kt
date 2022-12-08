@@ -79,6 +79,23 @@ class CardClient @Inject constructor(
         failureListener()
     }
 
+    /** 카드 충전 **/
+    suspend fun updateBalance(
+        cardNumber: String,
+        balance: Long,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        dao.updateBalance(
+            cardNumber = cardNumber,
+            balance = balance
+        )
+        successListener()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
     /** 카드 삭제 **/
     suspend fun deleteCard(
         cardNumber: String,

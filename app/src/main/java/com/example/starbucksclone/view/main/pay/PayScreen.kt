@@ -160,7 +160,10 @@ fun PayCardItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
                 .nonRippleClickable {
-                    routeAction.goToCardDetail(cardNumber = card.cardNumber)
+                    routeAction.goToScreenWithCardNumber(
+                        page = RouteAction.CardDetail,
+                        cardNumber = card.cardNumber
+                    )
                 }
         ) {
             AsyncImage(

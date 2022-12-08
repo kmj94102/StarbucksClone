@@ -145,7 +145,7 @@ fun animateAlignmentAsState(
 fun RoundedButton(
     text: String,
     textColor: Color = White,
-    textStyle: TextStyle = Typography.body1,
+    textStyle: TextStyle = getTextStyle(16),
     round: Dp = 20.dp,
     isEnabled: Boolean = true,
     isOutline: Boolean = false,
@@ -193,7 +193,7 @@ fun RoundedButton(
 fun SelectButton(
     isSelected: Boolean,
     text: String,
-    textStyle: TextStyle = TextStyle(fontSize = 14.sp),
+    textStyle: TextStyle = getTextStyle(14, true),
     unselectedTextColor: Color = DarkGray,
     selectedTextColor: Color = White,
     unselectedColor: Color = BorderColor,

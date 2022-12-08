@@ -116,7 +116,10 @@ fun CardListBody(
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 20.dp, start = 23.dp, end = 18.dp)
                     .nonRippleClickable {
-                        routeAction.goToCardDetail(cardNumber = cardInfo.cardNumber)
+                        routeAction.goToScreenWithCardNumber(
+                            page = RouteAction.CardDetail,
+                            cardNumber = cardInfo.cardNumber
+                        )
                     }
             )
             Box(

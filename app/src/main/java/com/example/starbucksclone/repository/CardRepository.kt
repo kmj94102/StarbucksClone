@@ -71,7 +71,8 @@ class CardRepository @Inject constructor(
         )
     }
 
-    suspend fun updateCardNumber(
+    /** 카드 이름 변경 **/
+    suspend fun updateCardName(
         cardNumber: String,
         cardName: String,
         successListener: () -> Unit,
@@ -80,6 +81,21 @@ class CardRepository @Inject constructor(
         client.updateCardName(
             cardNumber = cardNumber,
             cardName = cardName,
+            successListener = successListener,
+            failureListener = failureListener
+        )
+    }
+
+    /** 카드 충전 **/
+    suspend fun updateBalance(
+        cardNumber: String,
+        balance: Long,
+        successListener: () -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.updateBalance(
+            cardNumber = cardNumber,
+            balance = balance,
             successListener = successListener,
             failureListener = failureListener
         )

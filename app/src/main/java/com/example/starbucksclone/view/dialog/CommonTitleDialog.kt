@@ -23,6 +23,7 @@ fun CommonTitleDialog(
     okText: String = "예",
     cancelText: String = "아니오",
     okClickListener: (() -> Unit)? = null,
+    okButtonEnable: Boolean = true,
     cancelClickListener: (() -> Unit)? = null,
     contents: @Composable () -> Unit = {}
 ) {
@@ -58,11 +59,19 @@ fun CommonTitleDialog(
                             .padding(horizontal = 30.dp)
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
-                        RoundedButton(text = cancelText, textColor = MainColor, isOutline = true) {
+                        RoundedButton(
+                            text = cancelText,
+                            textColor = MainColor,
+                            isOutline = true
+                        ) {
                             cancelClickListener?.invoke()
                         }
                         Spacer(modifier = Modifier.width(10.dp))
-                        RoundedButton(text = okText, textColor = White) {
+                        RoundedButton(
+                            text = okText,
+                            textColor = White,
+                            isEnabled = okButtonEnable
+                        ) {
                             okClickListener?.invoke()
                         }
                     }

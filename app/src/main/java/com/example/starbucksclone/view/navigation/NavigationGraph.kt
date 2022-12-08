@@ -12,6 +12,7 @@ import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScree
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
+import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
 import com.example.starbucksclone.view.main.pay.list.CardListScreen
 import com.example.starbucksclone.view.main.pay.registration.CardRegistrationScreen
@@ -89,6 +90,15 @@ fun NavigationGraph() {
             )
         ) {
             CardDetailScreen(routeAction = routeAction)
+        }
+        /** 카드 충전 화면 **/
+        customComposable(
+            route = "${RouteAction.CardCharging}?{cardNumber}",
+            arguments = listOf(
+                navArgument("cardNumber") { type = NavType.StringType }
+            )
+        ) {
+            ChargingScreen(routeAction = routeAction)
         }
     }
 

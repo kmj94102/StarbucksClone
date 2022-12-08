@@ -22,6 +22,7 @@ import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
+import com.example.starbucksclone.ui.theme.LightGray
 import com.example.starbucksclone.ui.theme.MainColor
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
@@ -150,7 +151,7 @@ fun CardDetailBody(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 20.dp)
-            .background(Gray)
+            .background(LightGray)
     ) {
         Spacer(modifier = Modifier.height(8.dp))
         CardDetailBodyItem(
@@ -161,11 +162,21 @@ fun CardDetailBody(
             iconRes = R.drawable.ic_auto_charging,
             text = "자동 충전",
             isAutoCharging = true
-        ) {}
+        ) {
+            routeAction.goToScreenWithCardNumber(
+                page = RouteAction.CardCharging,
+                cardNumber = cardInfo.cardNumber
+            )
+        }
         CardDetailBodyItem(
             iconRes = R.drawable.ic_charging,
             text = "일반 충전",
-        ) {}
+        ) {
+            routeAction.goToScreenWithCardNumber(
+                page = RouteAction.CardCharging,
+                cardNumber = cardInfo.cardNumber
+            )
+        }
         CardDetailBodyItem(
             iconRes = R.drawable.ic_report_loss,
             text = "분실 신고 및 잔액 이전",

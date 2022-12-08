@@ -69,7 +69,7 @@ class CardDetailViewModel @Inject constructor(
 
     /** 카드 이름 업데이트 **/
     private fun updateCardName() = viewModelScope.launch {
-        repository.updateCardNumber(
+        repository.updateCardName(
             cardNumber = _cardInfo.value.cardNumber,
             cardName = _modifyCardName.value,
             successListener = {
