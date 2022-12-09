@@ -1,10 +1,12 @@
 package com.example.starbucksclone.view.main.pay.registration
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.starbucksclone.database.entity.CardEntity
 import com.example.starbucksclone.database.entity.CardRegistrationInfo
 import com.example.starbucksclone.di.getLoginId
 import com.example.starbucksclone.repository.CardRepository
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +43,9 @@ class CardRegistrationViewModel @Inject constructor(
     private val _status = MutableStateFlow<CardRegistrationStatus>(CardRegistrationStatus.Init)
     val status: StateFlow<CardRegistrationStatus> = _status
 
+    private val _modalState = mutableStateOf(0)
+    val modalState: State<Int> = _modalState
+
     fun event(event: CardRegistrationEvent) {
         when (event) {
             is CardRegistrationEvent.TextChange -> {
@@ -51,6 +57,15 @@ class CardRegistrationViewModel @Inject constructor(
             }
             is CardRegistrationEvent.CardRegistration -> {
                 cardRegistration()
+            }
+            is CardRegistrationEvent.ModalChange -> {
+                _modalState.value = event.value
+            }
+            is CardRegistrationEvent.BarcodeRegistration -> {
+                barCodeRegistration(event.number)
+            }
+            is CardRegistrationEvent.CouponRegistration -> {
+                couponRegistration()
             }
         }
     }
@@ -79,6 +94,7 @@ class CardRegistrationViewModel @Inject constructor(
 
     /** 카드 추가 **/
     private fun cardRegistration() = viewModelScope.launch {
+        Log.e("+++++", "cardRegistration")
         repository.createCard(
             id = id,
             info = _cardInfo.value,
@@ -91,6 +107,43 @@ class CardRegistrationViewModel @Inject constructor(
         )
         delay(100)
         _status.value = CardRegistrationStatus.Init
+    }
+
+    /** 바코드 카드 추가 **/
+    private fun barCodeRegistration(
+        number: String
+    ) {
+        Log.e("+++++", "barCodeRegistration")
+        var pinNumber = ""
+        val random = Random()
+        (0..7).forEach { _ ->
+            pinNumber = "$pinNumber${random.nextInt(10)}"
+        }
+
+        _cardInfo.value = CardRegistrationInfo(
+            cardNumber = number,
+            pinNumber = pinNumber
+        )
+        cardRegistration()
+    }
+
+    /** 쿠폰 카드 추가 **/
+    private fun couponRegistration() {
+        Log.e("+++++", "couponRegistration")
+        var cardNumber = ""
+        val random = Random()
+        (0..15).forEach { _ ->
+            cardNumber = "$cardNumber${random.nextInt(10)}"
+        }
+        var pinNumber = ""
+        (0..7).forEach { _ ->
+            pinNumber = "$pinNumber${random.nextInt(10)}"
+        }
+        _cardInfo.value = CardRegistrationInfo(
+            cardNumber = cardNumber,
+            pinNumber = pinNumber
+        )
+        cardRegistration()
     }
 
     sealed class CardRegistrationStatus {

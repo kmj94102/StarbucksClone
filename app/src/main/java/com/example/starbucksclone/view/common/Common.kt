@@ -15,6 +15,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.*
@@ -40,7 +43,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.*
 import coil.compose.AsyncImage
@@ -809,3 +811,85 @@ fun CardItem(
         }
     }
 }
+
+/** 공용 바텀시트 다이얼로그 **/
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CommonBottomSheetDialog(
+    state: ModalBottomSheetState,
+    dialogContents: @Composable () -> Unit,
+    mainContents: @Composable () -> Unit
+) {
+    ModalBottomSheetLayout(
+        sheetState = state,
+        sheetContent = {
+            dialogContents()
+        }
+    ) {
+        mainContents()
+    }
+}
+
+//val modalState = rememberModalBottomSheetState(
+//    initialValue = ModalBottomSheetValue.Hidden,
+//    skipHalfExpanded = false
+//)
+//val scope = rememberCoroutineScope()
+//
+//ModalBottomSheetLayout(
+//    sheetState = modalState,
+//    sheetContent = {
+//        ModalBottomSheetContents()
+//    }
+//) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        ModalBottomSheetMain {
+//            scope.launch {
+//                modalState.show()
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun ModalBottomSheetMain(
+//    onClickListener: () -> Unit
+//) {
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(vertical = 20.dp, horizontal = 24.dp)
+//    ) {
+//        Text(
+//            text = "Modal Bottom Sheet",
+//            style = Typography.h4,
+//            fontWeight = FontWeight.Bold
+//        )
+//
+//        Button(onClick = onClickListener) {
+//            Text(text = "버튼", style = Typography.body1)
+//        }
+//    }
+//}
+//
+//@OptIn(ExperimentalMaterialApi::class)
+//@Composable
+//fun ModalBottomSheetContents() {
+//    LazyColumn {
+//        items(50) {
+//            ListItem(
+//                text = { Text("Item $it") },
+//                icon = {
+//                    Icon(
+//                        Icons.Default.Favorite,
+//                        contentDescription = "Localized description"
+//                    )
+//                }
+//            )
+//        }
+//    }
+//}

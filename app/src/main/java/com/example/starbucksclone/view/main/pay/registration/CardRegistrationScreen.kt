@@ -7,12 +7,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -32,8 +35,12 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class, ExperimentalPagerApi::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun CardRegistrationScreen(
     routeAction: RouteAction,
@@ -44,40 +51,90 @@ fun CardRegistrationScreen(
     val keyboardState = keyboardAsState()
     val tabItems = listOf("스타벅스 카드", "카드 교환권")
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val modalState = ModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        isSkipHalfExpanded = true
+    )
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            state = state,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            /** 해더 영역 **/
-            stickyHeader {
-                CardRegistrationHeader(
-                    routeAction = routeAction,
-                    isScrolled = state.isScrolled,
-                    pagerState = pagerState,
-                    tabItems = tabItems
-                )
+    ModalBottomSheetLayout(
+        sheetState = modalState,
+        sheetContent = {
+            when(viewModel.modalState.value) {
+                1 -> {
+                    BarcodeBottomSheetContents(
+                        decodedListener = {
+                            viewModel.event(CardRegistrationEvent.BarcodeRegistration(it))
+                            scope.launch {
+                                modalState.hide()
+                            }
+                        },
+                        errorListener = {
+                            scope.launch {
+                                modalState.hide()
+                                context.toast("바코드 인식에 실패하였습니다.")
+                            }
+                        }
+                    )
+                }
+                2 -> {
+                    VoucherBottomSheetContents{
+                        viewModel.event(CardRegistrationEvent.CouponRegistration)
+                        scope.launch {
+                            modalState.hide()
+                        }
+                    }
+                }
+                else -> { Box(modifier = Modifier.fillMaxWidth().height(1.dp)) }
             }
-            /** 바디 영역 **/
-            item {
-                CardRegistrationBody(
-                    pagerState = pagerState,
-                    routeAction = routeAction,
-                    tabItems = tabItems,
-                    viewModel = viewModel
-                )
+        },
+        sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                state = state,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                /** 해더 영역 **/
+                stickyHeader {
+                    CardRegistrationHeader(
+                        routeAction = routeAction,
+                        isScrolled = state.isScrolled,
+                        pagerState = pagerState,
+                        tabItems = tabItems
+                    )
+                }
+                /** 바디 영역 **/
+                item {
+                    CardRegistrationBody(
+                        pagerState = pagerState,
+                        routeAction = routeAction,
+                        tabItems = tabItems,
+                        viewModel = viewModel,
+                        modalState = modalState
+                    )
+                }
             }
-        }
-        /** 풋터 영역 **/
-        if (pagerState.currentPage == 0 && keyboardState.value == Keyboard.Closed) {
-            CardRegistrationFooter(viewModel)
+            /** 풋터 영역 **/
+            if (pagerState.currentPage == 0 && keyboardState.value == Keyboard.Closed) {
+                CardRegistrationFooter(viewModel)
+            }
         }
     }
 
-    when(val status = viewModel.status.collectAsState().value) {
+    BackPressHandler {
+        if (modalState.isVisible) {
+            scope.launch {
+                modalState.hide()
+            }
+        } else {
+            routeAction.popupBackStack()
+        }
+    }
+
+    when (val status = viewModel.status.collectAsState().value) {
         is CardRegistrationViewModel.CardRegistrationStatus.Init -> {}
         is CardRegistrationViewModel.CardRegistrationStatus.Failure -> {
             context.toast(status.msg)
@@ -119,13 +176,14 @@ fun CardRegistrationHeader(
 }
 
 /** 바디 영역 **/
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CardRegistrationBody(
     pagerState: PagerState,
     routeAction: RouteAction,
     tabItems: List<String>,
-    viewModel: CardRegistrationViewModel
+    viewModel: CardRegistrationViewModel,
+    modalState: ModalBottomSheetState
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         HorizontalPager(
@@ -143,7 +201,7 @@ fun CardRegistrationBody(
                     )
                 }
                 1 -> {
-                    CardCoupon(routeAction)
+                    CardCoupon(routeAction, modalState, viewModel)
                 }
             }
         }
@@ -242,8 +300,15 @@ fun StarbucksCard(
 }
 
 /** 카드 교환권 **/
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CardCoupon(routeAction: RouteAction) {
+fun CardCoupon(
+    routeAction: RouteAction,
+    modalState: ModalBottomSheetState,
+    viewModel: CardRegistrationViewModel
+) {
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -268,12 +333,22 @@ fun CardCoupon(routeAction: RouteAction) {
         CardCouponItem(
             imageRes = R.drawable.ic_barcode,
             text = "바코드 인식하기",
-            onClickListener = {}
+            onClickListener = {
+                viewModel.event(CardRegistrationEvent.ModalChange(1))
+                scope.launch {
+                    modalState.show()
+                }
+            }
         )
         CardCouponItem(
             imageRes = R.drawable.ic_password,
             text = "교환권 번호 입력하기",
-            onClickListener = {}
+            onClickListener = {
+                viewModel.event(CardRegistrationEvent.ModalChange(2))
+                scope.launch {
+                    modalState.show()
+                }
+            }
         )
         Column(
             modifier = Modifier
