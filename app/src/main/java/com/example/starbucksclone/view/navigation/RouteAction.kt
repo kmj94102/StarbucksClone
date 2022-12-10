@@ -4,6 +4,9 @@ import androidx.navigation.NavController
 
 class RouteAction(private val navController: NavController) {
 
+    fun getCurrentRoute(route: String) : Boolean =
+        route == navController.currentDestination?.route
+
     fun popupBackStack() {
         navController.popBackStack()
     }

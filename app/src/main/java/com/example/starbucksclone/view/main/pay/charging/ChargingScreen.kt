@@ -21,6 +21,7 @@ import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.*
 import com.example.starbucksclone.view.dialog.CommonTitleDialog
 import com.example.starbucksclone.view.navigation.RouteAction
+import kotlinx.coroutines.launch
 import okhttp3.internal.toLongOrDefault
 
 @Composable
@@ -29,6 +30,8 @@ fun ChargingScreen(
     viewModel: ChargingViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
+    val context = LocalContext.current
+    val status = viewModel.status.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -55,19 +58,20 @@ fun ChargingScreen(
         ChargingFooter(viewModel)
     }
 
-    val context = LocalContext.current
-    when (viewModel.status.collectAsState().value) {
-        is ChargingViewModel.ChargingStatus.Init -> {}
-        is ChargingViewModel.ChargingStatus.EmptyCardNumber -> {
+    when (status.value) {
+        ChargingViewModel.ChargingStatus.Init -> {}
+        ChargingViewModel.ChargingStatus.EmptyCardNumber -> {
             context.toast("오류가 발생하였습니다. 잠시 후 다시 시도해주세요.")
             routeAction.popupBackStack()
         }
-        is ChargingViewModel.ChargingStatus.Failure -> {
+        ChargingViewModel.ChargingStatus.Failure -> {
             context.toast("오류가 발생하였습니다. 잠시 후 다시 시도해주세요.")
         }
-        is ChargingViewModel.ChargingStatus.Success -> {
-            context.toast("충전을 완료하였습니다.")
-            routeAction.popupBackStack()
+        ChargingViewModel.ChargingStatus.Success -> {
+            if (routeAction.getCurrentRoute("${RouteAction.CardCharging}?{cardNumber}")) {
+                context.toast("충전을 완료하였습니다.")
+                routeAction.popupBackStack()
+            }
         }
     }
 }

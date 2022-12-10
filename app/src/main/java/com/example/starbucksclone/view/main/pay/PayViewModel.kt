@@ -29,10 +29,9 @@ class PayViewModel @Inject constructor(
     }
 
     private fun selectCardList(id: String) {
-        _cardList.clear()
-
         repository.selectCardList(id)
             .onEach {
+                _cardList.clear()
                 _cardList.addAll(it)
             }
             .catch { _cardList.clear() }

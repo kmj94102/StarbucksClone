@@ -12,6 +12,7 @@ import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScree
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
+import com.example.starbucksclone.view.main.pay.PayScreen
 import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
 import com.example.starbucksclone.view.main.pay.list.CardListScreen

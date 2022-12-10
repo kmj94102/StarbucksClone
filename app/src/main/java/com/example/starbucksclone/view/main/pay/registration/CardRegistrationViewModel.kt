@@ -6,13 +6,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.starbucksclone.database.entity.CardEntity
 import com.example.starbucksclone.database.entity.CardRegistrationInfo
 import com.example.starbucksclone.di.getLoginId
 import com.example.starbucksclone.repository.CardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -129,7 +127,6 @@ class CardRegistrationViewModel @Inject constructor(
 
     /** 쿠폰 카드 추가 **/
     private fun couponRegistration() {
-        Log.e("+++++", "couponRegistration")
         var cardNumber = ""
         val random = Random()
         (0..15).forEach { _ ->
