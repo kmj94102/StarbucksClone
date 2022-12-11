@@ -63,33 +63,7 @@ fun HomeScreen(
 
             /** What's New 스크롤 후 고정 영역 **/
             stickyHeader {
-                Surface(
-                    color = White,
-                    elevation = if (state.firstVisibleItemIndex > 1) 6.dp else 0.dp
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .background(White)
-                            .padding(horizontal = 23.dp, vertical = 12.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_messgae),
-                            contentDescription = null
-                        )
-
-                        Text(
-                            text = "What's New", modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .weight(1f)
-                        )
-
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_bell),
-                            contentDescription = null
-                        )
-                    }
-                }
+                WhatsNew(isScrolled = state.firstVisibleItemIndex > 1)
             }
 
             /** 새로 나온 메뉴 영역 **/
@@ -121,6 +95,38 @@ fun HomeScreen(
                 .align(Alignment.BottomEnd)
                 .padding(end = 23.dp, bottom = 16.dp)
         )
+    }
+}
+
+/** What's New 스크롤 후 고정 영역 **/
+@Composable
+fun WhatsNew(isScrolled: Boolean) {
+    Surface(
+        color = White,
+        elevation = if (isScrolled) 6.dp else 0.dp
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(White)
+                .padding(horizontal = 23.dp, vertical = 12.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_messgae),
+                contentDescription = null
+            )
+
+            Text(
+                text = "What's New", modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .weight(1f)
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_bell),
+                contentDescription = null
+            )
+        }
     }
 }
 

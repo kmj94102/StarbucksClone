@@ -1,5 +1,6 @@
 package com.example.starbucksclone.view.main.home.rewards
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -68,6 +69,7 @@ fun RewordScreen(routeAction: RouteAction) {
             HorizontalPager(
                 count = 2,
                 state = pagerState,
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 when (it) {
@@ -290,6 +292,7 @@ fun HowItWorksArea() {
 
         HowItWorksItem(
             number = 1,
+            imageRes = R.drawable.img_works1,
             content = "스타벅스 카드를 이용해 사이렌 오더 결제를 해보세요. 앱에서 스타벅스 카드 바코드를 띄워 매장에서 직접 결제할 수도 있습니다.",
             modifier = Modifier.fillMaxWidth()
         )
@@ -297,6 +300,7 @@ fun HowItWorksArea() {
 
         HowItWorksItem(
             number = 2,
+            imageRes = R.drawable.img_works2,
             content = "스타벅스 카드로 결제 시 별이 적립됩니다.",
             modifier = Modifier.fillMaxWidth()
         )
@@ -304,6 +308,7 @@ fun HowItWorksArea() {
 
         HowItWorksItem(
             number = 3,
+            imageRes = R.drawable.img_works3,
             content = "쌓이는 별에 따라 레벨이 오르고 골드 레벨부터 별 12개 적립 시마다 무료 음료 쿠폰을 제공합니다.",
             modifier = Modifier.fillMaxWidth()
         )
@@ -311,6 +316,7 @@ fun HowItWorksArea() {
 
         HowItWorksItem(
             number = 4,
+            imageRes = R.drawable.img_works4,
             content = "스타벅스 리워드 회원만을 위한 특별한 이벤트에 참여하시면, 더 많은 별을 적립할 수 있습니다. 개인컵 사용, 브런치 유어 웨이 등을 통해서도 추가 별을 적립해 보세요!",
             modifier = Modifier.fillMaxWidth()
         )
@@ -322,12 +328,13 @@ fun HowItWorksArea() {
 @Composable
 fun HowItWorksItem(
     number: Int,
+    @DrawableRes imageRes: Int,
     content: String,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier) {
         Image(
-            painter = painterResource(id = R.drawable.img_reward),
+            painter = painterResource(id = imageRes),
             contentDescription = null,
             Modifier.size(95.dp)
         )
