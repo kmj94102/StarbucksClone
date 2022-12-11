@@ -24,6 +24,7 @@ import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.BorderColor
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.isScrolled
+import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
@@ -57,6 +58,7 @@ fun LoginScreen(
                 /** 로그인 영역 **/
                 LoginArea(
                     viewModel = viewModel,
+                    routeAction = routeAction,
                     modifier = Modifier.wrapContentHeight()
                 )
             }
@@ -113,6 +115,7 @@ fun LoginGuideArea() {
 @Composable
 fun LoginArea(
     viewModel: LoginViewModel,
+    routeAction: RouteAction,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -170,6 +173,9 @@ fun LoginArea(
                 text = "회원가입",
                 style = getTextStyle(12),
                 modifier = Modifier
+                    .nonRippleClickable {
+                        routeAction.goToScreen(RouteAction.Terms)
+                    }
             )
         }
     }
