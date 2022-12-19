@@ -551,13 +551,14 @@ fun CustomTabRow(
     tabItems: List<String>,
     indicatorColor: Color = MainColor,
     coroutineScope: CoroutineScope,
+    isShadowVisible: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shadowElevation = 6.dp,
+        shadowElevation = if (isShadowVisible) 6.dp else 0.dp,
         modifier = modifier
             .background(White)
-            .padding(bottom = 6.dp)
+            .padding(bottom = if (isShadowVisible) 6.dp else 0.dp)
             .drawWithContent {
                 val paddingPx = 6.dp.toPx()
                 clipRect(

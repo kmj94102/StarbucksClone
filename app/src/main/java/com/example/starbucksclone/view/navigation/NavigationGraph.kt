@@ -12,6 +12,8 @@ import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScree
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
+import com.example.starbucksclone.view.main.order.detail.MenuDetailScreen
+import com.example.starbucksclone.view.main.order.menu_list.MenuListScreen
 import com.example.starbucksclone.view.main.pay.PayScreen
 import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
@@ -100,6 +102,18 @@ fun NavigationGraph() {
             )
         ) {
             ChargingScreen(routeAction = routeAction)
+        }
+        /** 메뉴 리스트 화면 **/
+        customComposable(
+            route = RouteAction.MenuList
+        ) {
+            MenuListScreen(routeAction = routeAction)
+        }
+        /** 메뉴 상세 화면 **/
+        customComposable(
+            route = RouteAction.MenuDetail
+        ) {
+            MenuDetailScreen(routeAction = routeAction)
         }
     }
 
