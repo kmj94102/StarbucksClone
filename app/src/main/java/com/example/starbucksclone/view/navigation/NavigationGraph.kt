@@ -105,7 +105,11 @@ fun NavigationGraph() {
         }
         /** 메뉴 리스트 화면 **/
         customComposable(
-            route = RouteAction.MenuList
+            route = "${RouteAction.MenuList}?{group},{name}",
+            arguments = listOf(
+                navArgument("group") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType },
+            )
         ) {
             MenuListScreen(routeAction = routeAction)
         }

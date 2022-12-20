@@ -27,8 +27,8 @@ interface StarbucksDao {
     suspend fun insertOrderMenu(menuList: List<OrderMenuEntity>)
 
     /** Order 메뉴 조회 **/
-    @Query("SELECT * FROM OrderMenuEntity")
-    fun selectOrderMenu(): Flow<List<OrderMenuEntity>>
+    @Query("SELECT * FROM OrderMenuEntity WHERE `group` = :group")
+    fun selectOrderMenu(group: String): Flow<List<OrderMenuEntity>>
 
     /** 음료 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
