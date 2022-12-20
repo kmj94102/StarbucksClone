@@ -8,14 +8,15 @@ import javax.inject.Inject
 class MenuClient @Inject constructor(
     private val dao: StarbucksDao
 ) {
-    suspend fun insertDrink(
-        drinkList: List<MenuEntity>,
+    /** 메뉴 등록 **/
+    suspend fun insertMenu(
+        menuList: List<MenuEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
         try {
-            dao.insertDrinks(
-                drinkList = drinkList
+            dao.insertMenuList(
+                menuList = menuList
             )
             successListener()
         } catch (e: Exception) {
@@ -24,13 +25,14 @@ class MenuClient @Inject constructor(
         }
     }
 
-    suspend fun insertDrinkDetails(
+    /** 메뉴 상세 등록 **/
+    suspend fun insertMenuDetails(
         detailList: List<MenuDetailEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
         try {
-            dao.insertDrinkDetails(
+            dao.insertMenuDetails(
                 detailList = detailList
             )
             successListener()
@@ -40,13 +42,25 @@ class MenuClient @Inject constructor(
         }
     }
 
-    fun selectDrinks(
+    /** 메뉴 조회 **/
+    fun selectMenuList(
         group: String,
-    ) = dao.selectDrinks(group = group)
+        name: String
+    ) = dao.selectMenuList(group = group, name = name)
 
-    fun selectDrinkDetail(
-        firstIndex: String,
-        secondIndex: String
-    ) = dao.selectDrinkDetail(firstIndex = firstIndex, secondIndex = secondIndex)
+    /** New 메뉴 조회 **/
+    fun selectNewMenuList(
+        group: String
+    ) = dao.selectNewMenuList(group)
+
+    /** 추천 메뉴 조회 **/
+    fun selectRecommendMenuList(
+        group: String
+    ) = dao.selectRecommendMenuList(group)
+
+    /** 메뉴 상세 조회 **/
+    fun selectMenuDetail(
+        indexList: List<String>
+    ) = dao.selectMenuDetail(indexList = indexList)
 
 }

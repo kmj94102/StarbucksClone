@@ -30,21 +30,29 @@ interface StarbucksDao {
     @Query("SELECT * FROM OrderMenuEntity WHERE `group` = :group")
     fun selectOrderMenu(group: String): Flow<List<OrderMenuEntity>>
 
-    /** 음료 등록 **/
+    /** 메뉴 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrinks(drinkList: List<MenuEntity>)
+    suspend fun insertMenuList(menuList: List<MenuEntity>)
 
-    /** 음료 조회 **/
-    @Query("SELECT * FROM MenuEntity WHERE `group` = :group")
-    fun selectDrinks(group: String): Flow<List<MenuEntity>>
+    /** 메뉴 조회 **/
+    @Query("SELECT * FROM MenuEntity WHERE `group` = :name AND orderGroup = :group")
+    fun selectMenuList(group: String, name: String): Flow<List<MenuEntity>>
 
-    /** 음료 상세 등록 **/
+    /** New 메뉴 조회 **/
+    @Query("SELECT * FROM MenuEntity WHERE isNew = 1 AND orderGroup = :group")
+    fun selectNewMenuList(group: String): Flow<List<MenuEntity>>
+
+    /** 추천 메뉴 조회 **/
+    @Query("SELECT * FROM MenuEntity WHERE isRecommendation = 1 AND orderGroup = :group")
+    fun selectRecommendMenuList(group: String): Flow<List<MenuEntity>>
+
+    /** 메뉴 상세 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDrinkDetails(detailList: List<MenuDetailEntity>)
+    suspend fun insertMenuDetails(detailList: List<MenuDetailEntity>)
 
-    /** 음료 상세 조회 **/
-    @Query("SELECT * FROM MenuDetailEntity WHERE `index` = :firstIndex OR `index` = :secondIndex")
-    fun selectDrinkDetail(firstIndex: String, secondIndex: String): Flow<List<MenuDetailEntity>>
+    /** 메뉴 상세 조회 **/
+    @Query("SELECT * FROM MenuDetailEntity WHERE `index` IN (:indexList)")
+    fun selectMenuDetail(indexList: List<String>): Flow<List<MenuDetailEntity>>
 
     /** 카드 등록 **/
     @Insert(onConflict = OnConflictStrategy.IGNORE)

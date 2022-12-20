@@ -10,48 +10,53 @@ import javax.inject.Inject
 class MenuRepository @Inject constructor(
     private val client: MenuClient
 ) {
-
-    suspend fun insertDrinks(
+    /** 메뉴 등록 **/
+    suspend fun insertMenu(
         drinkList: List<MenuEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
-        client.insertDrink(
-            drinkList = drinkList,
+        client.insertMenu(
+            menuList = drinkList,
             successListener = successListener,
             failureListener = failureListener,
         )
     }
 
-    suspend fun insertDrinkDetails(
+    /** 메뉴 상세 조회 **/
+    suspend fun insertMenuDetails(
         detailList: List<MenuDetailEntity>,
         successListener: () -> Unit,
         failureListener: () -> Unit
     ) {
-        client.insertDrinkDetails(
+        client.insertMenuDetails(
             detailList = detailList,
             successListener = successListener,
             failureListener = failureListener,
         )
     }
 
-    fun selectDrinks(
+    /** 메뉴 조회 **/
+    fun selectMenuList(
         group: String,
-    ) = client.selectDrinks(group)
+        name: String
+    ) = client.selectMenuList(group, name)
 
-    fun selectDrinkDetails(
+    /** New 메뉴 조회 **/
+    fun selectNewMenuList(
+        group: String
+    ) = client.selectNewMenuList(group)
+
+    /** 추천 메뉴 조회**/
+    fun selectRecommendMenuList(
+        group: String
+    ) = client.selectRecommendMenuList(group)
+
+    /** 메뉴 상세 조회 **/
+    fun selectMenuDetails(
         indexes: String
-    ): Flow<List<MenuDetailEntity>> {
-        val list = indexes.split(",")
-
-        return try {
-            client.selectDrinkDetail(
-                firstIndex = list[0],
-                secondIndex = if (list.size > 1) list[1] else ""
-            )
-        } catch (e: Exception) {
-            emptyFlow()
-        }
-    }
+    ) = client.selectMenuDetail(
+        indexList = indexes.split(",")
+    )
 
 }

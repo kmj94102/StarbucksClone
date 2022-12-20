@@ -34,6 +34,10 @@ class RouteAction(private val navController: NavController) {
         navController.navigate("${MenuList}?$group,$name")
     }
 
+    fun goToMenuDetail(indexes: String) {
+        navController.navigate("${MenuDetail}?$indexes")
+    }
+
     fun goToMain() {
         navController.navigate(Main) {
             popUpTo(0)

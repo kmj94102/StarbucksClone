@@ -77,7 +77,7 @@ class MainViewModel @Inject constructor(
     private fun insertDrink(
         drinkList: List<MenuEntity>
     ) = viewModelScope.launch {
-        drinkRepository.insertDrinks(
+        drinkRepository.insertMenu(
             drinkList = drinkList,
             successListener = {
                 Log.d("MainViewModel", "insert Drink success")
@@ -95,7 +95,7 @@ class MainViewModel @Inject constructor(
     private fun insertDrinkDetail(
         detailList: List<MenuDetailEntity>
     ) = viewModelScope.launch {
-        drinkRepository.insertDrinkDetails(
+        drinkRepository.insertMenuDetails(
             detailList = detailList,
             successListener = {
                 Log.d("MainViewModel", "insert DrinkDetail success")

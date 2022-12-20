@@ -115,7 +115,10 @@ fun NavigationGraph() {
         }
         /** 메뉴 상세 화면 **/
         customComposable(
-            route = RouteAction.MenuDetail
+            route = "${RouteAction.MenuDetail}?{indexes}",
+            arguments = listOf(
+                navArgument("indexes") { type = NavType.StringType }
+            )
         ) {
             MenuDetailScreen(routeAction = routeAction)
         }

@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.MenuEntity
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.util.getTextStyle
@@ -24,26 +26,40 @@ import com.example.starbucksclone.view.navigation.RouteAction
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MenuListScreen(routeAction: RouteAction) {
+fun MenuListScreen(
+    routeAction: RouteAction,
+    viewModel: MenuListViewModel = hiltViewModel()
+) {
     val state = rememberLazyListState()
     LazyColumn(state = state) {
         stickyHeader {
-            MenuListHeader(routeAction = routeAction, isExpand = state.isScrolled.not())
+            /** 해더 영역 **/
+            MenuListHeader(
+                title = viewModel.name.value,
+                routeAction = routeAction,
+                isExpand = state.isScrolled.not()
+            )
         }
         item {
+            /** 바디 영역 **/
             Spacer(modifier = Modifier.height(35.dp))
-            MenuListBody(routeAction = routeAction)
+            MenuListBody(
+                routeAction = routeAction,
+                list = viewModel.list
+            )
         }
     }
 }
 
+/** 해더 영역 **/
 @Composable
 fun MenuListHeader(
+    title: String,
     routeAction: RouteAction,
     isExpand: Boolean
 ) {
     MainTitle(
-        titleText = "New",
+        titleText = title,
         isExpand = isExpand,
         onLeftIconClick = {
             routeAction.popupBackStack()
@@ -61,36 +77,43 @@ fun MenuListHeader(
     )
 }
 
+/** 바디 영역 **/
 @Composable
-fun MenuListBody(routeAction: RouteAction) {
-    (0..10).forEach { _ ->
-        MenuListItem {
-            routeAction.goToScreen(RouteAction.MenuDetail)
+fun MenuListBody(
+    routeAction: RouteAction,
+    list: List<MenuEntity>
+) {
+    list.forEach {
+        MenuListItem(it) { indexes ->
+            routeAction.goToMenuDetail(indexes)
         }
     }
 }
 
 @Composable
-fun MenuListItem(onClick: () -> Unit) {
+fun MenuListItem(
+    menu: MenuEntity,
+    onClick: (String) -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .nonRippleClickable { onClick() }
+            .nonRippleClickable { onClick(menu.indexes) }
             .padding(bottom = 23.dp)
     ) {
         Spacer(modifier = Modifier.width(24.dp))
         CircleImage(
-            imageURL = "https://image.istarbucks.co.kr/upload/store/skuimg/2022/10/[9200000002259]_20221007082850170.jpg",
+            imageURL = menu.image,
             size = 96.dp
         )
         Spacer(modifier = Modifier.width(15.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = "슈크림 라떼", style = getTextStyle(14, true, Black))
+            Text(text = menu.name, style = getTextStyle(14, true, Black))
             Spacer(modifier = Modifier.height(5.dp))
-            Text(text = "Choux Cream Latte", style = getTextStyle(12, false, DarkGray))
+            Text(text = menu.nameEng, style = getTextStyle(12, false, DarkGray))
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = 6100.priceFormat(), style = getTextStyle(14, true, Black))
+            Text(text = menu.price.priceFormat(), style = getTextStyle(14, true, Black))
         }
         Spacer(modifier = Modifier.width(24.dp))
     }
