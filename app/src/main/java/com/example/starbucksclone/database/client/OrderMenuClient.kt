@@ -23,7 +23,7 @@ class OrderMenuClient @Inject constructor(
         }
     }
     /** Order 메뉴 조회 **/
-    fun selectOrderMenu() =
-        dao.selectOrderMenu()
+    fun selectOrderMenu(group: String) =
+        dao.selectOrderMenu(group)
 
 }

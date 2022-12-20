@@ -14,7 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
@@ -29,9 +31,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 
+/** Order 화면 **/
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
-fun OrderScreen(routeAction: RouteAction) {
+fun OrderScreen(
+    routeAction: RouteAction,
+    viewModel: OrderViewModel = hiltViewModel()
+) {
     val state = rememberLazyListState()
     val pagerState = rememberPagerState()
 
@@ -39,23 +45,35 @@ fun OrderScreen(routeAction: RouteAction) {
         state = state
     ) {
         stickyHeader {
+            /** 해더 영역 **/
             OrderHeader(isExpand = state.firstVisibleItemIndex < 1, pagerState = pagerState)
         }
         item {
+            /** 바디 영역 **/
             HorizontalPager(
                 count = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top
             ) {
                 when (it) {
-                    0 -> AllMenuContainer(routeAction)
-                    1 -> MyMenuContainer()
+                    0 -> {
+                        /** 전체 메뉴 **/
+                        AllMenuContainer(
+                            routeAction = routeAction,
+                            viewModel = viewModel
+                        )
+                    }
+                    1 -> {
+                        /** 나만의 메뉴 **/
+                        MyMenuContainer()
+                    }
                 }
             }
         }
     }
 }
 
+/** 해더 영역 **/
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OrderHeader(
@@ -84,6 +102,7 @@ fun OrderHeader(
                 isShadowVisible = false,
                 modifier = Modifier.fillMaxWidth()
             )
+            /** [전체 메뉴 / 나만의 메뉴 / 홀 케이크 예약] 탭 영역 **/
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -111,32 +130,30 @@ fun OrderHeader(
     }
 }
 
+/** 전체 메뉴 **/
 @Composable
-fun AllMenuContainer(routeAction: RouteAction) {
+fun AllMenuContainer(
+    routeAction: RouteAction,
+    viewModel: OrderViewModel
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.width(24.dp))
-            Text(
-                text = "음료",
-                style = getTextStyle(size = 14, isBold = true, color = Black),
-                modifier = Modifier
-                    .nonRippleClickable { }
-                    .padding(horizontal = 14.dp, vertical = 17.dp)
-            )
-            Text(
-                text = "푸드",
-                style = getTextStyle(size = 14, isBold = false, color = DarkGray),
-                modifier = Modifier
-                    .nonRippleClickable { }
-                    .padding(horizontal = 14.dp, vertical = 17.dp)
-            )
-            Text(
-                text = "상품",
-                style = getTextStyle(size = 14, isBold = false, color = DarkGray),
-                modifier = Modifier
-                    .nonRippleClickable { }
-                    .padding(horizontal = 14.dp, vertical = 17.dp)
-            )
+            listOf("음료", "푸드", "상품").forEach {
+                Text(
+                    text = it,
+                    style = getTextStyle(
+                        size = 14,
+                        isBold = it == viewModel.selectState.value,
+                        color = if (it == viewModel.selectState.value) Black else DarkGray
+                    ),
+                    modifier = Modifier
+                        .nonRippleClickable {
+                            viewModel.event(OrderEvent.SelectChange(it))
+                        }
+                        .padding(horizontal = 14.dp, vertical = 17.dp)
+                )
+            }
         }
         Box(
             modifier = Modifier
@@ -145,19 +162,19 @@ fun AllMenuContainer(routeAction: RouteAction) {
                 .background(Gray)
         )
         Spacer(modifier = Modifier.height(30.dp))
-        (0..10).forEach { _ ->
-            AllMenuItem(title = "New", "") {
+        viewModel.list.forEach {
+            AllMenuItem(it) { group, name ->
                 routeAction.goToScreen(RouteAction.MenuList)
             }
         }
     }
 }
 
+/** 전체 메뉴 선택 아이템 **/
 @Composable
 fun AllMenuItem(
-    title: String,
-    subTitle: String,
-    onClick: () -> Unit
+    menu: OrderMenuEntity,
+    onClick: (String, String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -165,15 +182,15 @@ fun AllMenuItem(
             .fillMaxWidth()
             .padding(start = 23.dp, bottom = 23.dp)
             .nonRippleClickable {
-                onClick()
+                onClick(menu.group, menu.name)
             }
     ) {
-        CircleImage(imageURL = "https://image.istarbucks.co.kr/upload/store/skuimg/2022/10/[9200000002259]_20221007082850170.jpg")
+        CircleImage(imageURL = menu.image)
         Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(text = title, style = getTextStyle(16, true, Black))
-            if (subTitle.isNotEmpty()) {
+            Text(text = menu.name, style = getTextStyle(16, true, Black))
+            if (menu.nameEng.isNotEmpty()) {
                 Text(
-                    text = subTitle,
+                    text = menu.nameEng,
                     style = getTextStyle(12, false, DarkGray),
                     modifier = Modifier.padding(top = 3.dp)
                 )
@@ -182,6 +199,7 @@ fun AllMenuItem(
     }
 }
 
+/** 나만의 메뉴 **/
 @Composable
 fun MyMenuContainer() {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -191,6 +209,7 @@ fun MyMenuContainer() {
     }
 }
 
+/** 나만의 메뉴 선택 아이템 **/
 @Composable
 fun MyMenuItem() {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -210,7 +229,10 @@ fun MyMenuItem() {
                 Text(text = "ICED | Tall | 일회용컵", style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(22.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(painter = painterResource(id = R.drawable.ic_heart), contentDescription = "")
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_heart),
+                        contentDescription = ""
+                    )
                     Spacer(modifier = Modifier.width(14.dp))
                     RoundedButton(text = "담기", isOutline = true, textColor = MainColor) {
 

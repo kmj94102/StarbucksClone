@@ -9,6 +9,8 @@ object Constants {
     const val Order = "order"
     const val Drink = "drink"
     const val DrinkDetail = "drink_detail"
+    const val Food = "food"
+    const val Product = "product"
 
     const val HotAndIced = "HOT & ICED"
     const val HotOnly = "HOT ONLY"

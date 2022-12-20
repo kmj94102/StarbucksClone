@@ -2,6 +2,8 @@ package com.example.starbucksclone.repository
 
 import com.example.starbucksclone.database.client.OrderMenuClient
 import com.example.starbucksclone.database.entity.OrderMenuEntity
+import com.example.starbucksclone.util.Constants
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class OrderMenuRepository @Inject constructor(
@@ -21,6 +23,15 @@ class OrderMenuRepository @Inject constructor(
     }
 
     /** Order 메뉴 조회 **/
-    fun selectOrderMenu() = client.selectOrderMenu()
+    fun selectOrderMenu(
+        group: String
+    ): Flow<List<OrderMenuEntity>> {
+        val selectGroup = when (group) {
+            "푸드" -> Constants.Food
+            "상품" -> Constants.Product
+            else -> Constants.Drink
+        }
+        return client.selectOrderMenu(selectGroup)
+    }
 
 }
