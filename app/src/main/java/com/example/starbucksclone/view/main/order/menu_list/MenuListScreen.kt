@@ -84,8 +84,8 @@ fun MenuListBody(
     list: List<MenuEntity>
 ) {
     list.forEach {
-        MenuListItem(it) { indexes ->
-            routeAction.goToMenuDetail(indexes)
+        MenuListItem(it) { indexes, name ->
+            routeAction.goToMenuDetail(indexes, name)
         }
     }
 }
@@ -93,13 +93,13 @@ fun MenuListBody(
 @Composable
 fun MenuListItem(
     menu: MenuEntity,
-    onClick: (String) -> Unit
+    onClick: (String, String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .nonRippleClickable { onClick(menu.indexes) }
+            .nonRippleClickable { onClick(menu.indexes, menu.name) }
             .padding(bottom = 23.dp)
     ) {
         Spacer(modifier = Modifier.width(24.dp))

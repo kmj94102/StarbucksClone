@@ -59,8 +59,9 @@ class MenuClient @Inject constructor(
     ) = dao.selectRecommendMenuList(group)
 
     /** 메뉴 상세 조회 **/
-    fun selectMenuDetail(
-        indexList: List<String>
-    ) = dao.selectMenuDetail(indexList = indexList)
+    suspend fun selectMenuDetail(
+        indexList: List<String>,
+        name: String
+    ) = dao.selectMenuDetail(indexList = indexList, name = name)
 
 }

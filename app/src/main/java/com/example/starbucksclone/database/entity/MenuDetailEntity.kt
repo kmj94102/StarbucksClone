@@ -27,3 +27,42 @@ fun createDrinkDetailEntity(item: List<String>): MenuDetailEntity? =
     } catch (e: Exception) {
         null
     }
+
+data class MenuDetailInfoResult(
+    val name: String,
+    val nameEng: String,
+    val description: String,
+    val image: String,
+    val type: String,
+    val size: String,
+    val sizePrice: String,
+    val color: String,
+    val drinkType: String,
+    val isBest: Boolean
+) {
+    fun mapper() = MenuDetailInfo(
+        name = name,
+        nameEng = nameEng,
+        description = description,
+        image = image,
+        type = type,
+        sizes = size.split(", "),
+        sizePrices = sizePrice.split(",").map { it.toLong() },
+        color = color,
+        drinkType = drinkType,
+        isBest = isBest
+    )
+}
+
+data class MenuDetailInfo(
+    val name: String = "",
+    val nameEng: String = "",
+    val description: String = "",
+    val image: String = "",
+    val type: String = "",
+    val sizes: List<String> = listOf(),
+    val sizePrices: List<Long> = listOf(),
+    val color: String = "000000",
+    val drinkType: String = "",
+    val isBest: Boolean = false
+)

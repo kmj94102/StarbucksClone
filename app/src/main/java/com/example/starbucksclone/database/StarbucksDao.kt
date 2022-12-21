@@ -53,6 +53,10 @@ interface StarbucksDao {
     /** 메뉴 상세 조회 **/
     @Query("SELECT * FROM MenuDetailEntity WHERE `index` IN (:indexList)")
     fun selectMenuDetail(indexList: List<String>): Flow<List<MenuDetailEntity>>
+    @Query("SELECT detail.name, detail.nameEng, detail.description, detail.image, detail.type, menu.size, menu.sizePrice, menu.color, menu.type as drinkType, menu.isBest\n" +
+            "FROM MenuDetailEntity as detail, MenuEntity as menu \n" +
+            "WHERE detail.`index` IN (:indexList) AND menu.name = :name")
+    suspend fun selectMenuDetail(indexList: List<String>, name: String): List<MenuDetailInfoResult>
 
     /** 카드 등록 **/
     @Insert(onConflict = OnConflictStrategy.IGNORE)

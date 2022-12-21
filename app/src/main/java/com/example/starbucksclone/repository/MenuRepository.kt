@@ -53,10 +53,12 @@ class MenuRepository @Inject constructor(
     ) = client.selectRecommendMenuList(group)
 
     /** 메뉴 상세 조회 **/
-    fun selectMenuDetails(
-        indexes: String
+    suspend fun selectMenuDetails(
+        indexes: String,
+        name: String
     ) = client.selectMenuDetail(
-        indexList = indexes.split(",")
-    )
+        indexList = indexes.split(","),
+        name = name
+    ).map { it.mapper() }
 
 }

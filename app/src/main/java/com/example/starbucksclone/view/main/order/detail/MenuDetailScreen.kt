@@ -1,6 +1,9 @@
 package com.example.starbucksclone.view.main.order.detail
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,20 +20,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.MenuDetailInfo
 import com.example.starbucksclone.ui.theme.*
-import com.example.starbucksclone.util.getTextStyle
-import com.example.starbucksclone.util.nonRippleClickable
-import com.example.starbucksclone.util.priceFormat
+import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.navigation.RouteAction
 
 @Composable
-fun MenuDetailScreen(routeAction: RouteAction) {
+fun MenuDetailScreen(
+    routeAction: RouteAction,
+    viewModel: MenuDetailViewModel = hiltViewModel()
+) {
     val state = rememberLazyListState()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -44,35 +49,49 @@ fun MenuDetailScreen(routeAction: RouteAction) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
+                    /** 상단 이미지 **/
                     AsyncImage(
-                        model = "https://image.istarbucks.co.kr/upload/store/skuimg/2022/10/[9200000002259]_20221007082850170.jpg",
+                        model = viewModel.info.value.image,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFFFF9400))
+                            .background(getColorFromHexCode(viewModel.info.value.color))
                             .height(270.dp)
                     )
+
                 }
                 item {
-                    MenuDetailBody()
+                    /** 바디 영역 **/
+                    MenuDetailBody(
+                        info = viewModel.info.value,
+                        isHotSelected = viewModel.isHotSelect.value,
+                        isOnly = viewModel.info.value.drinkType.contains("ONLY")
+                    ) { isHot ->
+                        viewModel.event(MenuDetailEvent.HotIcedChange(isHot))
+                    }
                 }
             }
 
+            /** 해더 영역 **/
             MenuDetailHeader(
                 routeAction = routeAction,
-                isExpand = state.firstVisibleItemIndex > 1
+                isExpand = state.firstVisibleItemIndex > 1,
+                name = viewModel.info.value.name
             )
         }
+        /** 풋터 영역 **/
         FooterWithButton(text = "주문하기") {
 
         }
     }
 }
 
+/** 해더 영역 **/
 @Composable
 fun MenuDetailHeader(
     routeAction: RouteAction,
-    isExpand: Boolean
+    isExpand: Boolean,
+    name: String
 ) {
     when (isExpand) {
         true -> {
@@ -95,7 +114,7 @@ fun MenuDetailHeader(
                             .nonRippleClickable { routeAction.popupBackStack() }
                     )
                     Text(
-                        text = "디카페인 카페 아메리카노",
+                        text = name,
                         style = if (isExpand) Typography.subtitle1 else Typography.body1,
                         modifier = Modifier
                             .weight(1f)
@@ -148,47 +167,50 @@ fun MenuDetailHeader(
     }
 }
 
+/** 바디 영역 **/
 @Composable
-fun MenuDetailBody() {
+fun MenuDetailBody(
+    info: MenuDetailInfo,
+    isHotSelected: Boolean,
+    isOnly: Boolean,
+    hotIcedChange: (Boolean) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 22.dp)
     ) {
         Text(
-            text = "디카페인 카페 아메리카노",
+            text = info.name,
             style = getTextStyle(24, true, Black),
             modifier = Modifier.padding(top = 20.dp)
         )
 
         Text(
-            text = "스타벅스의 깊고 강렬한 에스프레소의 풍미를 디카페인 카페 아메리카노로 즐겨보세요!",
+            text = info.nameEng,
             style = getTextStyle(12, false, DarkGray),
             modifier = Modifier.padding(top = 4.dp)
         )
 
         Text(
-            text = "디카페인 카페 아메리카노",
+            text = info.description,
             style = getTextStyle(12, false, Black),
             modifier = Modifier.padding(top = 15.dp)
         )
 
         Text(
-            text = 4400.priceFormat(),
+            text = info.sizePrices.getOrNull(0)?.toPriceFormat() ?: "0원",
             style = getTextStyle(20, true, Black),
             modifier = Modifier.padding(top = 20.dp)
         )
 
-        val isHotSelected = remember {
-            mutableStateOf(true)
-        }
-
         HotOrIcedSelector(
-            isHotSelected = isHotSelected.value,
-            isOnly = true,
+            isHotSelected = isHotSelected,
+            isOnly = isOnly,
+            drinkType = info.drinkType,
             modifier = Modifier.padding(top = 22.dp)
         ) {
-            isHotSelected.value = it
+            hotIcedChange(it)
         }
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -221,16 +243,17 @@ fun MenuDetailBody() {
 fun HotOrIcedSelector(
     isHotSelected: Boolean,
     isOnly: Boolean = false,
+    drinkType: String,
     modifier: Modifier = Modifier,
     selectedListener: (Boolean) -> Unit
 ) {
     if (isOnly) {
         RoundedButton(
-            text = if (isHotSelected) "HOT ONLY" else "ICED ONLY",
+            text = if (drinkType == Constants.HotOnly) Constants.HotOnly else Constants.IcedOnly,
             isOutline = true,
             buttonColor = DarkGray,
             textStyle = getTextStyle(14, true),
-            textColor = if (isHotSelected) HotColor else IceColor,
+            textColor = if (drinkType == Constants.HotOnly) HotColor else IceColor,
             modifier = modifier
                 .fillMaxWidth()
                 .height(35.dp)
@@ -252,7 +275,7 @@ fun HotOrIcedSelector(
                     .nonRippleClickable { selectedListener(true) }
             ) {
                 Text(
-                    text = "HOT",
+                    text = Constants.Hot,
                     style = getTextStyle(14, true, if (isHotSelected) White else DarkGray),
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -265,7 +288,7 @@ fun HotOrIcedSelector(
                     .nonRippleClickable { selectedListener(false) }
             ) {
                 Text(
-                    text = "ICED",
+                    text = Constants.Iced,
                     style = getTextStyle(14, true, if (isHotSelected) DarkGray else White),
                     modifier = Modifier.align(Alignment.Center)
                 )
