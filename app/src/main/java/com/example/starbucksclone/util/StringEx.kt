@@ -58,3 +58,13 @@ fun getStarbucksCardImage(): String {
     val random = Random()
     return list[random.nextInt(list.size)]
 }
+
+fun String.getCupSize(): String {
+    val map = mapOf<String, String>(
+        "Short" to "Short\n237ml",
+        "Tall" to "Tall\n355ml",
+        "Grande" to "Grande\n473ml",
+        "Venti" to "Venti\n591ml",
+    )
+    return map.getOrElse(this) { "Short\n237ml" }
+}

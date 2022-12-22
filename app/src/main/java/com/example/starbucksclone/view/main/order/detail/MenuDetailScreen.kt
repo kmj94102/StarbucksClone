@@ -9,12 +9,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,58 +27,77 @@ import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.navigation.RouteAction
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuDetailScreen(
     routeAction: RouteAction,
     viewModel: MenuDetailViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
+    val modalState = ModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        isSkipHalfExpanded = true
+    )
+    val scope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            LazyColumn(
-                state = state,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                item {
-                    /** 상단 이미지 **/
-                    AsyncImage(
-                        model = viewModel.info.value.image,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(getColorFromHexCode(viewModel.info.value.color))
-                            .height(270.dp)
-                    )
-
-                }
-                item {
-                    /** 바디 영역 **/
-                    MenuDetailBody(
-                        info = viewModel.info.value,
-                        isHotSelected = viewModel.isHotSelect.value,
-                        isOnly = viewModel.info.value.drinkType.contains("ONLY")
-                    ) { isHot ->
-                        viewModel.event(MenuDetailEvent.HotIcedChange(isHot))
-                    }
-                }
-            }
-
-            /** 해더 영역 **/
-            MenuDetailHeader(
-                routeAction = routeAction,
-                isExpand = state.firstVisibleItemIndex > 1,
-                name = viewModel.info.value.name
+    ModalBottomSheetLayout(
+        sheetState = modalState,
+        sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
+        sheetContent = {
+            OrderInfoBottomSheetContents(
+                viewModel.info.value
             )
         }
-        /** 풋터 영역 **/
-        FooterWithButton(text = "주문하기") {
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                LazyColumn(
+                    state = state,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    item {
+                        /** 상단 이미지 **/
+                        AsyncImage(
+                            model = viewModel.info.value.image,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(getColorFromHexCode(viewModel.info.value.color))
+                                .height(270.dp)
+                        )
 
+                    }
+                    item {
+                        /** 바디 영역 **/
+                        MenuDetailBody(
+                            info = viewModel.info.value,
+                            isHotSelected = viewModel.isHotSelect.value,
+                            isOnly = viewModel.info.value.drinkType.contains("ONLY")
+                        ) { isHot ->
+                            viewModel.event(MenuDetailEvent.HotIcedChange(isHot))
+                        }
+                    }
+                }
+
+                /** 해더 영역 **/
+                MenuDetailHeader(
+                    routeAction = routeAction,
+                    isExpand = state.firstVisibleItemIndex > 1,
+                    name = viewModel.info.value.name
+                )
+            }
+            /** 풋터 영역 **/
+            FooterWithButton(text = "주문하기") {
+                scope.launch {
+                    modalState.show()
+                }
+            }
         }
     }
 }
