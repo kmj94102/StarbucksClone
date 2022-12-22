@@ -57,6 +57,7 @@ class RouteAction(private val navController: NavController) {
         const val CardCharging = "card charging"
         const val MenuList = "menu list"
         const val MenuDetail = "menu detail"
+        const val MenuSearch = "menu search"
     }
 
 }

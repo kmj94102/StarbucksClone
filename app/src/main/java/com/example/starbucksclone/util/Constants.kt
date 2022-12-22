@@ -17,4 +17,7 @@ object Constants {
     const val IcedOnly = "ICED ONLY"
     const val Hot = "HOT"
     const val Iced = "Iced"
+
+    const val SearchHistory = "search history"
+    const val HistoryClassification = "/|/"
 }

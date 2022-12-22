@@ -46,7 +46,11 @@ fun OrderScreen(
     ) {
         stickyHeader {
             /** 해더 영역 **/
-            OrderHeader(isExpand = state.firstVisibleItemIndex < 1, pagerState = pagerState)
+            OrderHeader(
+                isExpand = state.firstVisibleItemIndex < 1,
+                routeAction = routeAction,
+                pagerState = pagerState
+            )
         }
         item {
             /** 바디 영역 **/
@@ -78,6 +82,7 @@ fun OrderScreen(
 @Composable
 fun OrderHeader(
     isExpand: Boolean,
+    routeAction: RouteAction,
     pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
@@ -95,7 +100,9 @@ fun OrderHeader(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(top = 10.dp, end = 17.dp)
-                            .nonRippleClickable { }
+                            .nonRippleClickable {
+                                routeAction.goToScreen(RouteAction.MenuSearch)
+                            }
                     )
                 },
                 isExpand = isExpand,

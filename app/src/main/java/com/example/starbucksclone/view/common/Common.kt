@@ -24,6 +24,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -427,6 +429,67 @@ fun CommonTextField(
             )
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@Composable
+fun SearchTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    modifier: Modifier = Modifier
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    BasicTextField(
+        value = value,
+        modifier = modifier,
+        readOnly = false,
+        singleLine = true,
+        onValueChange = onValueChange,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = { keyboardController?.hide() }
+        ),
+        textStyle = getTextStyle(14),
+        cursorBrush = SolidColor(MainColor),
+        decorationBox = @Composable { innerTextField ->
+            TextFieldDefaults.TextFieldDecorationBox(
+                value = value,
+                innerTextField = innerTextField,
+                enabled = true,
+                singleLine = true,
+                shape = RoundedCornerShape(4.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color(0xFF787878),
+                    textColor = Black,
+                    containerColor = LightGray,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
+                visualTransformation = VisualTransformation.None,
+                interactionSource = interactionSource,
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
+                placeholder = {
+                    Text(
+                        text = hint,
+                        style = getTextStyle(14, false, DarkGray)
+                    )
+                },
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        contentDescription = "search",
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+            )
+        }
+    )
 }
 
 /**
