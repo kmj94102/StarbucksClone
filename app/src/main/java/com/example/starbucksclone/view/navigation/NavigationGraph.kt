@@ -15,6 +15,7 @@ import com.example.starbucksclone.view.main.home.rewards.RewordScreen
 import com.example.starbucksclone.view.main.order.detail.MenuDetailScreen
 import com.example.starbucksclone.view.main.order.menu_list.MenuListScreen
 import com.example.starbucksclone.view.main.order.search.MenuSearchScreen
+import com.example.starbucksclone.view.main.order.search.result.MenuSearchResultScreen
 import com.example.starbucksclone.view.main.pay.PayScreen
 import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
@@ -129,6 +130,15 @@ fun NavigationGraph() {
             route = RouteAction.MenuSearch
         ) {
             MenuSearchScreen(routeAction = routeAction)
+        }
+        /** 메뉴 검색 결과 **/
+        customComposable(
+            route = "${RouteAction.MenuSearchResult}/{value}",
+            arguments = listOf(
+                navArgument("value") { NavType.StringType }
+            )
+        ) {
+            MenuSearchResultScreen(routeAction = routeAction)
         }
     }
 

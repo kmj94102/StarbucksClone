@@ -45,3 +45,13 @@ fun createDrinkEntity(item: List<String>): MenuEntity? =
         e.printStackTrace()
         null
     }
+
+data class MenuSearchResult(
+    val name: String,
+    val nameEng: String,
+    val indexes: String,
+    val image: String,
+    val price: Int,
+    val color: String,
+    val isBest: Boolean
+)

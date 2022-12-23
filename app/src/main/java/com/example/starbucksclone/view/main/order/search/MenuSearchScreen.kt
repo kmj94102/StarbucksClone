@@ -35,6 +35,7 @@ fun MenuSearchScreen(
     val search = remember {
         mutableStateOf("")
     }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
@@ -45,6 +46,10 @@ fun MenuSearchScreen(
                 value = search.value,
                 onValueChange = {
                     search.value = it
+                },
+                onSearchListener = {
+                    viewModel.event(MenuSearchEvent.Search(search.value))
+                    routeAction.goToMenuSearchResult(search.value)
                 },
                 hint = "검색",
                 modifier = Modifier.weight(1f)
@@ -79,9 +84,16 @@ fun MenuSearchScreen(
             ) {
                 item {
                     viewModel.historyList.forEach {
-                        SearchHistory(it) {
-
-                        }
+                        SearchHistory(
+                            text = it,
+                            onClickListener = { value ->
+                                viewModel.event(MenuSearchEvent.Search(value))
+                                routeAction.goToMenuSearchResult(value)
+                            },
+                            deleteListener = { value ->
+                                viewModel.event(MenuSearchEvent.DeleteHistory(value))
+                            }
+                        )
                     }
 
                     Box(
@@ -98,6 +110,9 @@ fun MenuSearchScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 23.dp)
+                            .nonRippleClickable {
+                                viewModel.event(MenuSearchEvent.AllDelete)
+                            }
                     )
                 }
             }
@@ -108,6 +123,7 @@ fun MenuSearchScreen(
 @Composable
 fun SearchHistory(
     text: String,
+    onClickListener: (String) -> Unit,
     deleteListener: (String) -> Unit
 ) {
     Row(
@@ -116,7 +132,13 @@ fun SearchHistory(
             .fillMaxWidth()
             .padding(horizontal = 23.dp, vertical = 10.dp)
     ) {
-        Text(text = text, style = getTextStyle(14), modifier = Modifier.weight(1f))
+        Text(
+            text = text,
+            style = getTextStyle(14),
+            modifier = Modifier
+                .weight(1f)
+                .nonRippleClickable { onClickListener(text) }
+        )
         Image(
             painter = painterResource(id = R.drawable.ic_close),
             contentDescription = "",

@@ -46,6 +46,10 @@ interface StarbucksDao {
     @Query("SELECT * FROM MenuEntity WHERE isRecommendation = 1 AND orderGroup = :group")
     fun selectRecommendMenuList(group: String): Flow<List<MenuEntity>>
 
+    /** 검색 메뉴 조회 **/
+    @Query("SELECT name, nameEng, indexes, image, price, color, isBest FROM MenuEntity WHERE name like :name AND orderGroup like :group")
+    suspend fun selectSearchMenuList(group: String, name: String): List<MenuSearchResult>
+
     /** 메뉴 상세 등록 **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMenuDetails(detailList: List<MenuDetailEntity>)

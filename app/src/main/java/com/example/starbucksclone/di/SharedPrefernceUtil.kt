@@ -21,6 +21,8 @@ class SharedPreferencesUtil {
         const val LoginId = "login_id"
         const val Nickname = "nickname"
         const val DatabaseVersion = "database_version"
+        const val SearchHistory = "search history"
+        const val HistoryClassification = "/|/"
     }
 }
 

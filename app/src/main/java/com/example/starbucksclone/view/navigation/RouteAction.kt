@@ -38,6 +38,10 @@ class RouteAction(private val navController: NavController) {
         navController.navigate("${MenuDetail}?$indexes/$name")
     }
 
+    fun goToMenuSearchResult(value: String) {
+        navController.navigate("${MenuSearchResult}/$value")
+    }
+
     fun goToMain() {
         navController.navigate(Main) {
             popUpTo(0)
@@ -58,6 +62,7 @@ class RouteAction(private val navController: NavController) {
         const val MenuList = "menu list"
         const val MenuDetail = "menu detail"
         const val MenuSearch = "menu search"
+        const val MenuSearchResult = "menu search result"
     }
 
 }

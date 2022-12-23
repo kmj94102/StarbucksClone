@@ -436,6 +436,7 @@ fun CommonTextField(
 fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    onSearchListener: () -> Unit,
     hint: String,
     modifier: Modifier = Modifier
 ) {
@@ -453,7 +454,10 @@ fun SearchTextField(
             imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(
-            onSearch = { keyboardController?.hide() }
+            onSearch = {
+                keyboardController?.hide()
+                onSearchListener()
+            }
         ),
         textStyle = getTextStyle(14),
         cursorBrush = SolidColor(MainColor),
