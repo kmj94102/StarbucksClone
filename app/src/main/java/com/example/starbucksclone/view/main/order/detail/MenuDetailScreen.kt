@@ -11,11 +11,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,13 +43,36 @@ fun MenuDetailScreen(
         isSkipHalfExpanded = true
     )
     val scope = rememberCoroutineScope()
+    val status = viewModel.status.collectAsState().value
+    val context = LocalContext.current
 
     ModalBottomSheetLayout(
         sheetState = modalState,
         sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         sheetContent = {
             OrderInfoBottomSheetContents(
-                viewModel.info.value
+                id = viewModel.id ?: "",
+                info = viewModel.info.value,
+                isHot = when (viewModel.info.value.drinkType) {
+                    Constants.HotOnly -> {
+                        true
+                    }
+                    Constants.IcedOnly -> {
+                        false
+                    }
+                    else -> {
+                        viewModel.isHotSelect.value
+                    }
+                },
+                heartClickListener = {
+                    viewModel.event(MenuDetailEvent.MyMenuRegister(it))
+                },
+                cartClickListener = {
+
+                },
+                orderClickListener = {
+
+                }
             )
         }
     ) {
@@ -98,6 +123,16 @@ fun MenuDetailScreen(
                     modalState.show()
                 }
             }
+        }
+    }
+
+    when(status) {
+        is MenuDetailViewModel.MenuDetailStatus.Init -> {}
+        is MenuDetailViewModel.MenuDetailStatus.Failure -> {
+            context.toast(status.msg)
+        }
+        is MenuDetailViewModel.MenuDetailStatus.MyMenuSuccess -> {
+            context.toast("나만의 메뉴 등록을 완료하였습니다.")
         }
     }
 }

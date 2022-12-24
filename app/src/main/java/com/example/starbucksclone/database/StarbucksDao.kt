@@ -57,7 +57,7 @@ interface StarbucksDao {
     /** 메뉴 상세 조회 **/
     @Query("SELECT * FROM MenuDetailEntity WHERE `index` IN (:indexList)")
     fun selectMenuDetail(indexList: List<String>): Flow<List<MenuDetailEntity>>
-    @Query("SELECT detail.name, detail.nameEng, detail.description, detail.image, detail.type, menu.size, menu.sizePrice, menu.color, menu.type as drinkType, menu.isBest\n" +
+    @Query("SELECT detail.`index`, detail.name, detail.nameEng, detail.description, detail.image, detail.type, menu.size, menu.sizePrice, menu.color, menu.type as drinkType, menu.isBest\n" +
             "FROM MenuDetailEntity as detail, MenuEntity as menu \n" +
             "WHERE detail.`index` IN (:indexList) AND menu.name = :name")
     suspend fun selectMenuDetail(indexList: List<String>, name: String): List<MenuDetailInfoResult>
@@ -94,4 +94,9 @@ interface StarbucksDao {
     @Query("DELETE FROM CardEntity WHERE cardNumber = :cardNumber")
     suspend fun deleteCard(cardNumber: String)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertMyMenu(myMenuEntity: MyMenuEntity)
+
+    @Query("SELECT * FROM MyMenuEntity WHERE id = :id ORDER BY date")
+    fun selectMyMenu(id: String): Flow<List<MyMenuEntity>>
 }

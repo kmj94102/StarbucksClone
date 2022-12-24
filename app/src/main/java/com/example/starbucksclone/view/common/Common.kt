@@ -242,6 +242,9 @@ fun SegmentButton(
 ) {
     OutlinedCard(
         border = BorderStroke(1.dp, Color(0xFFAAAAAA)),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = White
+        ),
         shape = RoundedCornerShape(round),
         modifier = modifier.height(35.dp)
     ) {
@@ -334,6 +337,7 @@ fun CommonTextField(
     trailingIcons: @Composable () -> Unit = {},
     supportText: String = "",
     errorText: String = "",
+    contentPadding: PaddingValues = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -383,14 +387,15 @@ fun CommonTextField(
                     ),
                     visualTransformation = visualTransformation,
                     interactionSource = interactionSource,
-                    contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
+                    contentPadding = contentPadding,
                     placeholder = if (isLabel.not()) {
                         {
                             Text(
                                 text = hint,
                                 style = Typography.body1,
                                 fontSize = 14.sp,
-                                color = DarkGray
+                                color = DarkGray,
+                                maxLines = 1
                             )
                         }
                     } else {
@@ -402,7 +407,8 @@ fun CommonTextField(
                                 text = hint,
                                 style = Typography.body1,
                                 fontSize = 14.sp,
-                                color = Black
+                                color = Black,
+                                maxLines = 1
                             )
                         }
                     } else {

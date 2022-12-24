@@ -16,8 +16,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.ui.theme.*
+import com.example.starbucksclone.util.getEmoji
 import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.priceFormat
@@ -69,7 +71,7 @@ fun OrderScreen(
                     }
                     1 -> {
                         /** 나만의 메뉴 **/
-                        MyMenuContainer()
+                        MyMenuContainer(viewModel.myMenuList)
                     }
                 }
             }
@@ -208,32 +210,49 @@ fun AllMenuItem(
 
 /** 나만의 메뉴 **/
 @Composable
-fun MyMenuContainer() {
+fun MyMenuContainer(
+    myMenuList: List<MyMenuEntity>
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        (0..10).forEach { _ ->
-            MyMenuItem()
+        if (myMenuList.isEmpty()) {
+            Text(
+                text = "등록된 나만의 메뉴가 없습니다.",
+                style = getTextStyle(20),
+                modifier = Modifier.padding(top = 20.dp, start = 23.dp, end = 23.dp)
+            )
+            Text(
+                text = "좋아하는 메뉴에 ${getEmoji(0x1F49A)}를 누르고 편리하게 주문해 보세요. 등록된 나만의 메뉴는 HOME 화면에서도 바로 주문하실 수 있습니다.",
+                style = getTextStyle(14, false, DarkGray),
+                modifier = Modifier.padding(top = 10.dp, start = 23.dp, end = 23.dp)
+            )
+        } else {
+            myMenuList.forEach {
+                MyMenuItem(it)
+            }
         }
     }
 }
 
 /** 나만의 메뉴 선택 아이템 **/
 @Composable
-fun MyMenuItem() {
+fun MyMenuItem(
+    myMenu: MyMenuEntity
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
             CircleImage(
-                imageURL = "https://image.istarbucks.co.kr/upload/store/skuimg/2022/10/[9200000002259]_20221007082850170.jpg",
+                imageURL = myMenu.image,
                 size = 96.dp,
                 modifier = Modifier.padding(top = 27.dp, start = 23.dp)
             )
             Column(modifier = Modifier.padding(top = 45.dp, start = 15.dp, end = 23.dp)) {
-                Text(text = "콜드 브루", style = getTextStyle(14, true, Black))
+                Text(text = myMenu.anotherName.ifEmpty { myMenu.name }, style = getTextStyle(14, true, Black))
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Cold Brew", style = getTextStyle(12, false, DarkGray))
+                Text(text = myMenu.nameEng, style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = 4500.priceFormat(), style = getTextStyle(14, true, Black))
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(text = "ICED | Tall | 일회용컵", style = getTextStyle(12, false, DarkGray))
+                Text(text = myMenu.property, style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(22.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(

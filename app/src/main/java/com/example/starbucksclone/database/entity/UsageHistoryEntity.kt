@@ -7,10 +7,12 @@ import androidx.room.PrimaryKey
 @Entity
 data class UsageHistoryEntity(
     @PrimaryKey(autoGenerate = true) val index: Int = 0,
+    @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "cardNumber") val cardNumber: String,
     @ColumnInfo(name = "type") val type: String,
     @ColumnInfo(name = "whereToUse") val whereToUse: String,
-    @ColumnInfo(name = "time") val time: Long,
-    @ColumnInfo(name = "amount") val amount: Long,
-    @ColumnInfo(name = "detailIndex") val detailIndex: Int,
+    @ColumnInfo(name = "date") val date: Long,
+    @ColumnInfo(name = "amount") val amount: Int,
+    @ColumnInfo(name = "price") val price: Int,
+    @ColumnInfo(name = "name") val name: String
 )

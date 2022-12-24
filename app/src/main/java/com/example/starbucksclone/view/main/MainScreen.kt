@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -34,7 +35,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun MainScreen(
     routeAction: RouteAction,
-//    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     // 스테이터스 바 색상 지정
     val systemUiController = rememberSystemUiController()

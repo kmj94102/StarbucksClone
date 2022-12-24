@@ -12,9 +12,11 @@ import com.example.starbucksclone.util.Constants
         MenuEntity::class,
         MenuDetailEntity::class,
         CardEntity::class,
-        UsageHistoryEntity::class
+        UsageHistoryEntity::class,
+        MyMenuEntity::class,
+        CartEntity::class
     ],
-    version = 1
+    version = 5
 )
 abstract class StarbucksDatabase: RoomDatabase() {
 

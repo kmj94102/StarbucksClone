@@ -26,28 +26,89 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.MenuDetailInfo
+import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.ui.theme.*
-import com.example.starbucksclone.util.getCupSize
-import com.example.starbucksclone.util.getTextStyle
-import com.example.starbucksclone.util.nonRippleClickable
-import com.example.starbucksclone.util.priceFormat
+import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.common.SegmentButton
 
 @Composable
 fun OrderInfoBottomSheetContents(
-    info: MenuDetailInfo
+    id: String,
+    info: MenuDetailInfo,
+    isHot: Boolean,
+    heartClickListener: (MyMenuEntity) -> Unit,
+    cartClickListener: () -> Unit,
+    orderClickListener: () -> Unit
 ) {
+    val isShow = remember {
+        mutableStateOf(false)
+    }
+    val amount = remember {
+        mutableStateOf(1)
+    }
+    val cupSelected = remember {
+        mutableStateOf("매장컵")
+    }
+    val cupSizeSelected = remember {
+        mutableStateOf(0)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(.95f)
     ) {
         OrderInfoHeader(info = info)
-        OrderInfoBody(info = info, modifier = Modifier.weight(1f))
-        OrderInfoFooter(info = info)
+        OrderInfoBody(
+            info = info,
+            cupSelected = cupSelected,
+            cupSizeSelected = cupSizeSelected,
+            modifier = Modifier.weight(1f)
+        )
+        OrderInfoFooter(
+            price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 },
+            amount = amount,
+            heartClickListener = {
+                isShow.value = true
+            },
+            cartClickListener = {
+
+            },
+            orderClickListener = {
+
+            }
+        )
     }
+
+    MyMenuRegisterDialog(
+        isShow = isShow.value,
+        name = info.name,
+        property = getProperty(isHot, info.sizes.getOrElse(cupSizeSelected.value) { "" }, cupSelected.value),
+        okClickListener = {
+            isShow.value = false
+            heartClickListener(
+                MyMenuEntity(
+                    id = id,
+                    menuIndex = info.index,
+                    name = info.name,
+                    nameEng = info.nameEng,
+                    image = info.image,
+                    anotherName = it,
+                    price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 }.toInt(),
+                    property = getProperty(isHot, info.sizes.getOrElse(cupSizeSelected.value) { "" }, cupSelected.value),
+                    date = System.currentTimeMillis()
+                )
+            )
+        },
+        cancelClickListener = {
+            isShow.value = false
+        }
+    )
 }
+
+private fun getProperty(isHot: Boolean, size: String, cupSelected: String) =
+    "${if (isHot) "HOT" else "ICED"} | $size | $cupSelected"
 
 @Composable
 private fun OrderInfoHeader(
@@ -89,21 +150,13 @@ private fun OrderInfoHeader(
 @Composable
 private fun OrderInfoBody(
     info: MenuDetailInfo,
+    cupSelected: MutableState<String>,
+    cupSizeSelected: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
-    val cupSelected = remember {
-        mutableStateOf("매장컵")
-    }
-    val cupSizeSelected = remember {
-        mutableStateOf(info.sizes.getOrElse(0) { "" })
-    }
     val cupList = listOf("매장컵", "개인컵", "일회용컵")
     var visibleState by remember {
         mutableStateOf(cupSelected.value != "매장컵")
-    }
-
-    if (info.sizes.isNotEmpty()) {
-        cupSizeSelected.value = info.sizes[0]
     }
 
     LazyColumn(
@@ -122,12 +175,13 @@ private fun OrderInfoBody(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 item {
-                    info.sizes.forEach {
+                    info.sizes.forEachIndexed { index, size ->
                         CupSelector(
-                            size = it,
-                            isSelected = cupSizeSelected.value == it
-                        ) { selected ->
-                            cupSizeSelected.value = selected
+                            size = size,
+                            index = index,
+                            isSelected = cupSizeSelected.value == index
+                        ) { currentIndex ->
+                            cupSizeSelected.value = currentIndex
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                     }
@@ -183,7 +237,8 @@ private fun OrderInfoBody(
 fun CupSelector(
     size: String,
     isSelected: Boolean,
-    selectedChangeListener: (String) -> Unit
+    index: Int,
+    selectedChangeListener: (Int) -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -195,7 +250,7 @@ fun CupSelector(
                 shape = RoundedCornerShape(8.dp)
             )
             .nonRippleClickable {
-                selectedChangeListener(size)
+                selectedChangeListener(index)
             }
     ) {
         val imageSize = getCupImageSize(size)
@@ -242,19 +297,20 @@ private fun getCupImageSize(size: String) = when (size) {
 
 @Composable
 private fun OrderInfoFooter(
-    info: MenuDetailInfo,
-    modifier: Modifier = Modifier
+    price: Long,
+    amount: MutableState<Int>,
+    modifier: Modifier = Modifier,
+    heartClickListener: () -> Unit,
+    cartClickListener: () -> Unit,
+    orderClickListener: () -> Unit
 ) {
+
     Surface(
         elevation = 6.dp,
         color = White,
         modifier = modifier
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-            val amount = remember {
-                mutableStateOf(1)
-            }
-            val price = 4400
             val (minus, plus, count, priceText, heart, cart, order) = createRefs()
 
             Icon(
@@ -303,7 +359,7 @@ private fun OrderInfoFooter(
             )
 
             Text(
-                text = (price * amount.value).priceFormat(),
+                text = (price * amount.value).toPriceFormat(),
                 style = getTextStyle(20, true),
                 modifier = Modifier.constrainAs(priceText) {
                     top.linkTo(parent.top, 22.dp)
@@ -319,7 +375,7 @@ private fun OrderInfoFooter(
                         bottom.linkTo(parent.bottom, 18.dp)
                         start.linkTo(parent.start, 23.dp)
                     }
-                    .nonRippleClickable { }
+                    .nonRippleClickable { heartClickListener() }
             )
 
             RoundedButton(
@@ -329,17 +385,19 @@ private fun OrderInfoFooter(
                 onClick = {
 
                 },
-                modifier = Modifier.constrainAs(cart) {
-                    top.linkTo(order.top)
-                    bottom.linkTo(order.bottom)
-                    end.linkTo(order.start, 12.dp)
-                }
+                modifier = Modifier
+                    .constrainAs(cart) {
+                        top.linkTo(order.top)
+                        bottom.linkTo(order.bottom)
+                        end.linkTo(order.start, 12.dp)
+                    }
+                    .nonRippleClickable { cartClickListener() }
             )
 
             RoundedButton(
                 text = "주문하기",
                 onClick = {
-
+                    orderClickListener()
                 },
                 modifier = Modifier.constrainAs(order) {
                     top.linkTo(priceText.bottom, 15.dp)

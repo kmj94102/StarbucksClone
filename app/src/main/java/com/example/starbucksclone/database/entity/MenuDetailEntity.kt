@@ -29,6 +29,7 @@ fun createDrinkDetailEntity(item: List<String>): MenuDetailEntity? =
     }
 
 data class MenuDetailInfoResult(
+    val index: Int,
     val name: String,
     val nameEng: String,
     val description: String,
@@ -41,6 +42,7 @@ data class MenuDetailInfoResult(
     val isBest: Boolean
 ) {
     fun mapper() = MenuDetailInfo(
+        index = index,
         name = name,
         nameEng = nameEng,
         description = description,
@@ -55,6 +57,7 @@ data class MenuDetailInfoResult(
 }
 
 data class MenuDetailInfo(
+    val index: Int = 0,
     val name: String = "",
     val nameEng: String = "",
     val description: String = "",
