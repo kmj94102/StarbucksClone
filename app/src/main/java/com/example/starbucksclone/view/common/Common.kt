@@ -74,16 +74,19 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainTitle(
     @DrawableRes leftIconRes: Int? = R.drawable.ic_back,
+    leftIconTint: Color = Black,
     rightContents: @Composable (BoxScope.() -> Unit)? = null,
     onLeftIconClick: () -> Unit = {},
     titleText: String,
+    titleColor: Color = Black,
     isExpand: Boolean = true,
     isShadowVisible: Boolean = true,
+    backgroundColor: Color = White,
     modifier: Modifier = Modifier
 ) {
     Surface(
         shadowElevation = if (isShadowVisible && isExpand.not()) 6.dp else 0.dp,
-        color = White,
+        color = backgroundColor,
         modifier = modifier
     ) {
         val alignment by animateAlignmentAsState(
@@ -99,9 +102,10 @@ fun MainTitle(
                 .heightIn(min = 42.dp)
         ) {
             leftIconRes?.let {
-                Image(
+                Icon(
                     painter = painterResource(id = it),
                     contentDescription = null,
+                    tint = leftIconTint,
                     modifier = Modifier
                         .padding(top = 9.dp, start = 8.dp, bottom = 9.dp)
                         .nonRippleClickable { onLeftIconClick() }
@@ -110,7 +114,11 @@ fun MainTitle(
             rightContents?.let { it() }
             Text(
                 text = titleText,
-                style = if (isExpand) Typography.subtitle1 else Typography.body1,
+                style = if (isExpand) {
+                    getTextStyle(24, true, titleColor)
+                } else {
+                    getTextStyle(16, false, titleColor)
+                },
                 modifier = Modifier
                     .align(alignment)
                     .padding(top = paddingTop, start = 16.dp, end = 16.dp)

@@ -43,38 +43,54 @@ fun OrderScreen(
     val state = rememberLazyListState()
     val pagerState = rememberPagerState()
 
-    LazyColumn(
-        state = state
-    ) {
-        stickyHeader {
-            /** 해더 영역 **/
-            OrderHeader(
-                isExpand = state.firstVisibleItemIndex < 1,
-                routeAction = routeAction,
-                pagerState = pagerState
-            )
-        }
-        item {
-            /** 바디 영역 **/
-            HorizontalPager(
-                count = 2,
-                state = pagerState,
-                verticalAlignment = Alignment.Top
-            ) {
-                when (it) {
-                    0 -> {
-                        /** 전체 메뉴 **/
-                        AllMenuContainer(
-                            routeAction = routeAction,
-                            viewModel = viewModel
-                        )
-                    }
-                    1 -> {
-                        /** 나만의 메뉴 **/
-                        MyMenuContainer(viewModel.myMenuList)
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = state,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            stickyHeader {
+                /** 해더 영역 **/
+                OrderHeader(
+                    isExpand = state.firstVisibleItemIndex < 1,
+                    routeAction = routeAction,
+                    pagerState = pagerState
+                )
+            }
+            item {
+                /** 바디 영역 **/
+                HorizontalPager(
+                    count = 2,
+                    state = pagerState,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    when (it) {
+                        0 -> {
+                            /** 전체 메뉴 **/
+                            AllMenuContainer(
+                                routeAction = routeAction,
+                                viewModel = viewModel
+                            )
+                        }
+                        1 -> {
+                            /** 나만의 메뉴 **/
+                            MyMenuContainer(viewModel.myMenuList)
+                        }
                     }
                 }
             }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(58.dp)
+                .background(DarkBrown)
+                .nonRippleClickable {
+                    routeAction.goToScreen(RouteAction.Cart)
+                }
+        ) {
+
         }
     }
 }
@@ -246,7 +262,10 @@ fun MyMenuItem(
                 modifier = Modifier.padding(top = 27.dp, start = 23.dp)
             )
             Column(modifier = Modifier.padding(top = 45.dp, start = 15.dp, end = 23.dp)) {
-                Text(text = myMenu.anotherName.ifEmpty { myMenu.name }, style = getTextStyle(14, true, Black))
+                Text(
+                    text = myMenu.anotherName.ifEmpty { myMenu.name },
+                    style = getTextStyle(14, true, Black)
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = myMenu.nameEng, style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(10.dp))

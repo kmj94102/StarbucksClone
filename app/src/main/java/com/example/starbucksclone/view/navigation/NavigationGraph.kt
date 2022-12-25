@@ -12,6 +12,7 @@ import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScree
 import com.example.starbucksclone.view.login.terms.TermsScreen
 import com.example.starbucksclone.view.main.MainScreen
 import com.example.starbucksclone.view.main.home.rewards.RewordScreen
+import com.example.starbucksclone.view.main.order.cart.CartScreen
 import com.example.starbucksclone.view.main.order.detail.MenuDetailScreen
 import com.example.starbucksclone.view.main.order.menu_list.MenuListScreen
 import com.example.starbucksclone.view.main.order.search.MenuSearchScreen
@@ -139,6 +140,12 @@ fun NavigationGraph() {
             )
         ) {
             MenuSearchResultScreen(routeAction = routeAction)
+        }
+        /** 장바구니 화면 **/
+        customComposable(
+            route = RouteAction.Cart
+        ) {
+            CartScreen(routeAction = routeAction)
         }
     }
 
