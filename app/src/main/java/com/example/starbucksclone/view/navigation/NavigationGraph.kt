@@ -15,6 +15,7 @@ import com.example.starbucksclone.view.main.home.rewards.RewordScreen
 import com.example.starbucksclone.view.main.order.cart.CartScreen
 import com.example.starbucksclone.view.main.order.detail.MenuDetailScreen
 import com.example.starbucksclone.view.main.order.menu_list.MenuListScreen
+import com.example.starbucksclone.view.main.order.payment.PaymentScreen
 import com.example.starbucksclone.view.main.order.search.MenuSearchScreen
 import com.example.starbucksclone.view.main.order.search.result.MenuSearchResultScreen
 import com.example.starbucksclone.view.main.pay.PayScreen
@@ -146,6 +147,12 @@ fun NavigationGraph() {
             route = RouteAction.Cart
         ) {
             CartScreen(routeAction = routeAction)
+        }
+        /** 결제하기 화면 **/
+        customComposable(
+            route = RouteAction.Payment
+        ) {
+            PaymentScreen(routeAction = routeAction)
         }
     }
 

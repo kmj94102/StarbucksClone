@@ -14,6 +14,7 @@ val LightGray = Color(0xFFF9F9F9)
 val Black = Color(0xFF202020)
 val White = Color(0xFFFFFFFF)
 val DarkBrown = Color(0xFF2D2926)
+val Brown = Color(0xFF7D5A3B)
 val BorderColor = Color(0xFFB6B6B6)
 
 val HotColor = Color(0xFFC9433B)

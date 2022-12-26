@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,9 +28,9 @@ import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.priceFormat
 import com.example.starbucksclone.view.common.CircleImage
 import com.example.starbucksclone.view.common.MainTitle
+import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.navigation.RouteAction
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CartScreen(
     routeAction: RouteAction
@@ -37,24 +38,29 @@ fun CartScreen(
     val state = rememberLazyListState()
     val list = listOf<String>("", "", "", "")
 
-    LazyColumn(
-        state = state,
-        contentPadding = PaddingValues(bottom = 100.dp),
-        modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
-        stickyHeader {
-            CartHeader(
-                routeAction = routeAction,
-                isExpand = state.firstVisibleItemIndex < 1
-            )
-        }
-        item {
-            if (list.isEmpty()) {
-                CartEmptyBody()
-            } else {
-                CartBody(list)
+        CartHeader(
+            routeAction = routeAction,
+            isExpand = state.firstVisibleItemIndex < 1
+        )
+        LazyColumn(
+            state = state,
+            contentPadding = PaddingValues(bottom = 100.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            item {
+                if (list.isEmpty()) {
+                    CartEmptyBody()
+                } else {
+                    CartBody(list)
+                }
             }
         }
+        CartFooter(routeAction = routeAction)
     }
 }
 
@@ -203,10 +209,11 @@ fun CartItem() {
             painter = painterResource(id = R.drawable.ic_minus_circle),
             contentDescription = "minus",
             tint = if (itemAmount.value <= 1) Gray else Color(0xFF585858),
-            modifier = Modifier.constrainAs(minus) {
-                start.linkTo(name.start)
-                top.linkTo(property.bottom, 21.dp)
-            }
+            modifier = Modifier
+                .constrainAs(minus) {
+                    start.linkTo(name.start)
+                    top.linkTo(property.bottom, 21.dp)
+                }
                 .nonRippleClickable {
                     if (itemAmount.value > 1) {
                         itemAmount.value = itemAmount.value - 1
@@ -266,5 +273,47 @@ fun CartItem() {
                 }
         )
 
+    }
+}
+
+@Composable
+fun CartFooter(
+    routeAction: RouteAction
+) {
+    Surface(
+        elevation = 6.dp,
+        color = White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 6.dp)
+    ) {
+        Column {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "총 1건",
+                    style = getTextStyle(12, true, Brown),
+                    modifier = Modifier.padding(start = 23.dp, top = 21.dp)
+                )
+                Text(
+                    text = 4400.priceFormat(),
+                    textAlign = TextAlign.End,
+                    style = getTextStyle(24, true, Black),
+                    modifier = Modifier
+                        .padding(top = 20.dp, end = 23.dp)
+                        .weight(1f)
+                )
+            }
+            RoundedButton(
+                text = "주문하기",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 23.dp, vertical = 13.dp)
+            ) {
+                routeAction.goToScreen(RouteAction.Payment)
+            }
+        }
     }
 }

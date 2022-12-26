@@ -551,8 +551,11 @@ fun CustomCheckBox(
         Text(
             text = text,
             style = textStyle,
-            modifier = Modifier
-                .weight(1f)
+            modifier = if (isNextButton) {
+                Modifier.weight(1f)
+            } else {
+                Modifier
+            }
         )
         if (isNextButton) {
             Icon(
