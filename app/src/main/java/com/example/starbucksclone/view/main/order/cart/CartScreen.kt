@@ -1,6 +1,5 @@
 package com.example.starbucksclone.view.main.order.cart
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,9 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getTextStyle
+import com.example.starbucksclone.util.isScrolled
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.priceFormat
 import com.example.starbucksclone.view.common.CircleImage
@@ -33,17 +35,20 @@ import com.example.starbucksclone.view.navigation.RouteAction
 
 @Composable
 fun CartScreen(
-    routeAction: RouteAction
+    routeAction: RouteAction,
+    viewModel: CartViewModel = hiltViewModel()
 ) {
     val state = rememberLazyListState()
-    val list = listOf<String>("", "", "", "")
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         CartHeader(
             routeAction = routeAction,
-            isExpand = state.firstVisibleItemIndex < 1
+            isExpand = state.isScrolled.not(),
+            allDeleteListener = {
+                viewModel.event(CartEvent.AllDeleteCartItems)
+            }
         )
         LazyColumn(
             state = state,
@@ -53,21 +58,37 @@ fun CartScreen(
                 .weight(1f)
         ) {
             item {
-                if (list.isEmpty()) {
+                if (viewModel.list.isEmpty()) {
                     CartEmptyBody()
                 } else {
-                    CartBody(list)
+                    viewModel.list.forEachIndexed { index, cartItem ->
+                        CartItem(
+                            cartEntity = cartItem,
+                            amountChangeListener = {
+                                viewModel.event(CartEvent.AmountChange(value = it, index = index))
+                            },
+                            deleteListener = {
+                                viewModel.event(CartEvent.DeleteCartItem(it))
+                            }
+                        )
+                    }
                 }
             }
         }
-        CartFooter(routeAction = routeAction)
+        if (viewModel.list.isNotEmpty()) {
+            CartFooter(
+                routeAction = routeAction,
+                cartItems = viewModel.list
+            )
+        }
     }
 }
 
 @Composable
 fun CartHeader(
     routeAction: RouteAction,
-    isExpand: Boolean
+    isExpand: Boolean,
+    allDeleteListener: () -> Unit
 ) {
     MainTitle(
         titleText = "장바구니",
@@ -86,7 +107,7 @@ fun CartHeader(
                     .align(Alignment.TopEnd)
                     .padding(top = 10.dp, end = 17.dp)
                     .nonRippleClickable {
-
+                        allDeleteListener()
                     }
             )
         },
@@ -132,21 +153,11 @@ fun CartEmptyBody() {
 }
 
 @Composable
-fun CartBody(
-    list: List<String>
+fun CartItem(
+    cartEntity: CartEntity,
+    amountChangeListener: (Int) -> Unit,
+    deleteListener: (Int) -> Unit
 ) {
-    list.forEach { _ ->
-        CartItem()
-    }
-}
-
-@Composable
-fun CartItem() {
-    val itemAmount = remember {
-        mutableStateOf(1)
-    }
-    val itemPrice = 4400
-
     ConstraintLayout(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -154,7 +165,7 @@ fun CartItem() {
             totalPrice, minus, plus, delete, line) = createRefs()
 
         CircleImage(
-            imageURL = "https://image.istarbucks.co.kr/cardImg/20220712/009226_WEB.png",
+            imageURL = cartEntity.image,
             modifier = Modifier.constrainAs(image) {
                 top.linkTo(parent.top, 30.dp)
                 start.linkTo(parent.start, 23.dp)
@@ -164,59 +175,71 @@ fun CartItem() {
         Image(
             painter = painterResource(id = R.drawable.ic_circle_cancel),
             contentDescription = "delete",
-            modifier = Modifier.constrainAs(delete) {
-                top.linkTo(parent.top, 21.dp)
-                end.linkTo(parent.end, 21.dp)
-            }
+            modifier = Modifier
+                .constrainAs(delete) {
+                    top.linkTo(parent.top, 21.dp)
+                    end.linkTo(parent.end, 21.dp)
+                }
+                .nonRippleClickable {
+                    deleteListener(cartEntity.index)
+                }
         )
 
         Text(
-            text = "디카페인 카페 아메리카노",
+            text = cartEntity.name,
             style = getTextStyle(14),
             modifier = Modifier.constrainAs(name) {
                 top.linkTo(parent.top, 47.dp)
                 start.linkTo(image.end, 15.dp)
+                end.linkTo(parent.end, 21.dp)
+                width = Dimension.fillToConstraints
             }
         )
         Text(
-            text = "DECAF Caffe Americano",
+            text = cartEntity.nameEng,
             style = getTextStyle(12, false, BorderColor),
             modifier = Modifier.constrainAs(nameEng) {
                 top.linkTo(name.bottom, 5.dp)
                 start.linkTo(name.start)
+                end.linkTo(parent.end, 21.dp)
+                width = Dimension.fillToConstraints
             }
         )
 
         Text(
-            text = "HOT | Tall | 개인컵",
+            text = cartEntity.property,
             style = getTextStyle(12, false, DarkGray),
             modifier = Modifier.constrainAs(property) {
                 top.linkTo(nameEng.bottom, 13.dp)
                 start.linkTo(name.start)
+                end.linkTo(parent.end, 21.dp)
+                width = Dimension.fillToConstraints
             }
         )
 
         Text(
-            text = itemPrice.priceFormat(),
+            text = cartEntity.price.priceFormat(),
             style = getTextStyle(12, false, DarkGray),
             modifier = Modifier.constrainAs(price) {
                 top.linkTo(property.top)
                 end.linkTo(parent.end, 22.dp)
+                end.linkTo(parent.end, 21.dp)
+                width = Dimension.fillToConstraints
             }
         )
 
         Icon(
             painter = painterResource(id = R.drawable.ic_minus_circle),
             contentDescription = "minus",
-            tint = if (itemAmount.value <= 1) Gray else Color(0xFF585858),
+            tint = if (cartEntity.amount <= 1) Gray else Color(0xFF585858),
             modifier = Modifier
                 .constrainAs(minus) {
                     start.linkTo(name.start)
                     top.linkTo(property.bottom, 21.dp)
                 }
                 .nonRippleClickable {
-                    if (itemAmount.value > 1) {
-                        itemAmount.value = itemAmount.value - 1
+                    if (cartEntity.amount > 1) {
+                        amountChangeListener(-1)
                     }
                 }
         )
@@ -224,21 +247,21 @@ fun CartItem() {
         Icon(
             painter = painterResource(id = R.drawable.ic_plus_circle),
             contentDescription = "plus",
-            tint = if (itemAmount.value > 100) Gray else Color(0xFF585858),
+            tint = if (cartEntity.amount > 100) Gray else Color(0xFF585858),
             modifier = Modifier
                 .constrainAs(plus) {
                     start.linkTo(minus.end, 44.dp)
                     top.linkTo(minus.top)
                 }
                 .nonRippleClickable {
-                    if (itemAmount.value < 100) {
-                        itemAmount.value = itemAmount.value + 1
+                    if (cartEntity.amount < 100) {
+                        amountChangeListener(1)
                     }
                 }
         )
 
         Text(
-            text = "${itemAmount.value}",
+            text = "${cartEntity.amount}",
             textAlign = TextAlign.Center,
             style = getTextStyle(14),
             modifier = Modifier.constrainAs(amount) {
@@ -251,7 +274,7 @@ fun CartItem() {
         )
 
         Text(
-            text = (itemAmount.value * itemPrice).priceFormat(),
+            text = (cartEntity.amount * cartEntity.price).priceFormat(),
             style = getTextStyle(14),
             modifier = Modifier.constrainAs(totalPrice) {
                 top.linkTo(plus.top)
@@ -278,8 +301,15 @@ fun CartItem() {
 
 @Composable
 fun CartFooter(
-    routeAction: RouteAction
+    routeAction: RouteAction,
+    cartItems: List<CartEntity>
 ) {
+    val totalPrice = cartItems
+        .map { it.price * it.amount }
+        .reduceOrNull { acc, i -> acc + i }
+        ?.priceFormat()
+        ?: 0.priceFormat()
+
     Surface(
         elevation = 6.dp,
         color = White,
@@ -293,12 +323,12 @@ fun CartFooter(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "총 1건",
+                    text = "총 ${cartItems.size}건",
                     style = getTextStyle(12, true, Brown),
                     modifier = Modifier.padding(start = 23.dp, top = 21.dp)
                 )
                 Text(
-                    text = 4400.priceFormat(),
+                    text = totalPrice,
                     textAlign = TextAlign.End,
                     style = getTextStyle(24, true, Black),
                     modifier = Modifier

@@ -7,9 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.database.entity.MenuDetailInfo
 import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.di.getLoginId
+import com.example.starbucksclone.repository.CartRepository
 import com.example.starbucksclone.repository.MenuRepository
 import com.example.starbucksclone.repository.MyMenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class MenuDetailViewModel @Inject constructor(
     private val repository: MenuRepository,
     private val myMenuRepository: MyMenuRepository,
+    private val cartRepository: CartRepository,
     private val pref: SharedPreferences,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -65,6 +68,9 @@ class MenuDetailViewModel @Inject constructor(
             is MenuDetailEvent.MyMenuRegister -> {
                 insertMyMenu(event.myMenu)
             }
+            is MenuDetailEvent.AddCartItem -> {
+                insertCartItem(event.cartEntity)
+            }
         }
     }
 
@@ -84,12 +90,27 @@ class MenuDetailViewModel @Inject constructor(
         _status.value = MenuDetailStatus.Init
     }
 
+    private fun insertCartItem(
+        cartEntity: CartEntity
+    ) = viewModelScope.launch {
+        cartRepository.insertCartItem(
+            cartEntity = cartEntity,
+            successListener = {
+                _status.value = MenuDetailStatus.CartAdditionSuccess
+            },
+            failureListener = {
+                _status.value = MenuDetailStatus.Failure("장바구니 등록을 실패하였습니다.")
+            }
+        )
+    }
+
     sealed class MenuDetailStatus {
         object Init : MenuDetailStatus()
         object MyMenuSuccess : MenuDetailStatus()
         data class Failure(
             val msg: String
         ) : MenuDetailStatus()
+        object CartAdditionSuccess: MenuDetailStatus()
     }
 
 }

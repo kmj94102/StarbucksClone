@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.database.entity.MenuDetailInfo
 import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.ui.theme.*
@@ -38,7 +39,7 @@ fun OrderInfoBottomSheetContents(
     info: MenuDetailInfo,
     isHot: Boolean,
     heartClickListener: (MyMenuEntity) -> Unit,
-    cartClickListener: () -> Unit,
+    cartClickListener: (CartEntity) -> Unit,
     orderClickListener: () -> Unit
 ) {
     val isShow = remember {
@@ -73,7 +74,23 @@ fun OrderInfoBottomSheetContents(
                 isShow.value = true
             },
             cartClickListener = {
-
+                cartClickListener(
+                    CartEntity(
+                        id = id,
+                        menuIndex = 9,
+                        name = info.name,
+                        nameEng = info.nameEng,
+                        property = getProperty(
+                            isHot,
+                            info.sizes.getOrElse(cupSizeSelected.value) { "" },
+                            cupSelected.value
+                        ),
+                        image = info.image,
+                        price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 }.toInt(),
+                        amount = amount.value,
+                        date = System.currentTimeMillis()
+                    )
+                )
             },
             orderClickListener = {
 
@@ -84,7 +101,11 @@ fun OrderInfoBottomSheetContents(
     MyMenuRegisterDialog(
         isShow = isShow.value,
         name = info.name,
-        property = getProperty(isHot, info.sizes.getOrElse(cupSizeSelected.value) { "" }, cupSelected.value),
+        property = getProperty(
+            isHot,
+            info.sizes.getOrElse(cupSizeSelected.value) { "" },
+            cupSelected.value
+        ),
         okClickListener = {
             isShow.value = false
             heartClickListener(
@@ -96,7 +117,11 @@ fun OrderInfoBottomSheetContents(
                     image = info.image,
                     anotherName = it,
                     price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 }.toInt(),
-                    property = getProperty(isHot, info.sizes.getOrElse(cupSizeSelected.value) { "" }, cupSelected.value),
+                    property = getProperty(
+                        isHot,
+                        info.sizes.getOrElse(cupSizeSelected.value) { "" },
+                        cupSelected.value
+                    ),
                     date = System.currentTimeMillis()
                 )
             )
@@ -383,7 +408,7 @@ private fun OrderInfoFooter(
                 isOutline = true,
                 textColor = MainColor,
                 onClick = {
-
+                    cartClickListener()
                 },
                 modifier = Modifier
                     .constrainAs(cart) {
@@ -391,7 +416,6 @@ private fun OrderInfoFooter(
                         bottom.linkTo(order.bottom)
                         end.linkTo(order.start, 12.dp)
                     }
-                    .nonRippleClickable { cartClickListener() }
             )
 
             RoundedButton(

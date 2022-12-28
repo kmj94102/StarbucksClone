@@ -94,9 +94,28 @@ interface StarbucksDao {
     @Query("DELETE FROM CardEntity WHERE cardNumber = :cardNumber")
     suspend fun deleteCard(cardNumber: String)
 
+    /** 나만의 메뉴 추가 **/
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMyMenu(myMenuEntity: MyMenuEntity)
 
+    /** 나만의 메뉴 조회 **/
     @Query("SELECT * FROM MyMenuEntity WHERE id = :id ORDER BY date")
     fun selectMyMenu(id: String): Flow<List<MyMenuEntity>>
+
+    /** 장바구니 추가 **/
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCartItem(cartEntity: CartEntity)
+
+    /** 장바구니 조회 **/
+    @Query("SELECT * FROM CartEntity WHERE id = :id ORDER BY date")
+    fun selectCartItems(id: String): Flow<List<CartEntity>>
+
+    /** 장바구니 삭제 **/
+    @Query("DELETE FROM CartEntity WHERE `index` = :index")
+    suspend fun deleteCartItem(index: Int)
+
+    /** 장바구니 전체 삭제 **/
+    @Query("DELETE FROM CartEntity WHERE id = :id")
+    suspend fun allDeleteCartItems(id: String)
+
 }

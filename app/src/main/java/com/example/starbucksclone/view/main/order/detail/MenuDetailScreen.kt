@@ -28,6 +28,7 @@ import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.RoundedButton
+import com.example.starbucksclone.view.main.order.cart.CartAdditionCompleteBottomSheet
 import com.example.starbucksclone.view.navigation.RouteAction
 import kotlinx.coroutines.launch
 
@@ -50,30 +51,52 @@ fun MenuDetailScreen(
         sheetState = modalState,
         sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         sheetContent = {
-            OrderInfoBottomSheetContents(
-                id = viewModel.id ?: "",
-                info = viewModel.info.value,
-                isHot = when (viewModel.info.value.drinkType) {
-                    Constants.HotOnly -> {
-                        true
-                    }
-                    Constants.IcedOnly -> {
-                        false
-                    }
-                    else -> {
-                        viewModel.isHotSelect.value
-                    }
-                },
-                heartClickListener = {
-                    viewModel.event(MenuDetailEvent.MyMenuRegister(it))
-                },
-                cartClickListener = {
-
-                },
-                orderClickListener = {
-
+            when (status) {
+                is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
+                    CartAdditionCompleteBottomSheet(
+                        goToCartListener = {
+                            routeAction.goToScreen(RouteAction.Cart)
+                        },
+                        finishListener = {
+                            routeAction.popupBackStack()
+                        },
+                        closeListener = {
+                            scope.launch {
+                                modalState.hide()
+                            }
+                        }
+                    )
                 }
-            )
+                else -> {
+                    OrderInfoBottomSheetContents(
+                        id = viewModel.id ?: "",
+                        info = viewModel.info.value,
+                        isHot = when (viewModel.info.value.drinkType) {
+                            Constants.HotOnly -> {
+                                true
+                            }
+                            Constants.IcedOnly -> {
+                                false
+                            }
+                            else -> {
+                                viewModel.isHotSelect.value
+                            }
+                        },
+                        heartClickListener = {
+                            viewModel.event(MenuDetailEvent.MyMenuRegister(it))
+                        },
+                        cartClickListener = {
+                            scope.launch {
+                                modalState.hide()
+                            }
+                            viewModel.event(MenuDetailEvent.AddCartItem(it))
+                        },
+                        orderClickListener = {
+
+                        }
+                    )
+                }
+            }
         }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -126,13 +149,18 @@ fun MenuDetailScreen(
         }
     }
 
-    when(status) {
+    when (status) {
         is MenuDetailViewModel.MenuDetailStatus.Init -> {}
         is MenuDetailViewModel.MenuDetailStatus.Failure -> {
             context.toast(status.msg)
         }
         is MenuDetailViewModel.MenuDetailStatus.MyMenuSuccess -> {
             context.toast("나만의 메뉴 등록을 완료하였습니다.")
+        }
+        is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
+            scope.launch {
+                modalState.show()
+            }
         }
     }
 }
