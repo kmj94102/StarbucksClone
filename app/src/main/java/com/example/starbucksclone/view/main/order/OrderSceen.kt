@@ -82,6 +82,7 @@ fun OrderScreen(
             }
         }
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(58.dp)
@@ -90,7 +91,20 @@ fun OrderScreen(
                     routeAction.goToScreen(RouteAction.Cart)
                 }
         ) {
-
+            Spacer(modifier = Modifier.weight(1f))
+            Box(modifier = Modifier.padding(end = 20.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_shopping_basket),
+                    contentDescription = "cart",
+                )
+                Text(
+                    text = "${viewModel.cartCount.value}",
+                    style = getTextStyle(14, true, White),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(top = 8.dp, bottom = 3.dp)
+                )
+            }
         }
     }
 }

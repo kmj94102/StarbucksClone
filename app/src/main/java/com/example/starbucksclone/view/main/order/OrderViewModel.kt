@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.database.entity.OrderMenuEntity
 import com.example.starbucksclone.di.getLoginId
+import com.example.starbucksclone.repository.CartRepository
 import com.example.starbucksclone.repository.MyMenuRepository
 import com.example.starbucksclone.repository.OrderMenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class OrderViewModel @Inject constructor(
     private val repository: OrderMenuRepository,
     private val myMenuRepository: MyMenuRepository,
+    private val cartRepository: CartRepository,
     private val pref: SharedPreferences
 ): ViewModel() {
 
@@ -33,11 +35,15 @@ class OrderViewModel @Inject constructor(
     private val _myMenuList = mutableStateListOf<MyMenuEntity>()
     val myMenuList: List<MyMenuEntity> = _myMenuList
 
-    val id = pref.getLoginId()
+    private val _cartCount = mutableStateOf(0)
+    val cartCount: State<Int> = _cartCount
+
+    val id = pref.getLoginId() ?: ""
 
     init {
         selectOderMenu()
         selectMyMenuList()
+        selectCartItems()
     }
 
     fun event(event: OrderEvent) {
@@ -62,12 +68,23 @@ class OrderViewModel @Inject constructor(
     }
 
     private fun selectMyMenuList() {
-        myMenuRepository.selectMyMenuList(id = id ?: "")
+        myMenuRepository.selectMyMenuList(id = id)
             .onEach {
                 _myMenuList.clear()
                 _myMenuList.addAll(it)
             }
             .catch { _myMenuList.clear() }
+            .launchIn(viewModelScope)
+    }
+
+    private fun selectCartItems() {
+        cartRepository.selectCartItems(id = id)
+            .onEach {
+                _cartCount.value = it.size
+            }
+            .catch {
+                _cartCount.value = 0
+            }
             .launchIn(viewModelScope)
     }
 
