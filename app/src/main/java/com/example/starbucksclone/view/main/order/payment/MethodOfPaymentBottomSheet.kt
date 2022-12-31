@@ -6,21 +6,35 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getTextStyle
+import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.util.priceFormat
+import com.example.starbucksclone.util.toPriceFormat
 import com.example.starbucksclone.view.common.CustomCheckBox
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.RoundedButton
 
 @Composable
-fun MethodOfPaymentBottomSheet() {
+fun MethodOfPaymentBottomSheet(
+    cardList: List<CardInfo>,
+    selectCardNumber: String,
+    chargingListener: (String) -> Unit,
+    selectChangerListener: (String) -> Unit
+) {
+    val selectIndex = remember {
+        mutableStateOf(cardList.indexOfFirst { it.cardNumber == selectCardNumber })
+    }
+    var changedCardNumber = selectCardNumber
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +75,9 @@ fun MethodOfPaymentBottomSheet() {
                 isOutline = true,
                 textColor = MainColor
             ) {
-
+                chargingListener(
+                    cardList.getOrNull(index = selectIndex.value)?.cardNumber ?: ""
+                )
             }
         }
 
@@ -72,9 +88,16 @@ fun MethodOfPaymentBottomSheet() {
                 .background(LightGray)
         ) {
             item {
-                (0..3).forEachIndexed { index, _ ->
-                    MethodOfPaymentCardItem()
-                    if (index < 3) {
+                cardList.forEachIndexed { index, info ->
+                    MethodOfPaymentCardItem(
+                        info = info,
+                        index = index,
+                        selectIndex = selectIndex.value
+                    ) {
+                        selectIndex.value = it
+                        changedCardNumber = cardList[it].cardNumber
+                    }
+                    if (index < cardList.size - 1) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -89,29 +112,35 @@ fun MethodOfPaymentBottomSheet() {
 
         Spacer(modifier = Modifier.weight(1f))
         FooterWithButton(text = "선택하기") {
-
+            selectChangerListener(changedCardNumber)
         }
 
     }
 }
 
 @Composable
-fun MethodOfPaymentCardItem() {
+fun MethodOfPaymentCardItem(
+    info: CardInfo,
+    index: Int,
+    selectIndex: Int,
+    selectChange: (Int) -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 23.dp)
+            .nonRippleClickable { selectChange(index) }
     ) {
         AsyncImage(
-            model = "https://image.istarbucks.co.kr/cardImg/20220907/009446_WEB.png",
+            model = info.image,
             contentDescription = null,
             modifier = Modifier.size(58.dp, 36.dp)
         )
         Column(modifier = Modifier.padding(start = 10.dp)) {
-            Text(text = "해커톤", style = getTextStyle(12, false, DarkGray))
+            Text(text = info.name, style = getTextStyle(12, false, DarkGray))
             Text(
-                text = 70.priceFormat(),
+                text = info.balance.toPriceFormat(),
                 style = getTextStyle(16, true, Black),
                 modifier = Modifier.padding(top = 3.dp)
             )
@@ -119,10 +148,12 @@ fun MethodOfPaymentCardItem() {
         Spacer(modifier = Modifier.weight(1f))
         CustomCheckBox(
             text = "",
-            selected = false,
+            selected = index == selectIndex,
             checkedIcon = R.drawable.ic_checkbox_check,
             uncheckedIcon = R.drawable.ic_checkbox_unchecked,
-            onClick = { }
+            onClick = {
+                selectChange(index)
+            }
         )
     }
 }

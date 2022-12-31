@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
@@ -25,7 +26,9 @@ import com.example.starbucksclone.view.common.Progressbar
 import kotlinx.coroutines.delay
 
 @Composable
-fun OrderResultBottomSheet() {
+fun OrderResultBottomSheet(
+    cartList: List<CartEntity>
+) {
     val state = remember {
         mutableStateOf(0)
     }
@@ -56,7 +59,7 @@ fun OrderResultBottomSheet() {
         Spacer(modifier = Modifier.height(13.dp))
         OrderResultProgress(state = state.value)
         Spacer(modifier = Modifier.height(30.dp))
-        OrderResultBody(modifier = Modifier.weight(1f))
+        OrderResultBody(cartList = cartList, modifier = Modifier.weight(1f))
     }
 }
 
@@ -157,14 +160,17 @@ fun OrderResultProgress(state: Int) {
 }
 
 @Composable
-fun OrderResultBody(modifier: Modifier = Modifier) {
+fun OrderResultBody(
+    cartList: List<CartEntity>,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(LightGray)
     ) {
         Text(
-            text = "주문 내역(1)",
+            text = "주문 내역(${cartList.size})",
             style = getTextStyle(16, true, Black),
             modifier = Modifier.padding(top = 30.dp, start = 23.dp)
         )
@@ -174,9 +180,9 @@ fun OrderResultBody(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
         ) {
             item {
-                (0..3).forEachIndexed { index, _ ->
-                    OrderResultItem()
-                    if (index < 3) {
+                cartList.forEachIndexed { index, info ->
+                    OrderResultItem(info)
+                    if (index < cartList.size - 1) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -192,14 +198,14 @@ fun OrderResultBody(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun OrderResultItem() {
+fun OrderResultItem(info: CartEntity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 23.dp)
     ) {
         CircleImage(
-            imageURL = "https://image.istarbucks.co.kr/cardImg/20220907/009446_WEB.png",
+            imageURL = info.image,
             size = 77.dp
         )
         Column(
@@ -208,11 +214,11 @@ fun OrderResultItem() {
                 .padding(horizontal = 15.dp)
         ) {
             Text(
-                text = "디카페인 카페 아메리카노",
+                text = info.name,
                 style = getTextStyle(14),
                 modifier = Modifier.padding(top = 6.dp, bottom = 8.dp)
             )
-            Text(text = "Hot | Tall | 매장컵", style = getTextStyle(12, false, DarkGray))
+            Text(text = info.property, style = getTextStyle(12, false, DarkGray))
         }
     }
 }
