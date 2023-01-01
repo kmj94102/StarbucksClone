@@ -118,4 +118,12 @@ interface StarbucksDao {
     @Query("DELETE FROM CartEntity WHERE id = :id")
     suspend fun allDeleteCartItems(id: String)
 
+    /** 이용내역 추가 **/
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUsageHistory(vararg usageHistoryEntity: UsageHistoryEntity)
+
+    /** 이용내역 조회 **/
+    @Query("SELECT * FROM UsageHistoryEntity WHERE id = :id")
+    fun selectUsageHistoryList(id: String): Flow<List<UsageHistoryEntity>>
+
 }

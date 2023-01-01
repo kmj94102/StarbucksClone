@@ -40,7 +40,7 @@ fun OrderInfoBottomSheetContents(
     isHot: Boolean,
     heartClickListener: (MyMenuEntity) -> Unit,
     cartClickListener: (CartEntity) -> Unit,
-    orderClickListener: () -> Unit
+    orderClickListener: (CartEntity) -> Unit
 ) {
     val isShow = remember {
         mutableStateOf(false)
@@ -75,25 +75,27 @@ fun OrderInfoBottomSheetContents(
             },
             cartClickListener = {
                 cartClickListener(
-                    CartEntity(
+                    createCartItem(
                         id = id,
-                        menuIndex = 9,
-                        name = info.name,
-                        nameEng = info.nameEng,
-                        property = getProperty(
-                            isHot,
-                            info.sizes.getOrElse(cupSizeSelected.value) { "" },
-                            cupSelected.value
-                        ),
-                        image = info.image,
-                        price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 }.toInt(),
-                        amount = amount.value,
-                        date = System.currentTimeMillis()
+                        info = info,
+                        isHot = isHot,
+                        cupSelected = cupSelected.value,
+                        cupSizeSelected = cupSizeSelected.value,
+                        amount = amount.value
                     )
                 )
             },
             orderClickListener = {
-
+                orderClickListener(
+                    createCartItem(
+                        id = id,
+                        info = info,
+                        isHot = isHot,
+                        cupSelected = cupSelected.value,
+                        cupSizeSelected = cupSizeSelected.value,
+                        amount = amount.value
+                    )
+                )
             }
         )
     }
@@ -134,6 +136,29 @@ fun OrderInfoBottomSheetContents(
 
 private fun getProperty(isHot: Boolean, size: String, cupSelected: String) =
     "${if (isHot) "HOT" else "ICED"} | $size | $cupSelected"
+
+private fun createCartItem(
+    id: String,
+    info: MenuDetailInfo,
+    isHot: Boolean,
+    cupSizeSelected: Int,
+    cupSelected: String,
+    amount: Int
+) = CartEntity(
+    id = id,
+    menuIndex = info.index,
+    name = info.name,
+    nameEng = info.nameEng,
+    property = getProperty(
+        isHot,
+        info.sizes.getOrElse(cupSizeSelected) { "" },
+        cupSelected
+    ),
+    image = info.image,
+    price = info.sizePrices.getOrElse(cupSizeSelected) { 0 }.toInt(),
+    amount = amount,
+    date = System.currentTimeMillis()
+)
 
 @Composable
 private fun OrderInfoHeader(

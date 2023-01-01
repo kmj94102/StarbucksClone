@@ -42,6 +42,10 @@ class RouteAction(private val navController: NavController) {
         navController.navigate("${MenuSearchResult}/$value")
     }
 
+    fun goToPayment(item: String) {
+        navController.navigate("${Payment}/$item")
+    }
+
     fun goToMain() {
         navController.navigate(Main) {
             popUpTo(0)

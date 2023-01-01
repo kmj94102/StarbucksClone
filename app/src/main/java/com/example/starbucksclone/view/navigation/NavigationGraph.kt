@@ -148,9 +148,18 @@ fun NavigationGraph() {
         ) {
             CartScreen(routeAction = routeAction)
         }
-        /** 결제하기 화면 **/
+        /** 결제하기 화면 (장바구니) **/
         customComposable(
             route = RouteAction.Payment
+        ) {
+            PaymentScreen(routeAction = routeAction)
+        }
+        /** 결제하기 화면 (단건) **/
+        customComposable(
+            route = "${RouteAction.Payment}/{item}",
+            arguments = listOf(
+                navArgument("item") { NavType.StringType }
+            )
         ) {
             PaymentScreen(routeAction = routeAction)
         }

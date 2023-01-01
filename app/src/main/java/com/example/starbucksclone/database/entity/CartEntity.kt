@@ -16,4 +16,18 @@ data class CartEntity(
     @ColumnInfo(name = "amount") val amount: Int,
     @ColumnInfo(name = "property") val property: String,
     @ColumnInfo(name = "date") val date: Long
-)
+) {
+    fun historyMapper(
+        cardNumber: String,
+    ) = UsageHistoryEntity(
+        index = 0,
+        id = id,
+        cardNumber = cardNumber,
+        type = "",
+        whereToUse = "",
+        date = System.currentTimeMillis(),
+        amount = amount,
+        price = price,
+        name = name
+    )
+}

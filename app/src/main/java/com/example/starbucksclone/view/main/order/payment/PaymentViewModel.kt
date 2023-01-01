@@ -1,9 +1,11 @@
 package com.example.starbucksclone.view.main.order.payment
 
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.CardInfo
@@ -11,6 +13,8 @@ import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.di.getLoginId
 import com.example.starbucksclone.repository.CardRepository
 import com.example.starbucksclone.repository.CartRepository
+import com.example.starbucksclone.repository.UsageHistoryRepository
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,7 +24,9 @@ import javax.inject.Inject
 class PaymentViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val cardRepository: CardRepository,
-    private val pref: SharedPreferences
+    private val usageHistoryRepository: UsageHistoryRepository,
+    private val pref: SharedPreferences,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _selectCard = mutableStateOf(CardInfo())
@@ -40,9 +46,20 @@ class PaymentViewModel @Inject constructor(
     private val _status = MutableStateFlow<PaymentStatus>(PaymentStatus.Init)
     val status: StateFlow<PaymentStatus> = _status
 
+    private var isCart = true
+
     init {
+        savedStateHandle.get<String>("item")?.let {
+            val item = Gson().fromJson(Uri.decode(it), CartEntity::class.java)
+            _cartLst.clear()
+            _cartLst.add(item)
+
+            isCart = false
+        }
         selectCardList()
-        selectCartLit()
+        if (isCart) {
+            selectCartLit()
+        }
     }
 
     fun event(event: PaymentEvent) {
@@ -86,10 +103,38 @@ class PaymentViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun payment(totalPrice: Int) =viewModelScope.launch {
+    private fun payment(totalPrice: Int) = viewModelScope.launch {
         cardRepository.updateBalance(
             cardNumber = selectCard.value.cardNumber,
             balance = selectCard.value.balance - totalPrice.toLong(),
+            successListener = {
+                if (isCart) {
+                    deleteCartItems()
+                } else {
+                    insertUsageHistoryList()
+                }
+            },
+            failureListener = {
+                _status.value = PaymentStatus.PaymentFailure
+            }
+        )
+    }
+
+    private fun deleteCartItems() = viewModelScope.launch {
+        cartRepository.allDeleteCartItems(
+            id = id,
+            successListener = {
+                insertUsageHistoryList()
+            },
+            failureListener = {
+                _status.value = PaymentStatus.PaymentFailure
+            }
+        )
+    }
+
+    private fun insertUsageHistoryList() = viewModelScope.launch {
+        usageHistoryRepository.insertUsageHistory(
+            list = _cartLst.map { it.historyMapper(selectCard.value.cardNumber) },
             successListener = {
                 _status.value = PaymentStatus.PaymentSuccess
             },
@@ -100,9 +145,9 @@ class PaymentViewModel @Inject constructor(
     }
 
     sealed class PaymentStatus {
-        object Init: PaymentStatus()
-        object PaymentSuccess: PaymentStatus()
-        object PaymentFailure: PaymentStatus()
+        object Init : PaymentStatus()
+        object PaymentSuccess : PaymentStatus()
+        object PaymentFailure : PaymentStatus()
     }
 
 }

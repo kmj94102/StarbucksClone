@@ -1,5 +1,6 @@
 package com.example.starbucksclone.view.main.order.detail
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.main.order.cart.CartAdditionCompleteBottomSheet
 import com.example.starbucksclone.view.navigation.RouteAction
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -92,7 +94,7 @@ fun MenuDetailScreen(
                             viewModel.event(MenuDetailEvent.AddCartItem(it))
                         },
                         orderClickListener = {
-
+                            routeAction.goToPayment(Uri.encode(Gson().toJson(it)))
                         }
                     )
                 }
