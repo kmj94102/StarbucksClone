@@ -83,4 +83,7 @@ class MenuClient @Inject constructor(
         failureListener()
     }
 
+    /** 홈 화면 새로 나온 메뉴 조회 **/
+    fun selectHomeNewMenuList() = dao.selectHomeNewMenuList()
+
 }

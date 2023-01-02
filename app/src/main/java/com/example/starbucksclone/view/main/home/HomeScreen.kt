@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.HomeNewMenu
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getEmoji
 import com.example.starbucksclone.util.nonRippleClickable
@@ -68,7 +69,14 @@ fun HomeScreen(
 
             /** 새로 나온 메뉴 영역 **/
             item {
-                HomeNewMenu()
+                if (viewModel.newMenuList.isNotEmpty()){
+                    HomeNewMenuContainer(
+                        list = viewModel.newMenuList,
+                        onClickListener = { indexes, name ->
+                            routeAction.goToMenuDetail(indexes, name)
+                        }
+                    )
+                }
             }
 
             /** 이미지 베너 영역 **/
@@ -322,12 +330,10 @@ fun userHomeInfo(
 
 /** 새로 나온 메뉴 **/
 @Composable
-fun HomeNewMenu() {
-    val tempMenuList = listOf(
-        "디카페인 카페 아메리카노", "아이스 디카페인 카페 아메리카노", "카페 아메리카노",
-        "디카페인 카페 아메리카노", "아이스 디카페인 카페 아메리카노", "카페 아메리카노",
-        "디카페인 카페 아메리카노", "아이스 디카페인 카페 아메리카노", "카페 아메리카노"
-    )
+fun HomeNewMenuContainer(
+    list: List<HomeNewMenu>,
+    onClickListener: (String, String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -345,8 +351,14 @@ fun HomeNewMenu() {
             modifier = Modifier.fillMaxWidth()
         ) {
             item {
-                tempMenuList.forEach {
-                    HomeNewMenuItem(name = it)
+                list.forEach {
+                    HomeNewMenuItem(
+                        item = it,
+                        modifier = Modifier
+                            .nonRippleClickable {
+                                onClickListener(it.indexes, it.name)
+                            }
+                    )
                 }
             }
         }
@@ -355,14 +367,19 @@ fun HomeNewMenu() {
 
 /** 새로 나온 메뉴 아이템 **/
 @Composable
-fun HomeNewMenuItem(name: String) {
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+fun HomeNewMenuItem(
+    item: HomeNewMenu,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp)
+    ) {
         CircleImage(
-            imageURL = "https://image.istarbucks.co.kr/upload/store/skuimg/2022/10/[9200000002259]_20221007082850170.jpg",
+            imageURL = item.image,
             backgroundColor = MainColor,
         )
         Text(
-            text = name,
+            text = item.name,
             style = Typography.caption,
             textAlign = TextAlign.Center,
             modifier = Modifier

@@ -55,3 +55,9 @@ data class MenuSearchResult(
     val color: String,
     val isBest: Boolean
 )
+
+data class HomeNewMenu(
+    val indexes: String,
+    val name: String,
+    val image: String
+)

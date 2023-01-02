@@ -38,6 +38,10 @@ interface StarbucksDao {
     @Query("SELECT * FROM MenuEntity WHERE `group` = :name AND orderGroup = :group")
     fun selectMenuList(group: String, name: String): Flow<List<MenuEntity>>
 
+    /** 홈 화면 새로 나온 메뉴 조회 **/
+    @Query("SELECT indexes, name, image FROM MenuEntity WHERE isNew = 1")
+    fun selectHomeNewMenuList(): Flow<List<HomeNewMenu>>
+
     /** New 메뉴 조회 **/
     @Query("SELECT * FROM MenuEntity WHERE isNew = 1 AND orderGroup = :group")
     fun selectNewMenuList(group: String): Flow<List<MenuEntity>>

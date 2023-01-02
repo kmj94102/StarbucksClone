@@ -84,4 +84,7 @@ class MenuRepository @Inject constructor(
         )
     }
 
+    /** 홈 화면 새로 나온 메뉴 조회 **/
+    fun selectHomeNewMenuList() = client.selectHomeNewMenuList()
+
 }
