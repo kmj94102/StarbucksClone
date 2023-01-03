@@ -18,12 +18,15 @@ class LoginViewModel @Inject constructor(
     private val repository: UserRepository
 ): ViewModel() {
 
+    /** 입력한 아이디 **/
     private val _id = mutableStateOf("")
     val id: State<String> = _id
 
+    /** 입력한 비밀번호 **/
     private val _password = mutableStateOf("")
     val password: State<String> = _password
 
+    /** 상태 관리 **/
     private val _status = MutableStateFlow<LoginStatus>(LoginStatus.Init)
     val status: StateFlow<LoginStatus> = _status
 
@@ -41,6 +44,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /** 로그인 **/
     private fun login() = viewModelScope.launch {
         repository.login(
             loginInfo = LoginInfo(id = _id.value, password = _password.value),

@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.DarkGray
@@ -53,7 +54,7 @@ fun TermsScreen(routeAction: RouteAction) {
         TermsArea(termsOfService, collectionConsent, pushConsent)
         /** 풋터 : 다음 버튼 **/
         FooterWithButton(
-            text = "다음",
+            text = stringResource(id = R.string.next),
             isEnabled = termsOfService.value && collectionConsent.value
         ) {
             routeAction.goToSignup(pushConsent.value)
@@ -75,7 +76,7 @@ fun WelcomeMessage(modifier: Modifier = Modifier) {
                 .size(66.dp)
         )
         Text(
-            text = "고객님\n환영합니다!",
+            text = stringResource(id = R.string.customer_welcome),
             style = getTextStyle(22),
             modifier = Modifier.padding(top = 40.dp, bottom = 100.dp)
         )
@@ -91,7 +92,7 @@ fun TermsArea(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         CustomCheckBox(
-            text = "약관 전체 동의",
+            text = stringResource(id = R.string.all_terms_agree),
             textStyle = getTextStyle(14),
             selected = termsOfService.value && collectionConsent.value && pushConsent.value,
             onClick = {
@@ -112,28 +113,28 @@ fun TermsArea(
         )
 
         CustomCheckBox(
-            text = "이용약관 동의(필수)",
+            text = stringResource(id = R.string.terms_of_service_agree),
             textStyle = getTextStyle(14),
             selected = termsOfService.value,
             onClick = { termsOfService.value = termsOfService.value.not() },
             modifier = Modifier.padding(start = 24.dp, top = 3.dp)
         )
         CustomCheckBox(
-            text = "개인정보 수집 및 이용동의(필수)",
+            text = stringResource(id = R.string.personal_info_agree),
             textStyle = getTextStyle(14),
             selected = collectionConsent.value,
             onClick = { collectionConsent.value = collectionConsent.value.not() },
             modifier = Modifier.padding(start = 24.dp, top = 14.dp)
         )
         CustomCheckBox(
-            text = "E-mail 및 SMS 광고성 정보 수신동의(선택)",
+            text = stringResource(id = R.string.email_agree),
             textStyle = getTextStyle(14),
             selected = pushConsent.value,
             onClick = { pushConsent.value = pushConsent.value.not() },
             modifier = Modifier.padding(start = 24.dp, top = 14.dp)
         )
         Text(
-            text = "다양한 프로모션 소식 및 신규 매장 정보를 보내드립니다.",
+            text = stringResource(id = R.string.promotion_guide),
             style = getTextStyle(size = 12, color = DarkGray),
             modifier = Modifier.padding(start = 55.dp)
         )

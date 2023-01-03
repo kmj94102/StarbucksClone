@@ -9,11 +9,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -29,6 +32,7 @@ import com.example.starbucksclone.util.toast
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.FooterWithButton
 import com.example.starbucksclone.view.common.MainTitle
+import com.example.starbucksclone.view.dialog.CommonTitleDialog
 import com.example.starbucksclone.view.navigation.RouteAction
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -39,7 +43,9 @@ fun LoginScreen(
 ) {
     val state = rememberLazyListState()
     val status = viewModel.status.collectAsState().value
-    val context = LocalContext.current
+    val isShow = remember {
+        mutableStateOf(false)
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -50,7 +56,13 @@ fun LoginScreen(
         ) {
             stickyHeader {
                 /** 타이틀 영역 **/
-                MainTitle(titleText = "로그인", isExpand = state.isScrolled.not())
+                MainTitle(
+                    titleText = stringResource(id = R.string.login),
+                    isExpand = state.isScrolled.not(),
+                    onLeftIconClick = {
+                        routeAction.popupBackStack()
+                    }
+                )
             }
             item {
                 /** 로그인 안내 영역 **/
@@ -65,7 +77,7 @@ fun LoginScreen(
         }
         /** 풋터 영역 **/
         FooterWithButton(
-            text = "로그인하기",
+            text = stringResource(id = R.string.do_login),
             modifier = Modifier.fillMaxWidth()
         ) {
             viewModel.event(LoginEvent.Login)
@@ -78,9 +90,19 @@ fun LoginScreen(
             routeAction.goToMain()
         }
         is LoginViewModel.LoginStatus.Failure -> {
-            context.toast("아이디 또는 비밀번호를 확인해주세요.")
+            isShow.value = true
         }
     }
+
+    CommonTitleDialog(
+        title = stringResource(id = R.string.id_or_password_check),
+        isShow = isShow.value,
+        okText = stringResource(id = R.string.ok),
+        okClickListener = {
+            isShow.value = false
+        },
+        isCancelVisible = false
+    )
 }
 
 /** 로그인 안내 영역 **/
@@ -97,14 +119,13 @@ fun LoginGuideArea() {
         )
 
         Text(
-            text = "안녕하세요.\n스타벅스입니다.",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
+            text = stringResource(id = R.string.hello_starbucks),
+            style = getTextStyle(22, true),
             modifier = Modifier.padding(top = 27.dp, start = 22.dp)
         )
 
         Text(
-            text = "회원 서비스 이용을 위해 로그인 해주세요.",
+            text = stringResource(id = R.string.login_guide),
             style = getTextStyle(14),
             modifier = Modifier.padding(top = 10.dp, start = 22.dp)
         )
@@ -129,7 +150,7 @@ fun LoginArea(
             onValueChange = {
                 viewModel.event(LoginEvent.IdChange(it))
             },
-            hint = "아이디",
+            hint = stringResource(id = R.string.id),
             isLabel = true,
             imeAction = ImeAction.Next
         )
@@ -139,7 +160,7 @@ fun LoginArea(
             onValueChange = {
                 viewModel.event(LoginEvent.PasswordChange(it))
             },
-            hint = "비밀번호",
+            hint = stringResource(id = R.string.password),
             isLabel = true,
             visualTransformation = PasswordVisualTransformation()
         )
@@ -150,7 +171,7 @@ fun LoginArea(
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Text(
-                text = "아이디 찾기",
+                text = stringResource(id = R.string.find_id),
                 style = getTextStyle(12),
                 modifier = Modifier
             )
@@ -160,7 +181,7 @@ fun LoginArea(
                     .background(BorderColor)
             )
             Text(
-                text = "비밀번호 찾기",
+                text = stringResource(id = R.string.find_password),
                 style = getTextStyle(12),
                 modifier = Modifier
             )
@@ -170,7 +191,7 @@ fun LoginArea(
                     .background(BorderColor)
             )
             Text(
-                text = "회원가입",
+                text = stringResource(id = R.string.signup),
                 style = getTextStyle(12),
                 modifier = Modifier
                     .nonRippleClickable {

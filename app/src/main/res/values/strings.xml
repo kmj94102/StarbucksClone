@@ -4,6 +4,48 @@
     <!-- 로그인 -->
     <string name="signup">회원가입</string>
     <string name="login">로그인</string>
+    <string name="id">아이디</string>
+    <string name="password">비밀번호</string>
+    <string name="do_login">로그인하기</string>
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_password">아이디 찾기</string>
+    <string name="id_or_password_check">아이디 또는 비밀번호를 확인해주세요.</string>
+    <string name="login_guide">회원 서비스 이용을 위해 로그인 해주세요.</string>
+    <string name="customer_welcome">고객님\n환영합니다!</string>
+    <string name="all_terms_agree">약관 전체 동의</string>
+    <string name="terms_of_service_agree">이용약관 동의(필수)</string>
+    <string name="personal_info_agree">개인정보 수집 및 이용동의(필수)</string>
+    <string name="email_agree">E-mail 및 SMS 광고성 정보 수신동의(선택)</string>
+    <string name="promotion_guide">다양한 프로모션 소식 및 신규 매장 정보를 보내드립니다.</string>
+    <string name="input_id_password">아이디와 비밀번호를\n입력해주세요.</string>
+    <string name="input_email">이메일을\n입력해주세요.</string>
+    <string name="input_nickname">닉네임을\n입력해주세요.</string>
+    <string name="identification">본인확인을 위해\n인증을 진행해 주세요.</string>
+    <string name="identification_all_agree">본인 인증 서비스 약관 전체 동의</string>
+    <string name="phone_identification_agree">휴대폰 본인 인증 서비스 이용약관 동의 (필수)</string>
+    <string name="news_agency_agree">휴대폰 통신사 이용약관 동의 (필수)</string>
+    <string name="privacy_agree">개인정보 제공 및 이용 동의 (필수)</string>
+    <string name="unique_identification">고유식별정보 처리 (필수)</string>
+    <string name="name">이름</string>
+    <string name="date_of_birth">생년월일 6자리</string>
+    <string name="phone_number">휴대폰 번호</string>
+    <string name="certification_request">인증요청</string>
+    <string name="request_retry">다시요청</string>
+    <string name="certification_number">인증번호 6자리</string>
+    <string name="id_guide">아이디(4~13자리 이내)</string>
+    <string name="password_guide">비밀번호(10~20자리 이내)</string>
+    <string name="password_check">비밀번호 확인</string>
+    <string name="email">이메일</string>
+    <string name="email_description1">• 스타벅스커피 코리아의 새로운 서비스와 최신 이베트 정보를 이메일로 보내드려요.</string>
+    <string name="email_description2">• 주요 공지사항 및 이벤트 당첨안내 등 일부 소식은 수신동의 여부에 관계없이 발송됩니다.</string>
+    <string name="nickname_guide">닉네임 (한글 6자리 이내)</string>
+    <string name="nickname_description">매장에서 주문한 메뉴를 찾으실 때, 등록한 닉네임으로 불러드립니다.</string>
+    <string name="skip">건너뛰기</string>
+    <string name="certification_number_check">인증번호를 확인해주세요.</string>
+    <string name=""></string>
+    <string name=""></string>
+    <string name=""></string>
+    <string name=""></string>
 
     <!-- Home -->
     <string name="whats_new">What\'s New</string>
@@ -27,6 +69,11 @@
 
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="next">다음</string>
 
     <!-- 가이드 문구 -->
     <string name="individual_cup_guide">

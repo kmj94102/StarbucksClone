@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,6 +28,7 @@ import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.CommonTextField
 import com.example.starbucksclone.view.common.CustomCheckBox
 import com.example.starbucksclone.view.common.FooterWithButton
+import com.example.starbucksclone.view.dialog.CommonTitleDialog
 import com.example.starbucksclone.view.navigation.RouteAction
 
 @Composable
@@ -37,6 +39,12 @@ fun SignupScreen(
     val status = viewModel.status.collectAsState().value
     val step = viewModel.step.value
     val context = LocalContext.current
+    val isShow = remember {
+        mutableStateOf(false)
+    }
+    val errorMessage = remember {
+        mutableStateOf("")
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         /** 헤더 영역 **/
@@ -65,12 +73,23 @@ fun SignupScreen(
             context.toast(status.number)
         }
         is SignupViewModel.SignupStatus.Error -> {
-            context.toast(status.message)
+            isShow.value = true
+            errorMessage.value = status.message
         }
         is SignupViewModel.SignupStatus.SignupComplete -> {
             routeAction.goToScreen(RouteAction.SignupComplete, true)
         }
     }
+
+    CommonTitleDialog(
+        title = errorMessage.value,
+        isShow = isShow.value,
+        okText = stringResource(id = R.string.ok),
+        okClickListener = {
+            isShow.value = false
+        },
+        isCancelVisible = false
+    )
 }
 
 /** 해더 영역 **/
@@ -103,13 +122,13 @@ fun SignupHeader(
                 }
             }
             2 -> {
-                SignupHeaderMessage("아이디와 비밀번호를\n입력해주세요.")
+                SignupHeaderMessage(stringResource(id = R.string.input_id_password))
             }
             3 -> {
-                SignupHeaderMessage("이메일을\n입력해주세요.")
+                SignupHeaderMessage(stringResource(id = R.string.input_email))
             }
             4 -> {
-                SignupHeaderMessage("닉네임을\n입력해주세요.")
+                SignupHeaderMessage(stringResource(id = R.string.input_nickname))
             }
         }
     }
@@ -163,13 +182,13 @@ fun IdentificationHeader(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Text(
-            text = "본인확인을 위해\n인증을 진행해 주세요.",
+            text = stringResource(id = R.string.identification),
             style = getTextStyle(22),
             modifier = Modifier.padding(vertical = 20.dp, horizontal = 27.dp)
         )
 
         CustomCheckBox(
-            text = "본인 인증 서비스 야갸관 전체 동의",
+            text = stringResource(id = R.string.identification_all_agree),
             selected = isAgree,
             onClick = {
                 checkedChangeListener(isAgree.not())
@@ -178,10 +197,10 @@ fun IdentificationHeader(
         )
 
         if (isAgree.not()) {
-            IdentificationItem("휴대폰 본인 인증 서비스 이용약관 동의 (필수)")
-            IdentificationItem("휴대폰 통신사 이용약관 동의 (필수)")
-            IdentificationItem("개인정보 제공 및 이용 동의 (필수)")
-            IdentificationItem("고유식별정보 처리 (필수)")
+            IdentificationItem(stringResource(id = R.string.phone_identification_agree))
+            IdentificationItem(stringResource(id = R.string.news_agency_agree))
+            IdentificationItem(stringResource(id = R.string.privacy_agree))
+            IdentificationItem(stringResource(id = R.string.unique_identification))
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -202,15 +221,11 @@ fun IdentificationHeader(
 fun IdentificationItem(
     text: String
 ) {
-    val context = LocalContext.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 27.dp, end = 23.dp, top = 1.dp, bottom = 1.dp)
-            .nonRippleClickable {
-                context.toast("클론 프로젝트에선 제공하지 않는 기능입니다.")
-            }
     ) {
         Text(
             text = text,
@@ -280,7 +295,7 @@ fun IdentificationBody(
                         SignupEvent.TextChange(type = SignupViewModel.Name, text = it)
                     )
                 },
-                hint = "이름",
+                hint = stringResource(id = R.string.name),
                 imeAction = ImeAction.Next,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -298,7 +313,7 @@ fun IdentificationBody(
                         )
                     }
                 },
-                hint = "생년월일 6자리",
+                hint = stringResource(id = R.string.date_of_birth),
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number,
                 modifier = Modifier
@@ -322,13 +337,17 @@ fun IdentificationBody(
                             )
                         }
                     },
-                    hint = "휴대폰 번호",
+                    hint = stringResource(id = R.string.phone_number),
                     keyboardType = KeyboardType.Number,
                     modifier = Modifier
 
                 )
                 Text(
-                    text = if (certificationNumber.isEmpty()) "인증요청" else "다시요청",
+                    text = if (certificationNumber.isEmpty()) {
+                        stringResource(id = R.string.certification_request)
+                    } else {
+                        stringResource(id = R.string.request_retry)
+                    },
                     style = getTextStyle(
                         size = 14,
                         color = if (certificationNumber.isEmpty()) DarkGray else MainColor
@@ -359,7 +378,7 @@ fun IdentificationBody(
                                 )
                             }
                         },
-                        hint = "인증번호 6자리",
+                        hint = stringResource(id = R.string.certification_number),
                         keyboardType = KeyboardType.Number,
                         modifier = Modifier
 
@@ -407,7 +426,7 @@ fun IdPasswordBody(
                         )
                     }
                 },
-                hint = "아이디(4~13자리 이내)",
+                hint = stringResource(id = R.string.id_guide),
                 imeAction = ImeAction.Next,
                 trailingIcons = {
                     if (viewModel.signupInfo.value.id.length in 4..13) {
@@ -433,7 +452,7 @@ fun IdPasswordBody(
                 visualTransformation = passwordVisible.value,
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Password,
-                hint = "비밀번호(10~20자리 이내)",
+                hint = stringResource(id = R.string.password_guide),
                 trailingIcons = {
                     Row {
                         Image(
@@ -468,7 +487,7 @@ fun IdPasswordBody(
                 },
                 visualTransformation = passwordCheckVisible.value,
                 keyboardType = KeyboardType.Password,
-                hint = "비밀번호 확인",
+                hint = stringResource(id = R.string.password_check),
                 trailingIcons = {
                     Row {
                         Image(
@@ -509,18 +528,18 @@ fun EmailBody(
                 onValueChange = {
                     viewModel.event(SignupEvent.TextChange(text = it, type = SignupViewModel.Email))
                 },
-                hint = "이메일",
+                hint = stringResource(id = R.string.email),
                 keyboardType = KeyboardType.Email
             )
         }
         item {
             Text(
-                text = "• 스타벅스커피 코리아의 새로운 서비스와 최신 이베트 정보를 이메일로 보내드려요.",
+                text = stringResource(id = R.string.email_description1),
                 style = getTextStyle(size = 12, color = DarkGray),
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "• 주요 공지사항 및 이벤트 당첨안내 등 일부 소식은 수신동의 여부에 관계없이 발송됩니다.",
+                text = stringResource(id = R.string.email_description2),
                 style = getTextStyle(size = 12, color = DarkGray),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -553,12 +572,12 @@ fun NicknameBody(
                         )
                     }
                 },
-                hint = "닉네임 (한글 6자리 이내)"
+                hint = stringResource(id = R.string.nickname_guide)
             )
         }
         item {
             Text(
-                text = "매장에서 주문한 메뉴를 찾으실 때, 등록한 닉네임으로 불러드립니다.",
+                text = stringResource(id = R.string.nickname_description),
                 style = getTextStyle(size = 12, color = DarkGray)
             )
         }
@@ -577,7 +596,7 @@ fun SignupFooter(
         Column(modifier = Modifier.fillMaxWidth()) {
             if (step == 4) {
                 Text(
-                    text = "건너뛰기",
+                    text = stringResource(id = R.string.skip),
                     style = getTextStyle(18, false, MainColor),
                     modifier = Modifier
                         .padding(end = 27.dp, bottom = 20.dp)
@@ -588,7 +607,7 @@ fun SignupFooter(
                 )
             }
             FooterWithButton(
-                text = "다음",
+                text = stringResource(id = R.string.next),
                 isEnabled = viewModel.isEnable.value
             ) {
                 when (step) {
@@ -596,7 +615,7 @@ fun SignupFooter(
                         if (viewModel.userCertificationNumber.value == viewModel.certificationNumber.value) {
                             viewModel.event(SignupEvent.NextStep)
                         } else {
-                            context.toast("인증번호를 확인해주세요.")
+                            context.toast(R.string.certification_number_check)
                         }
                     }
                     4 -> {
