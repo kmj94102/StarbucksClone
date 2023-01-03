@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +31,7 @@ import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.HomeNewMenu
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.getEmoji
+import com.example.starbucksclone.util.getTextStyle
 import com.example.starbucksclone.util.nonRippleClickable
 import com.example.starbucksclone.view.common.CircleImage
 import com.example.starbucksclone.view.common.Progressbar
@@ -51,20 +53,18 @@ fun HomeScreen(
             if (viewModel.isLogin.value) {
                 /** 로그인 한 유저 화면 **/
                 item {
-                    userHomeInfo(routeAction, viewModel.nickname.value) {
-                        viewModel.event(
-                            HomeEvent.Logout
-                        )
+                    UserHomeInfo(routeAction, viewModel.nickname.value) {
+                        viewModel.event(HomeEvent.Logout)
                     }
                 }
             } else {
                 /** 로그인을 하지 않은 유저 화면 **/
-                item { guestHomeInfo(routeAction) }
+                item { GuestHomeInfoContainer(routeAction) }
             }
 
             /** What's New 스크롤 후 고정 영역 **/
             stickyHeader {
-                WhatsNew(isScrolled = state.firstVisibleItemIndex > 1)
+                WhatsNewContainer(isScrolled = state.firstVisibleItemIndex > 1)
             }
 
             /** 새로 나온 메뉴 영역 **/
@@ -108,7 +108,7 @@ fun HomeScreen(
 
 /** What's New 스크롤 후 고정 영역 **/
 @Composable
-fun WhatsNew(isScrolled: Boolean) {
+fun WhatsNewContainer(isScrolled: Boolean) {
     Surface(
         color = White,
         elevation = if (isScrolled) 6.dp else 0.dp
@@ -125,7 +125,7 @@ fun WhatsNew(isScrolled: Boolean) {
             )
 
             Text(
-                text = "What's New", modifier = Modifier
+                text = stringResource(id = R.string.whats_new), modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .weight(1f)
             )
@@ -140,12 +140,12 @@ fun WhatsNew(isScrolled: Boolean) {
 
 /** 로그인을 하지 않은 유저 화면 **/
 @Composable
-fun guestHomeInfo(
+fun GuestHomeInfoContainer(
     routeAction: RouteAction
 ) {
     Text(
-        text = "안녕하세요.\n스타벅스입니다.",
-        style = Typography.subtitle1,
+        text = stringResource(id = R.string.hello_starbucks),
+        style = getTextStyle(24, true),
         modifier = Modifier.padding(top = 52.dp, start = 23.dp)
     )
 
@@ -158,21 +158,21 @@ fun guestHomeInfo(
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "스타벅스 리워드\n회원 신규가입 첫 구매 시,\n무료음료 혜택을 드려요!",
-                style = Typography.body1,
+                text = stringResource(id = R.string.home_reward_guide),
+                style = getTextStyle(16),
                 lineHeight = 24.sp,
                 modifier = Modifier.padding(top = 36.dp, start = 30.dp)
             )
 
             RoundedButton(
-                text = "회원가입",
+                text = stringResource(id = R.string.signup),
                 modifier = Modifier.padding(top = 120.dp, start = 30.dp, bottom = 35.dp)
             ) {
                 routeAction.goToScreen(RouteAction.Terms)
             }
 
             RoundedButton(
-                text = "로그인",
+                text = stringResource(id = R.string.login),
                 textColor = MainColor,
                 isOutline = true,
                 modifier = Modifier.padding(top = 120.dp, start = 130.dp)
@@ -195,7 +195,7 @@ fun guestHomeInfo(
 
 /** 로그인한 유저 화면 **/
 @Composable
-fun userHomeInfo(
+fun UserHomeInfo(
     routeAction: RouteAction,
     nickname: String,
     logout: () -> Unit
@@ -230,8 +230,8 @@ fun userHomeInfo(
         )
 
         Text(
-            text = "${nickname}님과 함께\nDream Away ${getEmoji(0x1F31F)}",
-            style = Typography.subtitle1,
+            text = stringResource(id = R.string.home_greeting, nickname, getEmoji(0x1F31F)),
+            style = getTextStyle(24, true),
             modifier = Modifier
                 .nonRippleClickable { logout() }
                 .constrainAs(title) {
@@ -242,7 +242,7 @@ fun userHomeInfo(
 
         Text(
             text = "21",
-            style = Typography.body2,
+            style = getTextStyle(16, true),
             color = MainColor,
             modifier = Modifier.constrainAs(untilCount) {
                 top.linkTo(title.bottom, 28.dp)
@@ -263,8 +263,8 @@ fun userHomeInfo(
         )
 
         Text(
-            text = "until Gold Level",
-            style = Typography.body2,
+            text = stringResource(id = R.string.until_gold_level),
+            style = getTextStyle(16, true),
             color = MainColor,
             modifier = Modifier.constrainAs(untilText) {
                 start.linkTo(untilStar.end, 3.dp)
@@ -313,7 +313,7 @@ fun userHomeInfo(
                 }
                 append("30")
             },
-            style = Typography.subtitle1,
+            style = getTextStyle(24, true),
             color = MainColor,
             modifier = Modifier
                 .constrainAs(progressText) {
@@ -340,8 +340,8 @@ fun HomeNewMenuContainer(
             .padding(vertical = 40.dp)
     ) {
         Text(
-            text = "새로 나온 메뉴",
-            style = Typography.subtitle2,
+            text = stringResource(id = R.string.new_menu),
+            style = getTextStyle(20, true),
             modifier = Modifier.padding(start = 23.dp)
         )
         Spacer(modifier = Modifier.height(30.dp))
@@ -380,7 +380,7 @@ fun HomeNewMenuItem(
         )
         Text(
             text = item.name,
-            style = Typography.caption,
+            style = getTextStyle(12),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 11.dp)
@@ -422,7 +422,7 @@ fun DeliversFloatingButton(
         )
         if (isExpand) {
             Text(
-                text = "Delivers",
+                text = stringResource(id = R.string.delivers),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = White,

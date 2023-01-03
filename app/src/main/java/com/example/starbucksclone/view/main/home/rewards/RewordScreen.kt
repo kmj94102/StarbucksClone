@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -46,19 +47,21 @@ fun RewordScreen(routeAction: RouteAction) {
         /** 타이틀 영역 **/
         stickyHeader {
             MainTitle(
-                titleText = "Starbucks Rewards",
+                titleText = stringResource(id = R.string.starbucks_rewards),
                 isExpand = state.firstVisibleItemIndex < 1,
                 onLeftIconClick = {
                     routeAction.popupBackStack()
                 }
             )
         }
-
         /** 텝 영역 **/
         item {
             CustomTabRow(
                 pagerState = pagerState,
-                tabItems = listOf("My Rewards", "How it works"),
+                tabItems = listOf(
+                    stringResource(id = R.string.my_rewards),
+                    stringResource(id = R.string.how_it_works)
+                ),
                 indicatorColor = Black,
                 coroutineScope = scope
             )
@@ -130,27 +133,27 @@ fun MyRewardsArea() {
                 .background(LightGray)
         ) {
             Text(
-                text = "Gold Level까지 21개의 별이 남았습니다.",
+                text = stringResource(id = R.string.next_level_guide),
                 style = getTextStyle(12),
                 modifier = Modifier.padding(horizontal = 23.dp, vertical = 20.dp)
             )
         }
 
         Text(
-            text = "회원 등급 변경 및 쿠폰 발행은 최대 24시간이 걸릴 수 있습니다.",
+            text = stringResource(id = R.string.grade_change_guide),
             style = getTextStyle(12),
             color = DarkGray,
             modifier = Modifier.padding(top = 10.dp, start = 23.dp, end = 23.dp)
         )
 
         Text(
-            text = "멤버십 등급",
+            text = stringResource(id = R.string.membership_grade),
             style = getTextStyle(16, true),
             modifier = Modifier.padding(top = 16.dp, start = 23.dp)
         )
 
         Text(
-            text = "Green Level",
+            text = stringResource(id = R.string.green_level),
             style = getTextStyle(16, true, MainColor),
             modifier = Modifier.padding(top = 16.dp, start = 23.dp)
         )
@@ -164,7 +167,7 @@ fun MyRewardsArea() {
         )
 
         Text(
-            text = "등급별 혜택",
+            text = stringResource(id = R.string.benefits_by_grade),
             style = getTextStyle(16, true),
             modifier = Modifier.padding(start = 23.dp, top = 32.dp)
         )
@@ -173,7 +176,10 @@ fun MyRewardsArea() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(top = 21.dp, start = 23.dp)
         ) {
-            Text(text = "Welcome", style = getTextStyle(size = 16, color = DarkGray))
+            Text(
+                text = stringResource(id = R.string.welcome),
+                style = getTextStyle(size = 16, color = DarkGray)
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Box(
                 modifier = Modifier
@@ -181,7 +187,10 @@ fun MyRewardsArea() {
                     .background(DarkGray)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "Green", style = getTextStyle(16, true))
+            Text(
+                text = stringResource(id = R.string.green),
+                style = getTextStyle(16, true)
+            )
             Spacer(modifier = Modifier.width(12.dp))
             Box(
                 modifier = Modifier
@@ -190,35 +199,43 @@ fun MyRewardsArea() {
                     .padding(horizontal = 12.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(text = "Gold", style = getTextStyle(size = 16, color = DarkGray))
+            Text(
+                text = stringResource(id = R.string.gold),
+                style = getTextStyle(size = 16, color = DarkGray)
+            )
         }
 
         BenefitsByLevel(
-            "생일 쿠폰 발행", modifier = Modifier
+            text = stringResource(id = R.string.benefits_by_grade_guide1),
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 23.dp, start = 23.dp, end = 23.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
         BenefitsByLevel(
-            "250g 원두 또는 12개입 VIA 구매 시, 카페 아메리카노 (Hot/Iced)쿠폰", modifier = Modifier
+            text = stringResource(id = R.string.benefits_by_grade_guide2),
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 23.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
         BenefitsByLevel(
-            "스타벅스 리저브 원두 구매시, 스타벅스 리저브 음료 또는 카페 아메리카노(Hot/Iced)쿠폰", modifier = Modifier
+            text = stringResource(id = R.string.benefits_by_grade_guide3),
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 23.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
         BenefitsByLevel(
-            "티바나 패키지 티 구매 시, 풀 리프티(Hot/Iced)쿠폰", modifier = Modifier
+            text = stringResource(id = R.string.benefits_by_grade_guide4),
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 23.dp)
         )
         Spacer(modifier = Modifier.height(10.dp))
         BenefitsByLevel(
-            "Beverage BOGO 쿠폰", modifier = Modifier
+            text = stringResource(id = R.string.benefits_by_grade_guide5),
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 23.dp)
         )
@@ -252,7 +269,7 @@ fun BenefitsByLevel(
                     .background(Color(0xFFCDB474))
             ) {
                 Text(
-                    text = "Gold",
+                    text = stringResource(id = R.string.gold),
                     fontSize = 10.sp,
                     color = White,
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 3.dp)
@@ -265,7 +282,7 @@ fun BenefitsByLevel(
                     .background(MainColor)
             ) {
                 Text(
-                    text = "Green",
+                    text = stringResource(id = R.string.green),
                     fontSize = 10.sp,
                     color = White,
                     modifier = Modifier.padding(vertical = 2.dp, horizontal = 3.dp)
@@ -284,16 +301,20 @@ fun HowItWorksArea() {
             .padding(horizontal = 23.dp)
     ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Text(text = "반갑습니다!", style = getTextStyle(20, true), lineHeight = 20.sp)
+        Text(
+            text = stringResource(id = R.string.welcome_k),
+            style = getTextStyle(20, true),
+            lineHeight = 20.sp
+        )
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Starbucks Rewards 회원은 스타벅스 카드로 결제/주문할 때마다 다양한 별 적립 혜택을 받을 수 있습니다.")
+        Text(text = stringResource(id = R.string.how_it_work_guide0))
         Spacer(modifier = Modifier.height(40.dp))
 
         HowItWorksItem(
             number = 1,
             imageRes = R.drawable.img_works1,
-            content = "스타벅스 카드를 이용해 사이렌 오더 결제를 해보세요. 앱에서 스타벅스 카드 바코드를 띄워 매장에서 직접 결제할 수도 있습니다.",
+            content = stringResource(id = R.string.how_it_work_guide1),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(27.dp))
@@ -301,7 +322,7 @@ fun HowItWorksArea() {
         HowItWorksItem(
             number = 2,
             imageRes = R.drawable.img_works2,
-            content = "스타벅스 카드로 결제 시 별이 적립됩니다.",
+            content = stringResource(id = R.string.how_it_work_guide2),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(27.dp))
@@ -309,7 +330,7 @@ fun HowItWorksArea() {
         HowItWorksItem(
             number = 3,
             imageRes = R.drawable.img_works3,
-            content = "쌓이는 별에 따라 레벨이 오르고 골드 레벨부터 별 12개 적립 시마다 무료 음료 쿠폰을 제공합니다.",
+            content = stringResource(id = R.string.how_it_work_guide3),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(27.dp))
@@ -317,7 +338,7 @@ fun HowItWorksArea() {
         HowItWorksItem(
             number = 4,
             imageRes = R.drawable.img_works4,
-            content = "스타벅스 리워드 회원만을 위한 특별한 이벤트에 참여하시면, 더 많은 별을 적립할 수 있습니다. 개인컵 사용, 브런치 유어 웨이 등을 통해서도 추가 별을 적립해 보세요!",
+            content = stringResource(id = R.string.how_it_work_guide4),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(27.dp))

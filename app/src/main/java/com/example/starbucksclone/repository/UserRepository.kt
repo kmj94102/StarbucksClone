@@ -49,6 +49,7 @@ class UserRepository @Inject constructor(
         )
     }
 
+    /** 로그아웃 **/
     fun logout() {
         pref.setLoginId("")
         pref.setLoginNickname("")

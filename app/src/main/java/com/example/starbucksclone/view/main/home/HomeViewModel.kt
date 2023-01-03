@@ -24,12 +24,15 @@ class HomeViewModel @Inject constructor(
     private val menuRepository: MenuRepository
 ): ViewModel() {
 
+    /** 로그인 여부 **/
     private val _isLogin = mutableStateOf(false)
     val isLogin: State<Boolean> = _isLogin
 
+    /** 닉네임 **/
     private val _nickname = mutableStateOf("")
     val nickname: State<String> = _nickname
 
+    /** 새로 나온 메뉴 리스트 **/
     private val _newMenuList = mutableStateListOf<HomeNewMenu>()
     val newMenuList: List<HomeNewMenu> = _newMenuList
 
@@ -45,12 +48,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /** 로그아웃 **/
     private fun logout() {
         userRepository.logout()
         _nickname.value = ""
         _isLogin.value = false
     }
 
+    /** 새로운 메뉴 조회 **/
     private fun selectNewMenuList() {
         menuRepository.selectHomeNewMenuList()
             .onEach {

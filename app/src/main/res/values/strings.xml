@@ -1,7 +1,33 @@
 <resources>
     <string name="app_name">StarbucksClone</string>
     <string name="title_activity_splash">SplashActivity</string>
-    
+    <!-- 로그인 -->
+    <string name="signup">회원가입</string>
+    <string name="login">로그인</string>
+
+    <!-- Home -->
+    <string name="whats_new">What\'s New</string>
+    <string name="hello_starbucks">안녕하세요.\n스타벅스입니다.</string>
+    <string name="home_reward_guide">스타벅스 리워드\n회원 신규가입 첫 구매 시,\n무료음료 혜택을 드려요!</string>
+    <string name="home_greeting">%s님과 함께 Dream Away %s</string>
+    <string name="until_gold_level">until Gold Level</string>
+    <string name="delivers">Delivers</string>
+    <string name="starbucks_rewards">Starbucks Rewards</string>
+    <string name="my_rewards">My Rewards</string>
+    <string name="how_it_works">How it works</string>
+    <string name="next_level_guide">Gold Level까지 21개의 별이 남았습니다.</string>
+    <string name="grade_change_guide">회원 등급 변경 및 쿠폰 발행은 최대 24시간이 걸릴 수 있습니다.</string>
+    <string name="membership_grade">멤버십 등급</string>
+    <string name="green_level">Green Level</string>
+    <string name="benefits_by_grade">등급별 혜택</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_k">반갑습니다!</string>
+    <string name="green">Green</string>
+    <string name="gold">Gold</string>
+
+    <!-- 공통 -->
+    <string name="new_menu">새로 나온 메뉴</string>
+
     <!-- 가이드 문구 -->
     <string name="individual_cup_guide">
         ・ 주문 후, 개인컵(355ml 이상, 텀블러 등)을 \'음료 받는 곳\'에 전달해주세요.\n
@@ -11,4 +37,14 @@
         ・ 차량에서 음료를 픽업하는 경우 개인컵 이용시에는 릳(뚜껑)을 파트너에게 함께 전달하여 주세요.
     </string>
     <string name="disposable_cup_guide">매장에서 드시는 경우 플라스틱 욀회용컵 제공이 불가능하오니 매장컵을 선택해 주시기 바랍니다.</string>
+    <string name="benefits_by_grade_guide1">생일 쿠폰 발행</string>
+    <string name="benefits_by_grade_guide2">250g 원두 또는 12개입 VIA 구매 시, 카페 아메리카노 (Hot/Iced)쿠폰</string>
+    <string name="benefits_by_grade_guide3">스타벅스 리저브 원두 구매시, 스타벅스 리저브 음료 또는 카페 아메리카노(Hot/Iced)쿠폰</string>
+    <string name="benefits_by_grade_guide4">티바나 패키지 티 구매 시, 풀 리프티(Hot/Iced)쿠폰</string>
+    <string name="benefits_by_grade_guide5">Beverage BOGO 쿠폰</string>
+    <string name="how_it_work_guide0">Starbucks Rewards 회원은 스타벅스 카드로 결제/주문할 때마다 다양한 별 적립 혜택을 받을 수 있습니다.</string>
+    <string name="how_it_work_guide1">스타벅스 카드를 이용해 사이렌 오더 결제를 해보세요. 앱에서 스타벅스 카드 바코드를 띄워 매장에서 직접 결제할 수도 있습니다.</string>
+    <string name="how_it_work_guide2">스타벅스 카드로 결제 시 별이 적립됩니다.</string>
+    <string name="how_it_work_guide3">쌓이는 별에 따라 레벨이 오르고 골드 레벨부터 별 12개 적립 시마다 무료 음료 쿠폰을 제공합니다.</string>
+    <string name="how_it_work_guide4">스타벅스 리워드 회원만을 위한 특별한 이벤트에 참여하시면, 더 많은 별을 적립할 수 있습니다. 개인컵 사용, 브런치 유어 웨이 등을 통해서도 추가 별을 적립해 보세요!</string>
 </resources>
