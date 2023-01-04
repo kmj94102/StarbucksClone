@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,7 +52,7 @@ fun SignupCompleteScreen(
 
     if (status == SignupCompleteViewModel.SignupCompleteStatus.Error) {
         LaunchedEffect(true) {
-            context.toast("회원가입 중 오류가 발생하였습니다.")
+            context.toast(R.string.signup_error)
             delay(1500)
             routeAction.popupBackStack()
         }
@@ -82,7 +83,7 @@ fun SignupCompleteHeader(
     ) {
         Spacer(modifier = Modifier.height(30.dp))
 
-        Text(text = "${name}님,\n회원가입이 완료되었습니다.", style = getTextStyle(24))
+        Text(text = stringResource(id = R.string.signup_complete, name), style = getTextStyle(24))
         Spacer(modifier = Modifier.height(30.dp))
 
         Box(
@@ -98,7 +99,7 @@ fun SignupCompleteHeader(
                 .padding(vertical = 10.dp)
         ) {
             Text(
-                text = "${today()} E-Mail 및 SMS 광고성 정보 수신여부 처리 결과",
+                text = stringResource(id = R.string.receive_agree_result, today()),
                 style = getTextStyle(size = 14, color = DarkGray),
                 modifier = Modifier
                     .weight(1f)
@@ -110,7 +111,11 @@ fun SignupCompleteHeader(
                     .background(Gray)
             )
             Text(
-                text = if (isPush) "수신 동의" else "수신 거부",
+                text = if (isPush) {
+                    stringResource(id = R.string.receive_agree)
+                } else {
+                    stringResource(id = R.string.receive_disagree)
+                },
                 style = getTextStyle(14),
                 modifier = Modifier.padding(start = 30.dp)
             )
@@ -123,7 +128,7 @@ fun SignupCompleteHeader(
         )
 
         Text(
-            text = "제공자: (주) 스타벅스커피 코리아",
+            text = stringResource(id = R.string.provider),
             style = getTextStyle(size = 12, color = DarkGray),
             modifier = Modifier
                 .padding(top = 6.dp)
@@ -151,7 +156,7 @@ fun SignupCompleteBody(
                 .size(205.dp, 141.dp)
         )
         Text(
-            text = "스타벅스 카드를 등록하시고\n웰컴 첫 구매 쿠폰과 별 적립 혜택을 받아보세요.",
+            text = stringResource(id = R.string.welcome_guide),
             style = getTextStyle(14),
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -166,7 +171,7 @@ fun SignupCompleteBody(
 fun SignupCompleteFooter(
     routeAction: RouteAction
 ) {
-    FooterWithButton(text = "스타벅스 카드등록 바로가기") {
+    FooterWithButton(text = stringResource(id = R.string.complete)) {
         routeAction.goToMain()
     }
 }

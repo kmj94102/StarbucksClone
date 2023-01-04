@@ -19,12 +19,15 @@ class SignupCompleteViewModel @Inject constructor(
     private val repository: UserRepository
 ) : ViewModel() {
 
+    /** 상태 관리 **/
     private val _status = MutableStateFlow<SignupCompleteStatus>(SignupCompleteStatus.Init)
     val status: StateFlow<SignupCompleteStatus> = _status
 
+    /** 이름 **/
     private val _name = mutableStateOf("")
     val name: State<String> = _name
 
+    /** 수신 동의 여부 **/
     private val _isPushConsent = mutableStateOf(false)
     val isPushConsent: State<Boolean> = _isPushConsent
 
@@ -37,6 +40,7 @@ class SignupCompleteViewModel @Inject constructor(
         }
     }
 
+    /** 회원가입 정보 조회 **/
     private fun selectSignupCompleteInfo(id: String) = viewModelScope.launch {
         repository.selectSignupCompleteInfo(
             id = id,

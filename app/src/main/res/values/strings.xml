@@ -42,10 +42,14 @@
     <string name="nickname_description">매장에서 주문한 메뉴를 찾으실 때, 등록한 닉네임으로 불러드립니다.</string>
     <string name="skip">건너뛰기</string>
     <string name="certification_number_check">인증번호를 확인해주세요.</string>
-    <string name=""></string>
-    <string name=""></string>
-    <string name=""></string>
-    <string name=""></string>
+    <string name="signup_error">회원가입 중 오류가 발생하였습니다.</string>
+    <string name="signup_complete">%s님,\n회원가입이 완료되었습니다.</string>
+    <string name="receive_agree_result">%s E-Mail 및 SMS 광고성 정보 수신여부 처리 결과</string>
+    <string name="receive_agree">수신 동의</string>
+    <string name="receive_disagree">수신 거부</string>
+    <string name="provider">제공자: (주) 스타벅스커피 코리아</string>
+    <string name="welcome_guide">스타벅스 카드를 등록하시고\n웰컴 첫 구매 쿠폰과 별 적립 혜택을 받아보세요.</string>
+    <string name="complete">완료</string>
 
     <!-- Home -->
     <string name="whats_new">What\'s New</string>
