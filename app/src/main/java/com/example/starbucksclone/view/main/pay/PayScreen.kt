@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.CardEntity
+import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.MainColor
@@ -98,6 +100,7 @@ fun PayBody(
         } else {
             PayCardListBody(
                 cardList = viewModel.cardList,
+                timer = viewModel.timer.value,
                 routeAction = routeAction
             )
         }
@@ -108,7 +111,8 @@ fun PayBody(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PayCardListBody(
-    cardList: List<CardEntity>,
+    cardList: List<CardInfo>,
+    timer: String,
     routeAction: RouteAction
 ) {
     Column(Modifier.fillMaxWidth()) {
@@ -117,7 +121,11 @@ fun PayCardListBody(
             contentPadding = PaddingValues(start = 12.dp, end = 26.dp),
             itemSpacing = 12.dp
         ) {
-            PayCardItem(card = cardList[it], routeAction = routeAction)
+            PayCardItem(
+                card = cardList[it],
+                timer = timer,
+                routeAction = routeAction
+            )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -126,7 +134,7 @@ fun PayCardListBody(
                 .padding(top = 23.dp, bottom = 30.dp)
         ) {
             Text(
-                text = "Coupon",
+                text = stringResource(id = R.string.coupon),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(14, true),
                 modifier = Modifier.weight(1f)
@@ -137,7 +145,7 @@ fun PayCardListBody(
                     .background(Black)
             )
             Text(
-                text = "Gift Item",
+                text = stringResource(id = R.string.gift_item),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(14, true),
                 modifier = Modifier.weight(1f)
@@ -149,7 +157,8 @@ fun PayCardListBody(
 /** 스타벅스 카드 리스트 아이템 **/
 @Composable
 fun PayCardItem(
-    card: CardEntity,
+    card: CardInfo,
+    timer: String,
     routeAction: RouteAction
 ) {
     Surface(
@@ -158,7 +167,8 @@ fun PayCardItem(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .nonRippleClickable {
                     routeAction.goToScreenWithCardNumber(
                         page = RouteAction.CardDetail,
@@ -167,7 +177,7 @@ fun PayCardItem(
                 }
         ) {
             AsyncImage(
-                model = card.cardImage,
+                model = card.image,
                 contentDescription = "card",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -175,7 +185,7 @@ fun PayCardItem(
                     .padding(20.dp)
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = card.cardName, style = getTextStyle(12))
+                Text(text = card.name, style = getTextStyle(12))
                 Image(
                     painter = painterResource(
                         id = if (card.representative) R.drawable.ic_star_circle_selected
@@ -210,11 +220,11 @@ fun PayCardItem(
 
             Text(
                 text = buildAnnotatedString {
-                    append("바코드 유효시간 ")
+                    append(stringResource(id = R.string.barcode_valid_time))
                     withStyle(
                         style = SpanStyle(color = MainColor)
                     ) {
-                        append("09:54")
+                        append(timer)
                     }
                 },
                 style = getTextStyle(12)
@@ -236,7 +246,7 @@ fun PayCardItem(
                         modifier = Modifier.size(26.dp)
                     )
                     Text(
-                        text = "자동 충전",
+                        text = stringResource(id = R.string.auto_charging),
                         style = getTextStyle(size = 12, color = DarkGray),
                         modifier = Modifier.padding(top = 7.dp)
                     )
@@ -252,7 +262,7 @@ fun PayCardItem(
                         modifier = Modifier.size(26.dp)
                     )
                     Text(
-                        text = "일반 충전",
+                        text = stringResource(id = R.string.normal_charging),
                         style = getTextStyle(size = 12, color = DarkGray),
                         modifier = Modifier.padding(top = 7.dp)
                     )
@@ -287,12 +297,12 @@ fun PayEmptyCardBody(routeAction: RouteAction) {
                     .size(256.dp, 163.dp)
             )
             Text(
-                text = "스타벅스 카드를 등록해보세요.",
+                text = stringResource(id = R.string.try_register_card),
                 style = getTextStyle(size = 20, isBold = true),
                 modifier = Modifier.padding(top = 25.dp)
             )
             Text(
-                text = "매장과 사이렌오더에서 쉽고 편리하게\n사용할 수 있고, 별도 적립할 수 있습니다.",
+                text = stringResource(id = R.string.register_card_guide),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(size = 16, color = DarkGray),
                 modifier = Modifier

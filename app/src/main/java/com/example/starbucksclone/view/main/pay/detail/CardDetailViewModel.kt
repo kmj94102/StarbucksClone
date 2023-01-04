@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.repository.CardRepository
+import com.example.starbucksclone.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,17 +20,20 @@ class CardDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /** 카드 정보 **/
     private val _cardInfo = mutableStateOf(CardInfo())
     val cardInfo: State<CardInfo> = _cardInfo
 
+    /** 카드 이름 수정 입력 **/
     private val _modifyCardName = mutableStateOf("")
     val modifyCardName: State<String> = _modifyCardName
 
+    /** 상태 관리 **/
     private val _status = MutableStateFlow<CardDetailStatus>(CardDetailStatus.Init)
     val status: StateFlow<CardDetailStatus> = _status
 
     init {
-        savedStateHandle.get<String>("cardNumber")?.let {
+        savedStateHandle.get<String>(Constants.CardNumber)?.let {
             selectCardInfo(it)
         }
     }

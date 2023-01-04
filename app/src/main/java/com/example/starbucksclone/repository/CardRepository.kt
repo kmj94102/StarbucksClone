@@ -11,6 +11,7 @@ class CardRepository @Inject constructor(
     private val client: CardClient
 ) {
 
+    /** 카드 등록 **/
     suspend fun createCard(
         id: String,
         info: CardRegistrationInfo,
@@ -41,8 +42,10 @@ class CardRepository @Inject constructor(
         )
     }
 
+    /** 카드 리스트 조회 **/
     fun selectCardList(id: String) = client.selectCardList(id)
 
+    /** 대표 카드 업데이트 **/
     suspend fun updateRepresentative(
         cardNumber: String,
         isRepresentative: Boolean,
@@ -57,6 +60,7 @@ class CardRepository @Inject constructor(
         )
     }
 
+    /** 카드 정보 조회 **/
     suspend fun selectCardInfo(
         cardNumber: String,
         successListener: (CardInfo) -> Unit,

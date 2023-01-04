@@ -11,11 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.*
@@ -61,15 +63,15 @@ fun ChargingScreen(
     when (status.value) {
         ChargingViewModel.ChargingStatus.Init -> {}
         ChargingViewModel.ChargingStatus.EmptyCardNumber -> {
-            context.toast("오류가 발생하였습니다. 잠시 후 다시 시도해주세요.")
+            context.toast(R.string.error_message)
             routeAction.popupBackStack()
         }
         ChargingViewModel.ChargingStatus.Failure -> {
-            context.toast("오류가 발생하였습니다. 잠시 후 다시 시도해주세요.")
+            context.toast(R.string.error_message)
         }
         ChargingViewModel.ChargingStatus.Success -> {
             if (routeAction.getCurrentRoute("${RouteAction.CardCharging}?{cardNumber}")) {
-                context.toast("충전을 완료하였습니다.")
+                context.toast(R.string.card_charging_complete)
                 routeAction.popupBackStack()
             }
         }
@@ -83,7 +85,7 @@ fun ChargingHeader(
     isExpand: Boolean
 ) {
     MainTitle(
-        titleText = "일반 충전",
+        titleText = stringResource(id = R.string.normal_charging),
         isExpand = isExpand,
         onLeftIconClick = {
             routeAction.popupBackStack()
@@ -119,7 +121,7 @@ fun ChargingBody(
                 .background(LightGray)
         )
 
-        Text(text = "충전 금액", style = getTextStyle(16, true))
+        Text(text = stringResource(id = R.string.charging_balance), style = getTextStyle(16, true))
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
@@ -166,7 +168,7 @@ fun ChargingBody(
             SelectButton(
                 isSelected = amount != 10_000L && amount != 30_000L && amount != 50_000L &&
                         amount != 70_000L && amount != 100_000L && amount != 0L,
-                text = "다른 금액"
+                text = stringResource(id = R.string.different_balance)
             ) {
                 viewModel.event(ChargingEvent.ChargingAmountChange(0))
                 isShow.value = true
@@ -180,7 +182,7 @@ fun ChargingBody(
                 .background(LightGray)
         )
 
-        Text(text = "온라인 충전 시 유의사항", style = getTextStyle(16, true))
+        Text(text = stringResource(id = R.string.charging_notice), style = getTextStyle(16, true))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -188,7 +190,7 @@ fun ChargingBody(
                 .background(LightGray)
         ) {
             Text(
-                text = "스타벅스 카드 충전은 1회 1만원부터 55만원까지 가능하며, 충전 후 총액이 55만원을 초과할 수 없습니다.",
+                text = stringResource(id = R.string.charging_notice_guide),
                 style = getTextStyle(size = 12, color = DarkGray),
                 modifier = Modifier.padding(vertical = 12.dp, horizontal = 18.dp)
             )
@@ -223,13 +225,13 @@ fun DefaultAmountDialog(
     CommonTitleDialog(
         title = "1만원 부터 55원 까지 충전 가능합니다.",
         isShow = isShow,
-        okText = "확인",
+        okText = stringResource(id = R.string.ok),
         okClickListener = {
             okClickListener(amount.value.toLong() * 10_000)
         },
         okButtonEnable = amount.value.toLongOrDefault(0L) != 0L &&
                 expectedBalance <= 550_000,
-        cancelText = "취소",
+        cancelText = stringResource(id = R.string.cancel),
         cancelClickListener = cancelClickListener,
         contents = {
             ConstraintLayout(

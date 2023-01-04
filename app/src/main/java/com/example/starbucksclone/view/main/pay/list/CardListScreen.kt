@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
@@ -60,7 +61,7 @@ fun CardListHeader(
     routeAction: RouteAction
 ) {
     MainTitle(
-        titleText = "카드",
+        titleText = stringResource(id = R.string.card),
         onLeftIconClick = {
             routeAction.popupBackStack()
         },
@@ -133,10 +134,10 @@ fun CardListBody(
     }
 
     CommonTitleDialog(
-        title = "[${cardName.value}]카드를 대표카드로 변경할까요?",
+        title = stringResource(id = R.string.representative_card_change, cardName.value),
         contents = {
             Text(
-                text = "대표카드로 설정할 경우, 리스트 최상단에 고정됩니다.",
+                text = stringResource(id = R.string.representative_card_change_guide),
                 style = getTextStyle(14),
                 modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 28.dp)
             )

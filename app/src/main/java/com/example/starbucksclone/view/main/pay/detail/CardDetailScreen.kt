@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -61,7 +62,7 @@ fun CardDetailScreen(
     when(val status = viewModel.status.collectAsState().value) {
         is CardDetailViewModel.CardDetailStatus.Init -> {}
         is CardDetailViewModel.CardDetailStatus.CardDeleteSuccess -> {
-            context.toast("카드 삭제를 완료하였습니다.")
+            context.toast(R.string.card_delete_complete)
             routeAction.popupBackStack()
         }
         is CardDetailViewModel.CardDetailStatus.Error -> {
@@ -103,24 +104,24 @@ fun CardDetailHeader(
 
     CommonTitleDialog(
         isShow = isCardNameModifyVisible.value,
-        title = "카드 이름을 입력해주세요.",
+        title = stringResource(id = R.string.input_card_name),
         contents = {
             CommonTextField(
                 value = viewModel.modifyCardName.value,
                 onValueChange = {
                     viewModel.event(CardDetailEvent.CardNameChange(it))
                 },
-                hint = "카드 이름",
+                hint = stringResource(id = R.string.card_name),
                 isLabel = true,
                 modifier = Modifier.padding(horizontal = 30.dp)
             )
         },
-        okText = "확인",
+        okText = stringResource(id = R.string.ok),
         okClickListener = {
             isCardNameModifyVisible.value = false
             viewModel.event(CardDetailEvent.CardNameModify)
         },
-        cancelText = "취소",
+        cancelText = stringResource(id = R.string.cancel),
         cancelClickListener = {
             isCardNameModifyVisible.value = false
             viewModel.event(CardDetailEvent.InitCardNameModify)
@@ -142,7 +143,7 @@ fun CardDetailBody(
 
     CardItem(
         cardInfo = cardInfo,
-        title = "카드 잔액",
+        title = stringResource(id = R.string.card_balance),
         isBigSize = true,
         modifier = Modifier.padding(top = 30.dp, start = 23.dp)
     )
@@ -156,11 +157,11 @@ fun CardDetailBody(
         Spacer(modifier = Modifier.height(8.dp))
         CardDetailBodyItem(
             iconRes = R.drawable.ic_usage_history,
-            text = "이용 내역",
+            text = stringResource(id = R.string.usage_history),
         ) {}
         CardDetailBodyItem(
             iconRes = R.drawable.ic_auto_charging,
-            text = "자동 충전",
+            text = stringResource(id = R.string.auto_charging),
             isAutoCharging = true
         ) {
             routeAction.goToScreenWithCardNumber(
@@ -170,7 +171,7 @@ fun CardDetailBody(
         }
         CardDetailBodyItem(
             iconRes = R.drawable.ic_charging,
-            text = "일반 충전",
+            text = stringResource(id = R.string.normal_charging),
         ) {
             routeAction.goToScreenWithCardNumber(
                 page = RouteAction.CardCharging,
@@ -179,11 +180,11 @@ fun CardDetailBody(
         }
         CardDetailBodyItem(
             iconRes = R.drawable.ic_report_loss,
-            text = "분실 신고 및 잔액 이전",
+            text = stringResource(id = R.string.balance_transfer),
         ) {}
         CardDetailBodyItem(
             iconRes = R.drawable.ic_minus_circle,
-            text = "카드 등록 해지",
+            text = stringResource(id = R.string.card_delete),
         ) {
             isCancelRegistrationShow.value = true
         }
@@ -192,21 +193,20 @@ fun CardDetailBody(
     CommonTitleDialog(
         isShow = isCancelRegistrationShow.value,
         title = if (cardInfo.balance > 0) {
-            "잔액이 남아있는 카드입니다. 카드 등록을 해지하시겠어요?"
+            stringResource(id = R.string.card_delete_title_balance)
         } else {
-            "카드 등록을 해지하시겠어요?"
+            stringResource(id = R.string.card_delete_title)
         },
         contents = {
             if (cardInfo.balance > 0) {
                 Text(
                     text = buildAnnotatedString {
                         withStyle(SpanStyle(color = MainColor)) {
-                            append("카드 잔액 : ${cardInfo.balance.toPriceFormat()}\n")
+                            append(stringResource(id = R.string.card_balance_detail, cardInfo.balance.toPriceFormat()))
+                            append("\n")
                         }
                         append(
-                            "- 본인 인증 완료 후 카드 등록해지가 가능합니다.\n\n" +
-                                    "- '예'버튼 선택 시 등록된 휴대폰 번호로 인증번호가 발송됩니다.(인증생략)\n\n" +
-                                    "- 등록을 해지하시면 Pay 리스트에서 삭제됩니다. 실물카드가 없는 경우, 재등록이 불가합니다."
+                            stringResource(id = R.string.card_delete_guide)
                         )
                     },
                     style = getTextStyle(14),
@@ -251,7 +251,7 @@ fun CardDetailBodyItem(
         )
         if (isAutoCharging) {
             Text(
-                text = "OFF",
+                text = stringResource(id = R.string.off),
                 style = getTextStyle(14, true, DarkGray),
                 modifier = Modifier.padding(end = 8.dp)
             )

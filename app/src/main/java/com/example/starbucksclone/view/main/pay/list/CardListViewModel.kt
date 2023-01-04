@@ -21,22 +21,13 @@ class CardListViewModel @Inject constructor(
     private val pref: SharedPreferences
 ) : ViewModel() {
 
+    /** 카드 리스트 **/
     private val _cardList = mutableStateListOf<CardInfo>()
     val cardList: List<CardInfo> = _cardList
 
     init {
         pref.getLoginId()?.let {
-            repository.selectCardList(id = it)
-                .onEach { list ->
-                    _cardList.clear()
-                    _cardList.addAll(
-                        list.map { entity -> entity.mapper(true) }
-                    )
-                }
-                .catch {
-                    _cardList.clear()
-                }
-                .launchIn(viewModelScope)
+            selectCardList(it)
         }
     }
 
@@ -48,16 +39,33 @@ class CardListViewModel @Inject constructor(
         }
     }
 
+    /** 카드 리스트 조회 **/
+    private fun selectCardList(id: String) {
+        repository.selectCardList(id = id)
+            .onEach { list ->
+                _cardList.clear()
+                _cardList.addAll(
+                    list.map { entity -> entity.mapper(true) }
+                )
+            }
+            .catch {
+                _cardList.clear()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    /** 대표카드 업데이트 **/
     private fun updateRepresentative(
         cardNumber: String
     ) = viewModelScope.launch {
+        // 이전 대표카드 제거
         repository.updateRepresentative(
             cardNumber = _cardList[0].cardNumber,
             isRepresentative = false,
             successListener = {},
             failureListener = {}
         )
-
+        // 신규 대표카드 설정
         repository.updateRepresentative(
             cardNumber = cardNumber,
             isRepresentative = true,

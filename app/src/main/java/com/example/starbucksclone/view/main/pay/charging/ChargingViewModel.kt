@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.CardInfo
 import com.example.starbucksclone.repository.CardRepository
+import com.example.starbucksclone.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,16 +20,20 @@ class ChargingViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    /** 카드 정보 **/
     private val _cardInfo = mutableStateOf(CardInfo())
     val cardInfo: State<CardInfo> = _cardInfo
 
+    /** 충전 금액 **/
     private val _chargingAmount = mutableStateOf(0L)
     val chargingAmount: State<Long> = _chargingAmount
 
+    /** 상태 관리 **/
     private val _status = MutableStateFlow<ChargingStatus>(ChargingStatus.Init)
     val status: StateFlow<ChargingStatus> = _status
 
-    private val cardNumber = savedStateHandle.get<String>("cardNumber")
+    /** 카드 번호 **/
+    private val cardNumber = savedStateHandle.get<String>(Constants.CardNumber)
 
     init {
         if (cardNumber == null) {
@@ -49,6 +54,7 @@ class ChargingViewModel @Inject constructor(
         }
     }
 
+    /** 카드 정보 조회 **/
     private fun selectCardInfo(cardNumber: String) = viewModelScope.launch {
         repository.selectCardInfo(
             cardNumber = cardNumber,
@@ -61,6 +67,7 @@ class ChargingViewModel @Inject constructor(
         )
     }
 
+    /** 잔액 충전 **/
     private fun updateBalance() = viewModelScope.launch {
         repository.updateBalance(
             cardNumber = cardNumber ?: "",

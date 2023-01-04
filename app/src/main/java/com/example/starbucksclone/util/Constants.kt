@@ -11,6 +11,7 @@ object Constants {
     const val DrinkDetail = "drink_detail"
     const val Food = "food"
     const val Product = "product"
+    const val CardNumber = "cardNumber"
 
     const val HotAndIced = "HOT & ICED"
     const val HotOnly = "HOT ONLY"

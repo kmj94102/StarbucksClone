@@ -76,7 +76,7 @@ interface StarbucksDao {
 
     /** 대표 카드 존재 여부 확인 **/
     @Query("SELECT COUNT(*) FROM CardEntity WHERE id = :id")
-    fun selectCountRepresentative(id: String): Int
+    suspend fun selectCountRepresentative(id: String): Int
 
     /** 대표 카드 수정 **/
     @Query("UPDATE CardEntity SET representative = :isRepresentative WHERE cardNumber = :cardNumber")
