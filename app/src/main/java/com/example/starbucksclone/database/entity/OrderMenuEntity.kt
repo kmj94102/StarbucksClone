@@ -12,7 +12,15 @@ data class OrderMenuEntity(
     @ColumnInfo(name = "group") val group: String,
     @ColumnInfo(name = "image") val image: String,
     @ColumnInfo(name = "color") val color: String
-)
+) {
+    fun mapper() = OrderMenuInfo(
+        name = name,
+        nameEng = nameEng,
+        image = image,
+        group = group,
+        color = color
+    )
+}
 
 fun createOrderMenuEntity(item: List<String>): OrderMenuEntity? =
     try {
@@ -27,3 +35,11 @@ fun createOrderMenuEntity(item: List<String>): OrderMenuEntity? =
     } catch (e: Exception) {
         null
     }
+
+data class OrderMenuInfo(
+    val name: String,
+    val nameEng: String,
+    val image: String,
+    val group: String,
+    val color: String
+)

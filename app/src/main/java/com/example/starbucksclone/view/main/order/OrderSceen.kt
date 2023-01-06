@@ -9,20 +9,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
-import com.example.starbucksclone.database.entity.MyMenuEntity
-import com.example.starbucksclone.database.entity.OrderMenuEntity
+import com.example.starbucksclone.database.entity.*
 import com.example.starbucksclone.ui.theme.*
-import com.example.starbucksclone.util.getEmoji
-import com.example.starbucksclone.util.getTextStyle
-import com.example.starbucksclone.util.nonRippleClickable
-import com.example.starbucksclone.util.priceFormat
+import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.CircleImage
 import com.example.starbucksclone.view.common.CustomTabRow
 import com.example.starbucksclone.view.common.MainTitle
@@ -42,6 +41,8 @@ fun OrderScreen(
 ) {
     val state = rememberLazyListState()
     val pagerState = rememberPagerState()
+    val status = viewModel.status.collectAsState().value
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -75,36 +76,32 @@ fun OrderScreen(
                         }
                         1 -> {
                             /** 나만의 메뉴 **/
-                            MyMenuContainer(viewModel.myMenuList)
+                            MyMenuContainer(
+                                routeAction = routeAction,
+                                viewModel = viewModel
+                            )
                         }
                     }
                 }
             }
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp)
-                .background(DarkBrown)
-                .nonRippleClickable {
-                    routeAction.goToScreen(RouteAction.Cart)
-                }
+        /** 장바구니 카운터 영역 **/
+        CartCounterContainer(
+            cartCount = viewModel.cartCount.value
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Box(modifier = Modifier.padding(end = 20.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_shopping_basket),
-                    contentDescription = "cart",
-                )
-                Text(
-                    text = "${viewModel.cartCount.value}",
-                    style = getTextStyle(14, true, White),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(top = 8.dp, bottom = 3.dp)
-                )
-            }
+            routeAction.goToScreen(RouteAction.Cart)
+        }
+    }
+
+    when(status) {
+        is OrderViewModel.OrderStatus.Init -> {}
+        is OrderViewModel.OrderStatus.Failure -> {
+            context.toast(R.string.error_message)
+            viewModel.event(OrderEvent.StatusInit)
+        }
+        is OrderViewModel.OrderStatus.OrderInfo -> {
+            routeAction.goToPayment(status.info)
+            viewModel.event(OrderEvent.StatusInit)
         }
     }
 }
@@ -118,12 +115,19 @@ fun OrderHeader(
     pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
-    val tabItems = listOf("전체 메뉴", "나만의 메뉴")
+    val tabItems = listOf(
+        stringResource(id = R.string.all_menu),
+        stringResource(id = R.string.my_menu)
+    )
 
-    Surface(color = White, shadowElevation = 6.dp, modifier = Modifier.padding(bottom = 6.dp)) {
+    Surface(
+        color = White,
+        shadowElevation = 6.dp,
+        modifier = Modifier.padding(bottom = 6.dp)
+    ) {
         Column {
             MainTitle(
-                titleText = "Order",
+                titleText = stringResource(id = R.string.order),
                 leftIconRes = null,
                 rightContents = {
                     Image(
@@ -162,7 +166,10 @@ fun OrderHeader(
                         painter = painterResource(id = R.drawable.ic_cake),
                         contentDescription = "cake"
                     )
-                    Text(text = "홀케이크 예약", style = getTextStyle(size = 14, color = MainColor))
+                    Text(
+                        text = stringResource(id = R.string.hall_cake),
+                        style = getTextStyle(size = 14, color = MainColor)
+                    )
                 }
             }
         }
@@ -178,7 +185,11 @@ fun AllMenuContainer(
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.width(24.dp))
-            listOf("음료", "푸드", "상품").forEach {
+            listOf(
+                stringResource(id = R.string.drink),
+                stringResource(id = R.string.food),
+                stringResource(id = R.string.product)
+            ).forEach {
                 Text(
                     text = it,
                     style = getTextStyle(
@@ -201,7 +212,7 @@ fun AllMenuContainer(
                 .background(Gray)
         )
         Spacer(modifier = Modifier.height(30.dp))
-        viewModel.list.forEach {
+        viewModel.menuList.forEach {
             AllMenuItem(it) { group, name ->
                 routeAction.goToMenuList(group, name)
             }
@@ -212,7 +223,7 @@ fun AllMenuContainer(
 /** 전체 메뉴 선택 아이템 **/
 @Composable
 fun AllMenuItem(
-    menu: OrderMenuEntity,
+    menu: OrderMenuInfo,
     onClick: (String, String) -> Unit
 ) {
     Row(
@@ -241,23 +252,32 @@ fun AllMenuItem(
 /** 나만의 메뉴 **/
 @Composable
 fun MyMenuContainer(
-    myMenuList: List<MyMenuEntity>
+    routeAction: RouteAction,
+    viewModel: OrderViewModel
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        if (myMenuList.isEmpty()) {
+        if (viewModel.myMenuList.isEmpty()) {
             Text(
-                text = "등록된 나만의 메뉴가 없습니다.",
+                text = stringResource(id = R.string.empty_my_menu),
                 style = getTextStyle(20),
                 modifier = Modifier.padding(top = 20.dp, start = 23.dp, end = 23.dp)
             )
             Text(
-                text = "좋아하는 메뉴에 ${getEmoji(0x1F49A)}를 누르고 편리하게 주문해 보세요. 등록된 나만의 메뉴는 HOME 화면에서도 바로 주문하실 수 있습니다.",
+                text = stringResource(id = R.string.my_menu_guide, getEmoji(0x1F49A)),
                 style = getTextStyle(14, false, DarkGray),
                 modifier = Modifier.padding(top = 10.dp, start = 23.dp, end = 23.dp)
             )
         } else {
-            myMenuList.forEach {
-                MyMenuItem(it)
+            viewModel.myMenuList.forEachIndexed { index, info ->
+                MyMenuItem(
+                    myMenu = info,
+                    orderClickListener = {
+                        viewModel.event(OrderEvent.Order(index))
+                    },
+                    cartClickListener = {
+                        viewModel.event(OrderEvent.Cart(index))
+                    }
+                )
             }
         }
     }
@@ -266,7 +286,9 @@ fun MyMenuContainer(
 /** 나만의 메뉴 선택 아이템 **/
 @Composable
 fun MyMenuItem(
-    myMenu: MyMenuEntity
+    myMenu: MyMenuInfo,
+    orderClickListener: () -> Unit,
+    cartClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -283,7 +305,7 @@ fun MyMenuItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = myMenu.nameEng, style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = 4500.priceFormat(), style = getTextStyle(14, true, Black))
+                Text(text = myMenu.price.priceFormat(), style = getTextStyle(14, true, Black))
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = myMenu.property, style = getTextStyle(12, false, DarkGray))
                 Spacer(modifier = Modifier.height(22.dp))
@@ -293,12 +315,18 @@ fun MyMenuItem(
                         contentDescription = ""
                     )
                     Spacer(modifier = Modifier.width(14.dp))
-                    RoundedButton(text = "담기", isOutline = true, textColor = MainColor) {
-
+                    RoundedButton(
+                        text = stringResource(id = R.string.do_cart),
+                        isOutline = true,
+                        textColor = MainColor
+                    ) {
+                        cartClickListener()
                     }
                     Spacer(modifier = Modifier.width(11.dp))
-                    RoundedButton(text = "주문하기") {
-
+                    RoundedButton(
+                        text = stringResource(id = R.string.do_order)
+                    ) {
+                        orderClickListener()
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -310,5 +338,38 @@ fun MyMenuItem(
                 .height(1.dp)
                 .background(Gray)
         )
+    }
+}
+
+/** 장바구니 카운터 영역 **/
+@Composable
+fun CartCounterContainer(
+    cartCount: Int,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .background(DarkBrown)
+            .nonRippleClickable {
+                onClick()
+            }
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier.padding(end = 20.dp)) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_shopping_basket),
+                contentDescription = "cart",
+            )
+            Text(
+                text = "$cartCount",
+                style = getTextStyle(14, true, White),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(top = 8.dp, bottom = 3.dp)
+            )
+        }
     }
 }

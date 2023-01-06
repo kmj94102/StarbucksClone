@@ -8,6 +8,7 @@ class CartRepository @Inject constructor(
     private val client: CartClient
 ) {
 
+    /** 장바구니 추가 **/
     suspend fun insertCartItem(
         cartEntity: CartEntity,
         successListener: () -> Unit,
@@ -20,8 +21,13 @@ class CartRepository @Inject constructor(
         )
     }
 
+    /** 장바구니 조회 **/
     fun selectCartItems(id: String) = client.selectCartItems(id)
 
+    /** 장바구니 카운트 조회 **/
+    fun selectCartItemsCount(id: String) = client.selectCartItemsCount(id = id)
+
+    /** 장바구니 삭제 **/
     suspend fun deleteCartItem(
         index: Int,
         successListener: () -> Unit,
@@ -34,6 +40,7 @@ class CartRepository @Inject constructor(
         )
     }
 
+    /** 장바구니 전체 삭제 **/
     suspend fun allDeleteCartItems(
         id: String,
         successListener: () -> Unit,

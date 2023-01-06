@@ -100,6 +100,19 @@
     <string name="charging_notice_guide">스타벅스 카드 충전은 1회 1만원부터 55만원까지 가능하며, 충전 후 총액이 55만원을 초과할 수 없습니다.</string>
     <string name="charging_range">1만원 부터 55원 까지 충전 가능합니다.</string>
 
+    <!-- Order -->
+    <string name="order">Order</string>
+    <string name="all_menu">전체 메뉴</string>
+    <string name="my_menu">나만의 메뉴</string>
+    <string name="hall_cake">홀케이크 예약</string>
+    <string name="drink">음료</string>
+    <string name="food">푸드</string>
+    <string name="product">상품</string>
+    <string name="empty_my_menu">등록된 나만의 메뉴가 없습니다.</string>
+    <string name="my_menu_guide">좋아하는 메뉴에 %s를 누르고 편리하게 주문해 보세요. 등록된 나만의 메뉴는 HOME 화면에서도 바로 주문하실 수 있습니다.</string>
+    <string name="do_cart">담기</string>
+    <string name="do_order">주문하기</string>
+
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>
     <string name="ok">확인</string>

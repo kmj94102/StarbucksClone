@@ -43,6 +43,7 @@ fun CartScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        /** 해더 영역 **/
         CartHeader(
             routeAction = routeAction,
             isExpand = state.isScrolled.not(),
@@ -59,8 +60,10 @@ fun CartScreen(
         ) {
             item {
                 if (viewModel.list.isEmpty()) {
+                    /** 장바구니가 비어있을 때 화면 **/
                     CartEmptyBody()
                 } else {
+                    /** 장바구니 리스트 **/
                     viewModel.list.forEachIndexed { index, cartItem ->
                         CartItem(
                             cartEntity = cartItem,

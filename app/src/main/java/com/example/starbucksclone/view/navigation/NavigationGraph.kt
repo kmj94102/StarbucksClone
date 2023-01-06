@@ -18,7 +18,6 @@ import com.example.starbucksclone.view.main.order.menu_list.MenuListScreen
 import com.example.starbucksclone.view.main.order.payment.PaymentScreen
 import com.example.starbucksclone.view.main.order.search.MenuSearchScreen
 import com.example.starbucksclone.view.main.order.search.result.MenuSearchResultScreen
-import com.example.starbucksclone.view.main.pay.PayScreen
 import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
 import com.example.starbucksclone.view.main.pay.list.CardListScreen

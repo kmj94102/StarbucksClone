@@ -8,7 +8,7 @@ class CartClient @Inject constructor(
     private val dao: StarbucksDao
 ) {
 
-    /** 카트 추가 **/
+    /** 장바구니 추가 **/
     suspend fun insertCardItem(
         cartEntity: CartEntity,
         successListener: () -> Unit,
@@ -21,8 +21,11 @@ class CartClient @Inject constructor(
         failureListener()
     }
 
-    /** 카트 조회 **/
+    /** 장바구니 조회 **/
     fun selectCartItems(id: String) = dao.selectCartItems(id)
+
+    /** 장바구니 카운트 조회 **/
+    fun selectCartItemsCount(id: String) = dao.selectCartItemsCount(id)
 
     /** 장바구니 삭제 **/
     suspend fun deleteCartItem(

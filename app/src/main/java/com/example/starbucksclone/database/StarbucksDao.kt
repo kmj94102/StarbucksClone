@@ -114,6 +114,10 @@ interface StarbucksDao {
     @Query("SELECT * FROM CartEntity WHERE id = :id ORDER BY date")
     fun selectCartItems(id: String): Flow<List<CartEntity>>
 
+    /** 장바구니 카운트 조회 **/
+    @Query("SELECT COUNT(*) FROM CartEntity WHERE id = :id")
+    fun selectCartItemsCount(id: String): Flow<Int>
+
     /** 장바구니 삭제 **/
     @Query("DELETE FROM CartEntity WHERE `index` = :index")
     suspend fun deleteCartItem(index: Int)
