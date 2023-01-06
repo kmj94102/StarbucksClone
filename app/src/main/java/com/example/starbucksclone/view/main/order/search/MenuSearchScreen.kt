@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +38,7 @@ fun MenuSearchScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        /** 검색 영역 **/
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -51,11 +53,11 @@ fun MenuSearchScreen(
                     viewModel.event(MenuSearchEvent.Search(search.value))
                     routeAction.goToMenuSearchResult(search.value)
                 },
-                hint = "검색",
+                hint = stringResource(id = R.string.search),
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "취소",
+                text = stringResource(id = R.string.cancel),
                 style = getTextStyle(14),
                 modifier = Modifier
                     .padding(18.dp)
@@ -64,16 +66,18 @@ fun MenuSearchScreen(
         }
 
         if (viewModel.historyList.isEmpty()) {
+            /** 검색 기록이 없을 경우 **/
             Text(
-                text = "최근 검색어가 없습니다.",
+                text = stringResource(id = R.string.empty_search_history),
                 style = getTextStyle(16),
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 170.dp)
             )
         } else {
+            /** 검색 기록 **/
             Text(
-                text = "최근 검색어",
+                text = stringResource(id = R.string.search_history),
                 style = getTextStyle(12, false, DarkGray),
                 modifier = Modifier.padding(start = 23.dp, top = 20.dp)
             )
@@ -104,7 +108,7 @@ fun MenuSearchScreen(
                             .background(Gray)
                     )
                     Text(
-                        text = "전체 삭제",
+                        text = stringResource(id = R.string.all_delete),
                         textAlign = TextAlign.End,
                         style = getTextStyle(12, true),
                         modifier = Modifier
@@ -120,6 +124,7 @@ fun MenuSearchScreen(
     }
 }
 
+/** 검색 기록 **/
 @Composable
 fun SearchHistory(
     text: String,

@@ -7,8 +7,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.MenuSearchResult
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
@@ -26,19 +28,22 @@ fun MenuSearchResultScreen(
     viewModel: MenuSearchResultViewModel = hiltViewModel()
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
+        /** 해더 영역 **/
         MenuSearchResultHeader(
             viewModel = viewModel,
             routeAction = routeAction
         )
+        /** 검색 기록이 없을 경우 **/
         if (viewModel.list.isEmpty()) {
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "검색 결과가 없습니다.",
+                text = stringResource(id = R.string.empty_search_result),
                 style = getTextStyle(16),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.weight(1f))
         } else {
+            /** 바디 영역 **/
             MenuSearchResultBody(
                 list = viewModel.list,
                 routeAction = routeAction,
@@ -48,6 +53,7 @@ fun MenuSearchResultScreen(
     }
 }
 
+/** 해더영역 **/
 @Composable
 fun MenuSearchResultHeader(
     viewModel: MenuSearchResultViewModel,
@@ -66,7 +72,12 @@ fun MenuSearchResultHeader(
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Spacer(modifier = Modifier.width(24.dp))
-            listOf("전체", "음료", "푸드", "상품").forEach {
+            listOf(
+                stringResource(id = R.string.all),
+                stringResource(id = R.string.drink),
+                stringResource(id = R.string.food),
+                stringResource(id = R.string.product)
+            ).forEach {
                 Text(
                     text = it,
                     style = getTextStyle(
@@ -91,6 +102,7 @@ fun MenuSearchResultHeader(
     }
 }
 
+/** 바디 영역 **/
 @Composable
 fun MenuSearchResultBody(
     list: List<MenuSearchResult>,
@@ -113,6 +125,7 @@ fun MenuSearchResultBody(
     }
 }
 
+/** 검색 결과 아이템 **/
 @Composable
 fun MenuListItem(
     menu: MenuSearchResult,

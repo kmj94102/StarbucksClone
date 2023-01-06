@@ -112,6 +112,9 @@
     <string name="my_menu_guide">좋아하는 메뉴에 %s를 누르고 편리하게 주문해 보세요. 등록된 나만의 메뉴는 HOME 화면에서도 바로 주문하실 수 있습니다.</string>
     <string name="do_cart">담기</string>
     <string name="do_order">주문하기</string>
+    <string name="empty_search_history">최근 검색어가 없습니다.</string>
+    <string name="search_history">최근 검색어</string>
+    <string name="empty_search_result">검색 결과가 없습니다.</string>
 
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>
@@ -121,6 +124,9 @@
     <string name="no">아니오</string>
     <string name="next">다음</string>
     <string name="off">OFF</string>
+    <string name="search">검색</string>
+    <string name="all">전체</string>
+    <string name="all_delete">전체 삭제</string>
     <string name="error_message">오류가 발생하였습니다. 잠시 후 다시 시도해주세요.</string>
 
     <!-- 가이드 문구 -->

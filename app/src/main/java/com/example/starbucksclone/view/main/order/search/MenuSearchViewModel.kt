@@ -12,6 +12,7 @@ class MenuSearchViewModel @Inject constructor(
     private val pref: SharedPreferences
 ) : ViewModel() {
 
+    /** 검색 기록 리스트 **/
     private val _historyList = mutableStateListOf<String>()
     val historyList: List<String> = _historyList
 
@@ -32,13 +33,12 @@ class MenuSearchViewModel @Inject constructor(
             }
             is MenuSearchEvent.AllDelete -> {
                 _historyList.clear()
-                pref.edit()
-                    .putString(SharedPreferencesUtil.SearchHistory, "")
-                    .apply()
+                allDeleteSearchHistory()
             }
         }
     }
 
+    /** 검색 기록 조회 **/
     private fun getSearchHistory() {
         pref.getString(SharedPreferencesUtil.SearchHistory, null)
             ?.split(SharedPreferencesUtil.HistoryClassification)
@@ -47,6 +47,7 @@ class MenuSearchViewModel @Inject constructor(
             }
     }
 
+    /** 검색 기록 등록 **/
     private fun setSearchHistory() {
         pref.edit()
             .putString(
@@ -55,6 +56,13 @@ class MenuSearchViewModel @Inject constructor(
                     "$acc${SharedPreferencesUtil.HistoryClassification}$s"
                 }
             )
+            .apply()
+    }
+
+    /** 검색 기록 전체 삭제 **/
+    private fun allDeleteSearchHistory() {
+        pref.edit()
+            .putString(SharedPreferencesUtil.SearchHistory, "")
             .apply()
     }
 

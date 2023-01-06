@@ -18,12 +18,15 @@ class MenuSearchResultViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    /** 텝 선택 관리 **/
     private val _selected = mutableStateOf("전체")
     val selected: State<String> = _selected
 
+    /** 검색 결과 리스트 **/
     private val _list = mutableStateListOf<MenuSearchResult>()
     val list: List<MenuSearchResult> = _list
 
+    /** 검색어 **/
     private val _title = mutableStateOf("")
     val title: State<String> = _title
 
@@ -43,6 +46,7 @@ class MenuSearchResultViewModel @Inject constructor(
         }
     }
 
+    /** 검색 결과 리스트 조회 **/
     private fun selectSearchMenuList(
         value: String
     ) = viewModelScope.launch {
