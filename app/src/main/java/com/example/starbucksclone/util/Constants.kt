@@ -18,4 +18,10 @@ object Constants {
     const val IcedOnly = "ICED ONLY"
     const val Hot = "HOT"
     const val Iced = "Iced"
+
+    const val Value = "value"
+    const val Group = "group"
+    const val Name = "name"
+    const val Indexes = "indexes"
+    const val Item = "item"
 }

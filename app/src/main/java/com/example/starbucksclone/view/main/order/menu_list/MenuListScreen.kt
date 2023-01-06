@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.MenuEntity
+import com.example.starbucksclone.database.entity.MenuInfo
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.util.getTextStyle
@@ -81,7 +82,7 @@ fun MenuListHeader(
 @Composable
 fun MenuListBody(
     routeAction: RouteAction,
-    list: List<MenuEntity>
+    list: List<MenuInfo>
 ) {
     list.forEach {
         MenuListItem(it) { indexes, name ->
@@ -92,7 +93,7 @@ fun MenuListBody(
 
 @Composable
 fun MenuListItem(
-    menu: MenuEntity,
+    menu: MenuInfo,
     onClick: (String, String) -> Unit
 ) {
     Row(

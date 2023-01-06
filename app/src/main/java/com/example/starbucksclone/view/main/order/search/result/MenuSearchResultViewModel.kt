@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.MenuSearchResult
 import com.example.starbucksclone.repository.MenuRepository
+import com.example.starbucksclone.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class MenuSearchResultViewModel @Inject constructor(
     val title: State<String> = _title
 
     init {
-        savedStateHandle.get<String>("value")?.let {
+        savedStateHandle.get<String>(Constants.Value)?.let {
             selectSearchMenuList(it)
             _title.value = it
         }

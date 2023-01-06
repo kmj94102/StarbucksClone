@@ -1,6 +1,5 @@
 package com.example.starbucksclone.database.entity
 
-import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -21,7 +20,15 @@ data class MenuEntity(
     @ColumnInfo(name = "isRecommendation") val isRecommendation: Boolean,
     @ColumnInfo(name = "group") val group: String,
     @ColumnInfo(name = "orderGroup") val orderGroup: String
-)
+) {
+    fun mapper() = MenuInfo(
+        indexes = indexes,
+        name = name,
+        nameEng = nameEng,
+        image = image,
+        price = price
+    )
+}
 
 fun createDrinkEntity(item: List<String>): MenuEntity? =
     try {
@@ -60,4 +67,12 @@ data class HomeNewMenu(
     val indexes: String,
     val name: String,
     val image: String
+)
+
+data class MenuInfo(
+    val indexes: String,
+    val image: String,
+    val name: String,
+    val nameEng: String,
+    val price: Int
 )

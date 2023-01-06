@@ -6,6 +6,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.*
+import com.example.starbucksclone.util.Constants
 import com.example.starbucksclone.view.login.LoginScreen
 import com.example.starbucksclone.view.login.signup.SignupScreen
 import com.example.starbucksclone.view.login.signup.complete.SignupCompleteScreen
@@ -90,38 +91,38 @@ fun NavigationGraph() {
         }
         /** 카드 상세 화면 **/
         customComposable(
-            route = "${RouteAction.CardDetail}?{cardNumber}",
+            route = "${RouteAction.CardDetail}?{${Constants.CardNumber}}",
             arguments = listOf(
-                navArgument("cardNumber") { type = NavType.StringType }
+                navArgument(Constants.CardNumber) { type = NavType.StringType }
             )
         ) {
             CardDetailScreen(routeAction = routeAction)
         }
         /** 카드 충전 화면 **/
         customComposable(
-            route = "${RouteAction.CardCharging}?{cardNumber}",
+            route = "${RouteAction.CardCharging}?{${Constants.CardNumber}}",
             arguments = listOf(
-                navArgument("cardNumber") { type = NavType.StringType }
+                navArgument(Constants.CardNumber) { type = NavType.StringType }
             )
         ) {
             ChargingScreen(routeAction = routeAction)
         }
         /** 메뉴 리스트 화면 **/
         customComposable(
-            route = "${RouteAction.MenuList}?{group},{name}",
+            route = "${RouteAction.MenuList}?{${Constants.Group}},{${Constants.Name}}",
             arguments = listOf(
-                navArgument("group") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType },
+                navArgument(Constants.Group) { type = NavType.StringType },
+                navArgument(Constants.Name) { type = NavType.StringType },
             )
         ) {
             MenuListScreen(routeAction = routeAction)
         }
         /** 메뉴 상세 화면 **/
         customComposable(
-            route = "${RouteAction.MenuDetail}?{indexes}/{name}",
+            route = "${RouteAction.MenuDetail}?{${Constants.Indexes}}/{${Constants.Name}}",
             arguments = listOf(
-                navArgument("indexes") { type = NavType.StringType },
-                navArgument("name") { type = NavType.StringType }
+                navArgument(Constants.Indexes) { type = NavType.StringType },
+                navArgument(Constants.Name) { type = NavType.StringType }
             )
         ) {
             MenuDetailScreen(routeAction = routeAction)
@@ -134,9 +135,9 @@ fun NavigationGraph() {
         }
         /** 메뉴 검색 결과 **/
         customComposable(
-            route = "${RouteAction.MenuSearchResult}/{value}",
+            route = "${RouteAction.MenuSearchResult}/{${Constants.Value}}",
             arguments = listOf(
-                navArgument("value") { NavType.StringType }
+                navArgument(Constants.Value) { NavType.StringType }
             )
         ) {
             MenuSearchResultScreen(routeAction = routeAction)
@@ -155,9 +156,9 @@ fun NavigationGraph() {
         }
         /** 결제하기 화면 (단건) **/
         customComposable(
-            route = "${RouteAction.Payment}/{item}",
+            route = "${RouteAction.Payment}/{${Constants.Item}}",
             arguments = listOf(
-                navArgument("item") { NavType.StringType }
+                navArgument(Constants.Item) { NavType.StringType }
             )
         ) {
             PaymentScreen(routeAction = routeAction)
