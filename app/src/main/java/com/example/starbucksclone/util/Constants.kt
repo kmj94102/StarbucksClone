@@ -24,4 +24,9 @@ object Constants {
     const val Name = "name"
     const val Indexes = "indexes"
     const val Item = "item"
+
+    const val StoreCup = "매장컵"
+    const val IndividualCup = "개인컵"
+    const val DisposableCup = "일회용컵"
+
 }

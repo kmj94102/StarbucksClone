@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -32,6 +33,7 @@ import com.example.starbucksclone.view.common.RoundedButton
 import com.example.starbucksclone.view.main.order.cart.CartAdditionCompleteBottomSheet
 import com.example.starbucksclone.view.navigation.RouteAction
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -53,52 +55,13 @@ fun MenuDetailScreen(
         sheetState = modalState,
         sheetShape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
         sheetContent = {
-            when (status) {
-                is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
-                    CartAdditionCompleteBottomSheet(
-                        goToCartListener = {
-                            routeAction.goToScreen(RouteAction.Cart)
-                        },
-                        finishListener = {
-                            routeAction.popupBackStack()
-                        },
-                        closeListener = {
-                            scope.launch {
-                                modalState.hide()
-                            }
-                        }
-                    )
-                }
-                else -> {
-                    OrderInfoBottomSheetContents(
-                        id = viewModel.id ?: "",
-                        info = viewModel.info.value,
-                        isHot = when (viewModel.info.value.drinkType) {
-                            Constants.HotOnly -> {
-                                true
-                            }
-                            Constants.IcedOnly -> {
-                                false
-                            }
-                            else -> {
-                                viewModel.isHotSelect.value
-                            }
-                        },
-                        heartClickListener = {
-                            viewModel.event(MenuDetailEvent.MyMenuRegister(it))
-                        },
-                        cartClickListener = {
-                            scope.launch {
-                                modalState.hide()
-                            }
-                            viewModel.event(MenuDetailEvent.AddCartItem(it))
-                        },
-                        orderClickListener = {
-                            routeAction.goToPayment(Uri.encode(Gson().toJson(it)))
-                        }
-                    )
-                }
-            }
+            MenuDetailModalContainer(
+                status = status,
+                viewModel = viewModel,
+                scope = scope,
+                modalState = modalState,
+                routeAction = routeAction
+            )
         }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -157,7 +120,7 @@ fun MenuDetailScreen(
             context.toast(status.msg)
         }
         is MenuDetailViewModel.MenuDetailStatus.MyMenuSuccess -> {
-            context.toast("나만의 메뉴 등록을 완료하였습니다.")
+            context.toast(R.string.my_menu_add_complete)
         }
         is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
             scope.launch {
@@ -310,7 +273,7 @@ fun MenuDetailBody(
                 .padding(top = 20.dp)
         ) {
             Text(
-                text = "제품 영양 정보",
+                text = stringResource(id = R.string.nutritional_information),
                 style = getTextStyle(16, true, Black),
                 modifier = Modifier.weight(1f)
             )
@@ -338,9 +301,7 @@ fun HotOrIcedSelector(
             modifier = modifier
                 .fillMaxWidth()
                 .height(35.dp)
-        ) {
-
-        }
+        ) {}
     } else {
         Row(
             modifier = modifier
@@ -374,6 +335,63 @@ fun HotOrIcedSelector(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun MenuDetailModalContainer(
+    status: MenuDetailViewModel.MenuDetailStatus,
+    viewModel: MenuDetailViewModel,
+    scope: CoroutineScope,
+    modalState: ModalBottomSheetState,
+    routeAction: RouteAction
+) {
+    when (status) {
+        is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
+            CartAdditionCompleteBottomSheet(
+                goToCartListener = {
+                    routeAction.goToScreen(RouteAction.Cart)
+                },
+                finishListener = {
+                    routeAction.popupBackStack()
+                },
+                closeListener = {
+                    scope.launch {
+                        modalState.hide()
+                    }
+                }
+            )
+        }
+        else -> {
+            OrderInfoBottomSheetContents(
+                id = viewModel.id ?: "",
+                info = viewModel.info.value,
+                isHot = when (viewModel.info.value.drinkType) {
+                    Constants.HotOnly -> {
+                        true
+                    }
+                    Constants.IcedOnly -> {
+                        false
+                    }
+                    else -> {
+                        viewModel.isHotSelect.value
+                    }
+                },
+                heartClickListener = {
+                    viewModel.event(MenuDetailEvent.MyMenuRegister(it))
+                },
+                cartClickListener = {
+                    scope.launch {
+                        modalState.hide()
+                    }
+                    viewModel.event(MenuDetailEvent.AddCartItem(it))
+                },
+                orderClickListener = {
+                    routeAction.goToPayment(Uri.encode(Gson().toJson(it)))
+                }
+            )
         }
     }
 }

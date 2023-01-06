@@ -14,6 +14,7 @@ import com.example.starbucksclone.di.getLoginId
 import com.example.starbucksclone.repository.CartRepository
 import com.example.starbucksclone.repository.MenuRepository
 import com.example.starbucksclone.repository.MyMenuRepository
+import com.example.starbucksclone.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -33,10 +34,11 @@ class MenuDetailViewModel @Inject constructor(
     private var indexes = ""
     val id = pref.getLoginId()
 
+    /** Hot 선택 여부 **/
     private val _isHotSelect = mutableStateOf(true)
     val isHotSelect: State<Boolean> = _isHotSelect
+
     private val _state = mutableStateOf(0)
-    val state: State<Int> = _state
     private val _infoList = mutableStateListOf<MenuDetailInfo>()
     val info: State<MenuDetailInfo>
         get() = mutableStateOf(_infoList.getOrNull(_state.value) ?: MenuDetailInfo())
@@ -45,15 +47,16 @@ class MenuDetailViewModel @Inject constructor(
     val status: StateFlow<MenuDetailStatus> = _status
 
     init {
-        savedStateHandle.get<String>("indexes")?.let {
+        savedStateHandle.get<String>(Constants.Indexes)?.let {
             indexes = it
         }
-        savedStateHandle.get<String>("name")?.let {
+        savedStateHandle.get<String>(Constants.Name)?.let {
             name = it
         }
         selectMenuDetail()
     }
 
+    /** 메뉴 상세 조회 **/
     private fun selectMenuDetail() = viewModelScope.launch {
         val result = repository.selectMenuDetails(indexes, name)
         _infoList.addAll(result)
@@ -74,6 +77,7 @@ class MenuDetailViewModel @Inject constructor(
         }
     }
 
+    /** 나만의 메뉴 등록 **/
     private fun insertMyMenu(
         myMenuEntity: MyMenuEntity
     ) = viewModelScope.launch {
@@ -90,6 +94,7 @@ class MenuDetailViewModel @Inject constructor(
         _status.value = MenuDetailStatus.Init
     }
 
+    /** 장바구니 등록 **/
     private fun insertCartItem(
         cartEntity: CartEntity
     ) = viewModelScope.launch {

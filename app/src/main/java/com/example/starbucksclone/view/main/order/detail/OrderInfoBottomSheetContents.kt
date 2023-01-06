@@ -60,13 +60,16 @@ fun OrderInfoBottomSheetContents(
             .fillMaxWidth()
             .fillMaxHeight(.95f)
     ) {
+        /** 해더 영역 **/
         OrderInfoHeader(info = info)
+        /** 바디 영역 **/
         OrderInfoBody(
             info = info,
             cupSelected = cupSelected,
             cupSizeSelected = cupSizeSelected,
             modifier = Modifier.weight(1f)
         )
+        /** 풋터 영역 **/
         OrderInfoFooter(
             price = info.sizePrices.getOrElse(cupSizeSelected.value) { 0 },
             amount = amount,
@@ -100,6 +103,7 @@ fun OrderInfoBottomSheetContents(
         )
     }
 
+    /** 나만의 메뉴 등록 다이얼로그 **/
     MyMenuRegisterDialog(
         isShow = isShow.value,
         name = info.name,
@@ -134,9 +138,11 @@ fun OrderInfoBottomSheetContents(
     )
 }
 
+/** 선택한 옵션에 맞는 속성 반환 **/
 private fun getProperty(isHot: Boolean, size: String, cupSelected: String) =
     "${if (isHot) "HOT" else "ICED"} | $size | $cupSelected"
 
+/** 장바구니 아이템 생성 **/
 private fun createCartItem(
     id: String,
     info: MenuDetailInfo,
@@ -160,6 +166,7 @@ private fun createCartItem(
     date = System.currentTimeMillis()
 )
 
+/** 해더 영역 **/
 @Composable
 private fun OrderInfoHeader(
     info: MenuDetailInfo,
@@ -189,7 +196,7 @@ private fun OrderInfoHeader(
                 .background(Color(0xFFF3FAF7))
         ) {
             Text(
-                text = "환경을 위해 일회용컵 사용 줄이기에 동참해 주세요",
+                text = stringResource(id = R.string.cup_select_guide),
                 style = getTextStyle(12, false, MainColor),
                 modifier = Modifier.padding(vertical = 8.dp)
             )
@@ -197,6 +204,7 @@ private fun OrderInfoHeader(
     }
 }
 
+/** 바디 영역 **/
 @Composable
 private fun OrderInfoBody(
     info: MenuDetailInfo,
@@ -204,9 +212,13 @@ private fun OrderInfoBody(
     cupSizeSelected: MutableState<Int>,
     modifier: Modifier = Modifier
 ) {
-    val cupList = listOf("매장컵", "개인컵", "일회용컵")
+    val cupList = listOf(
+        Constants.StoreCup,
+        Constants.IndividualCup, 
+        Constants.DisposableCup
+    )
     var visibleState by remember {
-        mutableStateOf(cupSelected.value != "매장컵")
+        mutableStateOf(cupSelected.value != Constants.StoreCup)
     }
 
     LazyColumn(
@@ -215,7 +227,7 @@ private fun OrderInfoBody(
     ) {
         item {
             Text(
-                text = "사이즈",
+                text = stringResource(id = R.string.size),
                 style = getTextStyle(16, true, Black),
                 modifier = Modifier.padding(top = 8.dp, bottom = 13.dp, start = 23.dp)
             )
@@ -239,7 +251,7 @@ private fun OrderInfoBody(
             }
 
             Text(
-                text = "컵 선택",
+                text = stringResource(id = R.string.cup_select),
                 style = getTextStyle(16, true, Black),
                 modifier = Modifier.padding(top = 41.dp, bottom = 11.dp, start = 23.dp)
             )
@@ -248,7 +260,7 @@ private fun OrderInfoBody(
                 selectedValue = cupSelected.value,
                 selectedChangeListener = {
                     cupSelected.value = it
-                    visibleState = cupSelected.value != "매장컵"
+                    visibleState = cupSelected.value != Constants.StoreCup
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -269,8 +281,12 @@ private fun OrderInfoBody(
                 ) {
                     Text(
                         text = when (cupSelected.value) {
-                            "개인컵" -> stringResource(id = R.string.individual_cup_guide)
-                            "일회용컵" -> stringResource(id = R.string.disposable_cup_guide)
+                            Constants.IndividualCup -> {
+                                stringResource(id = R.string.individual_cup_guide)
+                            }
+                            Constants.DisposableCup -> {
+                                stringResource(id = R.string.disposable_cup_guide)
+                            }
                             else -> ""
                         },
                         lineHeight = 20.sp,
@@ -283,6 +299,7 @@ private fun OrderInfoBody(
     }
 }
 
+/** 컵 선택 **/
 @Composable
 fun CupSelector(
     size: String,
@@ -337,6 +354,7 @@ fun CupSelector(
     }
 }
 
+/** 컵 크기별 아이콘 크기 **/
 private fun getCupImageSize(size: String) = when (size) {
     "Short" -> 27.dp
     "Tall" -> 34.dp
@@ -345,6 +363,7 @@ private fun getCupImageSize(size: String) = when (size) {
     else -> 27.dp
 }
 
+/** 풋터 영역 **/
 @Composable
 private fun OrderInfoFooter(
     price: Long,
@@ -429,7 +448,7 @@ private fun OrderInfoFooter(
             )
 
             RoundedButton(
-                text = "담기",
+                text = stringResource(id = R.string.do_cart),
                 isOutline = true,
                 textColor = MainColor,
                 onClick = {
@@ -444,7 +463,7 @@ private fun OrderInfoFooter(
             )
 
             RoundedButton(
-                text = "주문하기",
+                text = stringResource(id = R.string.do_order),
                 onClick = {
                     orderClickListener()
                 },

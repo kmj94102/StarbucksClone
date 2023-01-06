@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.LightGray
 import com.example.starbucksclone.util.getTextStyle
@@ -26,7 +28,7 @@ fun MyMenuRegisterDialog(
         mutableStateOf("")
     }
     CommonTitleDialog(
-        title = "나만의 메뉴로 등록해보세요.",
+        title = stringResource(id = R.string.my_menu_guide_title),
         isShow = isShow,
         contentPadding = 20.dp,
         contents = {
@@ -58,7 +60,7 @@ fun MyMenuRegisterDialog(
                 }
 
                 Text(
-                    text = "등록할 나만의 메뉴 이름을 지어보세요",
+                    text = stringResource(id = R.string.create_my_menu_name),
                     style = getTextStyle(12),
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -67,16 +69,16 @@ fun MyMenuRegisterDialog(
                     onValueChange = {
                         anotherName.value = it
                     },
-                    hint = "나만의 $name",
+                    hint = stringResource(id = R.string.my_menu_name, name),
                     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
                 )
             }
         },
-        okText = "확인",
+        okText = stringResource(id = R.string.ok),
         okClickListener = {
             okClickListener(anotherName.value)
         },
-        cancelText = "취소",
+        cancelText = stringResource(id = R.string.cancel),
         cancelClickListener = {
             cancelClickListener()
         }

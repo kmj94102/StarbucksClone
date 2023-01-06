@@ -115,6 +115,14 @@
     <string name="empty_search_history">최근 검색어가 없습니다.</string>
     <string name="search_history">최근 검색어</string>
     <string name="empty_search_result">검색 결과가 없습니다.</string>
+    <string name="my_menu_add_complete">나만의 메뉴 등록을 완료하였습니다.</string>
+    <string name="nutritional_information">제품 영양 정보</string>
+    <string name="my_menu_guide_title">나만의 메뉴로 등록해보세요.</string>
+    <string name="create_my_menu_name">등록할 나만의 메뉴 이름을 지어보세요.</string>
+    <string name="my_menu_name">나만의 %s</string>
+    <string name="cup_select_guide">환경을 위해 일회용컵 사용 줄이기에 동참해 주세요</string>
+    <string name="size">사이즈</string>
+    <string name="cup_select">컵 선택</string>
 
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>
