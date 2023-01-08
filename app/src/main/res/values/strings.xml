@@ -99,6 +99,27 @@
     <string name="charging_notice">온라인 충전 시 유의사항</string>
     <string name="charging_notice_guide">스타벅스 카드 충전은 1회 1만원부터 55만원까지 가능하며, 충전 후 총액이 55만원을 초과할 수 없습니다.</string>
     <string name="charging_range">1만원 부터 55원 까지 충전 가능합니다.</string>
+    <string name="coupon_and_discount">쿠폰 및 할인</string>
+    <string name="coupon_kor">쿠폰</string>
+    <string name="present">선물</string>
+    <string name="partnership_discount">통신사 제휴 할인</string>
+    <string name="cash_receipt">현금영수증</string>
+    <string name="order_history">주문 내역</string>
+    <string name="final_payment_amount">최종 결제 금액</string>
+    <string name="payment_button">%s 결제하기</string>
+    <string name="order_result_title1">결제가 완료되었습니다.</string>
+    <string name="order_result_title2">주문을 확인하고 있습니다%s</string>
+    <string name="order_result_title3">주문이 확인되었습니다%s</string>
+    <string name="order_result_title4">메뉴가 모두 준비되었어요.%s</string>
+    <string name="order_result_comment1">결제 정보를 해당 매장에 전달하고 있어요.</string>
+    <string name="order_result_comment2">주문 승인 즉시 메뉴 준비가 시작됩니다. 완성 후, 빠르게 픽업해주세요.</string>
+    <string name="order_result_comment3">메뉴를 만들고 있어요. 조금만 기다려주세요.</string>
+    <string name="order_result_comment4">메뉴가 모두 준비되었어요. 픽업대에서 메뉴를 픽업해주세요!</string>
+    <string name="payment_complete">결제 완료</string>
+    <string name="order_request">주문 요청</string>
+    <string name="order_authorization">주문 승인</string>
+    <string name="all_set">준비 완료</string>
+    <string name="order_history_count">주문 내역(%d)</string>
 
     <!-- Order -->
     <string name="order">Order</string>
@@ -123,6 +144,13 @@
     <string name="cup_select_guide">환경을 위해 일회용컵 사용 줄이기에 동참해 주세요</string>
     <string name="size">사이즈</string>
     <string name="cup_select">컵 선택</string>
+    <string name="payment">결제하기</string>
+    <string name="payment_method">결제 수단</string>
+    <string name="payment_failure">결제를 실패하였습니다.</string>
+    <string name="lake_of_balance">잔액 부족</string>
+    <string name="starbucks_card">스타벅스 카드</string>
+    <string name="do_charging">충전하기</string>
+    <string name="do_select">선택하기</string>
 
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>

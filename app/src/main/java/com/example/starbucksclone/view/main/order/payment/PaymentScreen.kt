@@ -16,12 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
 import com.example.starbucksclone.database.entity.CardInfo
-import com.example.starbucksclone.database.entity.CartEntity
+import com.example.starbucksclone.database.entity.PaymentInfo
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.CircleImage
@@ -43,7 +44,7 @@ fun PaymentScreen(
         isSkipHalfExpanded = true
     )
     val scope = rememberCoroutineScope()
-    val totalPrice = viewModel.cartList
+    val totalPrice = viewModel.paymentList
         .map { it.price * it.amount }
         .reduceOrNull { acc, price -> acc + price }
         ?: 0
@@ -55,6 +56,7 @@ fun PaymentScreen(
         sheetContent = {
             when (viewModel.modalState.value) {
                 1 -> {
+                    /** 결제 수단 바텀시트 다이얼로그 **/
                     MethodOfPaymentBottomSheet(
                         cardList = viewModel.cardList,
                         selectCardNumber = viewModel.selectCard.value.cardNumber,
@@ -70,7 +72,8 @@ fun PaymentScreen(
                     )
                 }
                 2 -> {
-                    OrderResultBottomSheet(viewModel.cartList)
+                    /** 결제 결과 다이얼로그 **/
+                    OrderResultBottomSheet(viewModel.paymentList)
                 }
                 else -> {
                     Box(
@@ -132,7 +135,7 @@ fun PaymentScreen(
     when(status) {
         is PaymentViewModel.PaymentStatus.Init -> {}
         is PaymentViewModel.PaymentStatus.PaymentFailure -> {
-            context.toast("결제를 실패하였습니다.")
+            context.toast(R.string.payment_failure)
         }
         is PaymentViewModel.PaymentStatus.PaymentSuccess -> {
             scope.launch {
@@ -148,7 +151,10 @@ fun PaymentScreen(
 fun PaymentHeader(
     routeAction: RouteAction
 ) {
-    MainTitle(titleText = "결제하기", onLeftIconClick = { routeAction.popupBackStack() })
+    MainTitle(
+        titleText = stringResource(id = R.string.payment), 
+        onLeftIconClick = { routeAction.popupBackStack() }
+    )
 }
 
 /** 바디 영역 **/
@@ -179,7 +185,7 @@ fun PaymentBody(
             CashReceipts()
             /** 주문 내역 **/
             OrderHistory(
-                list = viewModel.cartList
+                list = viewModel.paymentList
             )
             /** 최종 결제 금액 **/
             FinalPayment(totalPrice = totalPrice)
@@ -202,7 +208,7 @@ fun MethodOfPayment(
             }
     ) {
         Text(
-            text = "결제 수단",
+            text = stringResource(id = R.string.payment_method),
             style = getTextStyle(16, true),
             modifier = Modifier.padding(horizontal = 23.dp)
         )
@@ -233,7 +239,10 @@ fun MethodOfPayment(
             }
 
             if (totalPrice > cardInfo.balance) {
-                Text(text = "잔액 부족", style = getTextStyle(12, false, HotColor))
+                Text(
+                    text = stringResource(id = R.string.lake_of_balance),
+                    style = getTextStyle(12, false, HotColor)
+                )
                 Image(
                     painter = painterResource(id = R.drawable.ic_care),
                     contentDescription = null,
@@ -273,7 +282,7 @@ fun CouponsAndDiscounts() {
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "쿠폰 및 할인",
+                text = stringResource(id = R.string.coupon_and_discount),
                 style = getTextStyle(16, true),
                 modifier = Modifier
                     .padding(start = 23.dp)
@@ -307,7 +316,7 @@ fun CouponsAndDiscounts() {
                         modifier = Modifier.padding(vertical = 17.dp)
                     )
                     Text(
-                        text = "쿠폰",
+                        text = stringResource(id = R.string.coupon_kor),
                         style = getTextStyle(14),
                         modifier = Modifier.padding(start = 12.dp)
                     )
@@ -320,7 +329,7 @@ fun CouponsAndDiscounts() {
                         modifier = Modifier.padding(vertical = 17.dp)
                     )
                     Text(
-                        text = "선물",
+                        text = stringResource(id = R.string.present),
                         style = getTextStyle(14),
                         modifier = Modifier.padding(start = 12.dp)
                     )
@@ -333,7 +342,7 @@ fun CouponsAndDiscounts() {
                         modifier = Modifier.padding(top = 17.dp)
                     )
                     Text(
-                        text = "통신사 제휴 할인",
+                        text = stringResource(id = R.string.partnership_discount),
                         style = getTextStyle(14),
                         modifier = Modifier.padding(start = 12.dp, top = 17.dp)
                     )
@@ -361,7 +370,7 @@ fun CashReceipts() {
             .padding(vertical = 27.dp)
     ) {
         Text(
-            text = "현금영수증",
+            text = stringResource(id = R.string.cash_receipt),
             style = getTextStyle(16, true),
             modifier = Modifier.padding(horizontal = 23.dp)
         )
@@ -371,7 +380,7 @@ fun CashReceipts() {
 /** 주문 내역 **/
 @Composable
 fun OrderHistory(
-    list: List<CartEntity>
+    list: List<PaymentInfo>
 ) {
     Column(
         modifier = Modifier
@@ -380,7 +389,7 @@ fun OrderHistory(
     ) {
         Spacer(modifier = Modifier.height(27.dp))
         Text(
-            text = "주문 내역",
+            text = stringResource(id = R.string.order_history),
             style = getTextStyle(16, true),
             modifier = Modifier.padding(horizontal = 23.dp)
         )
@@ -402,7 +411,7 @@ fun OrderHistory(
 
 /** 주문 내역 아이템 **/
 @Composable
-fun HistoryItem(item: CartEntity) {
+fun HistoryItem(item: PaymentInfo) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -450,13 +459,17 @@ fun FinalPayment(
             .padding(vertical = 27.dp)
     ) {
         Text(
-            text = "최종 결제 금액",
+            text = stringResource(id = R.string.final_payment_amount),
             style = getTextStyle(16, true),
             modifier = Modifier
                 .padding(start = 23.dp)
                 .weight(1f)
         )
-        Text(text = totalPrice.priceFormat(), style = getTextStyle(20, true), modifier = Modifier.padding(end = 23.dp))
+        Text(
+            text = totalPrice.priceFormat(),
+            style = getTextStyle(20, true),
+            modifier = Modifier.padding(end = 23.dp)
+        )
     }
 }
 
@@ -467,7 +480,7 @@ fun PaymentFooter(
     onClickListener: () -> Unit
 ) {
     FooterWithButton(
-        text = "${totalPrice.priceFormat()} 결제하기",
+        text = stringResource(id = R.string.payment_button, totalPrice.priceFormat()),
         isEnabled = isEnable
     ) {
         onClickListener()

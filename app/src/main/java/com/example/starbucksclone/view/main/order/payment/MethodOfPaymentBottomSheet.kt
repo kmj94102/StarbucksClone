@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
@@ -50,7 +51,7 @@ fun MethodOfPaymentBottomSheet(
         )
 
         Text(
-            text = "결제 수단",
+            text = stringResource(id = R.string.payment_method),
             style = getTextStyle(16, true),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -63,7 +64,7 @@ fun MethodOfPaymentBottomSheet(
                 .padding(top = 37.dp, start = 20.dp, end = 20.dp)
         ) {
             CustomCheckBox(
-                text = "스타벅스 카드",
+                text = stringResource(id = R.string.starbucks_card),
                 textStyle = getTextStyle(14),
                 selected = true,
                 checkedIcon = R.drawable.ic_circle_checkbox_checked,
@@ -71,7 +72,7 @@ fun MethodOfPaymentBottomSheet(
             )
             Spacer(modifier = Modifier.weight(1f))
             RoundedButton(
-                text = "충전하기",
+                text = stringResource(id = R.string.do_charging),
                 isOutline = true,
                 textColor = MainColor
             ) {
@@ -111,7 +112,7 @@ fun MethodOfPaymentBottomSheet(
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        FooterWithButton(text = "선택하기") {
+        FooterWithButton(text = stringResource(id = R.string.do_select)) {
             selectChangerListener(changedCardNumber)
         }
 

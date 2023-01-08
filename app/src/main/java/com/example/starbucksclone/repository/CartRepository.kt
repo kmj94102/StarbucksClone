@@ -24,6 +24,19 @@ class CartRepository @Inject constructor(
     /** 장바구니 조회 **/
     fun selectCartItems(id: String) = client.selectCartItems(id)
 
+    /** 장바구니 조회 **/
+    suspend fun selectCartItems(
+        id: String,
+        successListener: (List<CartEntity>) -> Unit,
+        failureListener: () -> Unit
+    ) {
+        client.selectCartItemList(
+            id = id,
+            successListener = successListener,
+            failureListener = failureListener
+        )
+    }
+
     /** 장바구니 카운트 조회 **/
     fun selectCartItemsCount(id: String) = client.selectCartItemsCount(id = id)
 

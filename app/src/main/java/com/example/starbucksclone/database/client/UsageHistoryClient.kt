@@ -14,6 +14,7 @@ class UsageHistoryClient @Inject constructor(
         failureListener: () -> Unit
     ) = try {
         dao.insertUsageHistory(*items.toTypedArray())
+        successListener()
     } catch (e: Exception) {
         e.printStackTrace()
         failureListener()

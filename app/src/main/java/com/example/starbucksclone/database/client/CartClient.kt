@@ -24,6 +24,18 @@ class CartClient @Inject constructor(
     /** 장바구니 조회 **/
     fun selectCartItems(id: String) = dao.selectCartItems(id)
 
+    /** 장바구니 조회 **/
+    suspend fun selectCartItemList(
+        id: String,
+        successListener: (List<CartEntity>) -> Unit,
+        failureListener: () -> Unit
+    ) = try {
+        successListener(dao.selectCartItemList(id))
+    } catch (e: Exception) {
+        e.printStackTrace()
+        failureListener()
+    }
+
     /** 장바구니 카운트 조회 **/
     fun selectCartItemsCount(id: String) = dao.selectCartItemsCount(id)
 

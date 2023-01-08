@@ -389,7 +389,7 @@ fun MenuDetailModalContainer(
                     viewModel.event(MenuDetailEvent.AddCartItem(it))
                 },
                 orderClickListener = {
-                    routeAction.goToPayment(Uri.encode(Gson().toJson(it)))
+                    routeAction.goToPayment(Uri.encode(Gson().toJson(it.paymentInfoMapper())))
                 }
             )
         }

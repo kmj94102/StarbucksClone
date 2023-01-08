@@ -9,11 +9,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.starbucksclone.database.entity.CardInfo
-import com.example.starbucksclone.database.entity.CartEntity
+import com.example.starbucksclone.database.entity.PaymentInfo
 import com.example.starbucksclone.di.getLoginId
 import com.example.starbucksclone.repository.CardRepository
 import com.example.starbucksclone.repository.CartRepository
 import com.example.starbucksclone.repository.UsageHistoryRepository
+import com.example.starbucksclone.util.Constants
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -29,33 +30,40 @@ class PaymentViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    /** 선택한 카드 정보 **/
     private val _selectCard = mutableStateOf(CardInfo())
     val selectCard: State<CardInfo> = _selectCard
 
+    /** 카드 리스트 **/
     private val _cardList = mutableStateListOf<CardInfo>()
     val cardList: List<CardInfo> = _cardList
 
-    private val _cartLst = mutableStateListOf<CartEntity>()
-    val cartList: List<CartEntity> = _cartLst
+    /** 결제 정보 리스트 **/
+    private val _paymentList = mutableStateListOf<PaymentInfo>()
+    val paymentList: List<PaymentInfo> = _paymentList
 
     private val id = pref.getLoginId() ?: ""
 
+    /** 바텀 다이얼로그 상태 **/
     private val _modalState = mutableStateOf(0)
     val modalState: State<Int> = _modalState
 
+    /** 상태 관리 **/
     private val _status = MutableStateFlow<PaymentStatus>(PaymentStatus.Init)
     val status: StateFlow<PaymentStatus> = _status
 
+    /** 장바구니/단건 결제 여부 **/
     private var isCart = true
 
     init {
-        savedStateHandle.get<String>("item")?.let {
-            val item = Gson().fromJson(Uri.decode(it), CartEntity::class.java)
-            _cartLst.clear()
-            _cartLst.add(item)
+        savedStateHandle.get<String>(Constants.Item)?.let {
+            val item = Gson().fromJson(Uri.decode(it), PaymentInfo::class.java)
+            _paymentList.clear()
+            _paymentList.add(item)
 
             isCart = false
         }
+
         selectCardList()
         if (isCart) {
             selectCartLit()
@@ -75,6 +83,7 @@ class PaymentViewModel @Inject constructor(
         }
     }
 
+    /** 카드 리스트 조회 **/
     private fun selectCardList() {
         cardRepository.selectCardList(id)
             .onEach {
@@ -91,18 +100,21 @@ class PaymentViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun selectCartLit() {
-        cartRepository.selectCartItems(id = id)
-            .onEach {
-                _cartLst.clear()
-                _cartLst.addAll(it)
+    /** 장바구니 조회 **/
+    private fun selectCartLit() = viewModelScope.launch {
+        cartRepository.selectCartItems(
+            id = id,
+            successListener = {
+                _paymentList.clear()
+                _paymentList.addAll(it.map { entity -> entity.paymentInfoMapper() })
+            },
+            failureListener = {
+                _paymentList.clear()
             }
-            .catch {
-                _cartLst.clear()
-            }
-            .launchIn(viewModelScope)
+        )
     }
 
+    /** 결제하기 **/
     private fun payment(totalPrice: Int) = viewModelScope.launch {
         cardRepository.updateBalance(
             cardNumber = selectCard.value.cardNumber,
@@ -120,6 +132,7 @@ class PaymentViewModel @Inject constructor(
         )
     }
 
+    /** 장바구니 아이템 삭제 **/
     private fun deleteCartItems() = viewModelScope.launch {
         cartRepository.allDeleteCartItems(
             id = id,
@@ -132,9 +145,10 @@ class PaymentViewModel @Inject constructor(
         )
     }
 
+    /** 이용내역 추가 **/
     private fun insertUsageHistoryList() = viewModelScope.launch {
         usageHistoryRepository.insertUsageHistory(
-            list = _cartLst.map { it.historyMapper(selectCard.value.cardNumber) },
+            list = _paymentList.map { it.historyMapper(selectCard.value.cardNumber) },
             successListener = {
                 _status.value = PaymentStatus.PaymentSuccess
             },

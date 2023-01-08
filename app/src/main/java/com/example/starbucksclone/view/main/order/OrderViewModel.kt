@@ -122,7 +122,7 @@ class OrderViewModel @Inject constructor(
     /** 주문하기 **/
     private fun order(index: Int) {
         _status.value = OrderStatus.OrderInfo(
-            Uri.encode(Gson().toJson(createCartEntity(index)))
+            Uri.encode(Gson().toJson(createCartEntity(index).paymentInfoMapper()))
         )
     }
 

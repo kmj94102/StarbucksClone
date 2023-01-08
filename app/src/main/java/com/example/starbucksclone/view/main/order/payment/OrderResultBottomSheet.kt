@@ -12,9 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.starbucksclone.database.entity.CartEntity
+import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.PaymentInfo
 import com.example.starbucksclone.ui.theme.Black
 import com.example.starbucksclone.ui.theme.DarkGray
 import com.example.starbucksclone.ui.theme.Gray
@@ -27,7 +29,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun OrderResultBottomSheet(
-    cartList: List<CartEntity>
+    cartList: List<PaymentInfo>
 ) {
     val state = remember {
         mutableStateOf(0)
@@ -69,20 +71,20 @@ fun OrderResultHeader(state: Int) {
     var comment = ""
     when (state) {
         0 -> {
-            title = "민재님, 결제가 완료되었습니다."
-            comment = "결제 정보를 해당 매장에 전달하고 있어요."
+            title = stringResource(id = R.string.order_result_title1)
+            comment = stringResource(id = R.string.order_result_comment1)
         }
         1 -> {
-            title = "주문을 확인하고 있습니다${getEmoji(0x1F3C3)}"
-            comment = "주문 승인 즉시 메뉴 준비가 시작됩니다. 완성 후, 빠르게 픽업해주세요."
+            title = stringResource(id = R.string.order_result_title2, getEmoji(0x1F3C3))
+            comment = stringResource(id = R.string.order_result_comment2)
         }
         2 -> {
-            title = "주문이 확인되었습니다${getEmoji(0x1F44C)}"
-            comment = "메뉴를 만들고 있어요. 조금만 기다려주세요."
+            title = stringResource(id = R.string.order_result_title3, getEmoji(0x1F44C))
+            comment = stringResource(id = R.string.order_result_comment3)
         }
         3 -> {
-            title = "민재님, 메뉴가 모두 준비되었어요.${getEmoji(0x1F973)}"
-            comment = "메뉴가 모두 준비되었어요. 픽업대에서 메뉴를 픽업해주세요!"
+            title = stringResource(id = R.string.order_result_title4, getEmoji(0x1F973))
+            comment = stringResource(id = R.string.order_result_comment4)
         }
     }
 
@@ -125,25 +127,25 @@ fun OrderResultProgress(state: Int) {
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "결제 완료",
+                text = stringResource(id = R.string.payment_complete),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(12, false, if (state == 0) Black else DarkGray),
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "주문 요청",
+                text = stringResource(id = R.string.order_request),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(12, false, if (state == 0) Black else DarkGray),
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "주문 승인",
+                text = stringResource(id = R.string.order_authorization),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(12, false, if (state == 0) Black else DarkGray),
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "준비 완료",
+                text = stringResource(id = R.string.all_set),
                 textAlign = TextAlign.Center,
                 style = getTextStyle(12, false, if (state == 0) Black else DarkGray),
                 modifier = Modifier.weight(1f)
@@ -161,7 +163,7 @@ fun OrderResultProgress(state: Int) {
 
 @Composable
 fun OrderResultBody(
-    cartList: List<CartEntity>,
+    cartList: List<PaymentInfo>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -170,7 +172,7 @@ fun OrderResultBody(
             .background(LightGray)
     ) {
         Text(
-            text = "주문 내역(${cartList.size})",
+            text = stringResource(id = R.string.order_history_count, cartList.size),
             style = getTextStyle(16, true, Black),
             modifier = Modifier.padding(top = 30.dp, start = 23.dp)
         )
@@ -198,7 +200,7 @@ fun OrderResultBody(
 }
 
 @Composable
-fun OrderResultItem(info: CartEntity) {
+fun OrderResultItem(info: PaymentInfo) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
