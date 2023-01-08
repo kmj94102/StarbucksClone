@@ -1,6 +1,7 @@
 package com.example.starbucksclone.util
 
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -17,6 +18,11 @@ fun today(): String {
     val format = DateTimeFormatter.ofPattern("yyyy년 MM월 dd")
     val date = LocalDateTime.now()
     return date.format(format)
+}
+
+fun Long.dateFormat(): String {
+    val format = SimpleDateFormat("yyyy.MM.dd HH:mm")
+    return format.format(this)
 }
 
 fun Long.toPriceFormat(): String = DecimalFormat("###,###").format(this).plus("원")

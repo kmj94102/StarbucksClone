@@ -20,7 +20,7 @@ class UsageHistoryClient @Inject constructor(
         failureListener()
     }
 
-    fun selectUsageHistoryList(id: String) =
-        dao.selectUsageHistoryList(id)
+    fun selectUsageHistoryList(id: String, cardNumber: String) =
+        dao.selectUsageHistoryList(id, cardNumber)
 
 }

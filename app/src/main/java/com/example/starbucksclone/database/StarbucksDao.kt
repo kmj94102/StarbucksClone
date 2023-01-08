@@ -135,7 +135,7 @@ interface StarbucksDao {
     suspend fun insertUsageHistory(vararg usageHistoryEntity: UsageHistoryEntity)
 
     /** 이용내역 조회 **/
-    @Query("SELECT * FROM UsageHistoryEntity WHERE id = :id")
-    fun selectUsageHistoryList(id: String): Flow<List<UsageHistoryEntity>>
+    @Query("SELECT * FROM UsageHistoryEntity WHERE id = :id AND cardNumber = :cardNumber ORDER BY date DESC")
+    fun selectUsageHistoryList(id: String, cardNumber: String): Flow<List<UsageHistoryEntity>>
 
 }

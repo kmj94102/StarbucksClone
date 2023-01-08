@@ -69,6 +69,7 @@ class RouteAction(private val navController: NavController) {
         const val MenuSearchResult = "menu search result"
         const val Cart = "cart"
         const val Payment = "payment"
+        const val UsageHistory = "usage history"
     }
 
 }

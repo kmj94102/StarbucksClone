@@ -120,6 +120,7 @@
     <string name="order_authorization">주문 승인</string>
     <string name="all_set">준비 완료</string>
     <string name="order_history_count">주문 내역(%d)</string>
+    <string name="usage_history_empty">이용 내역이 없습니다.</string>
 
     <!-- Order -->
     <string name="order">Order</string>

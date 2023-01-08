@@ -15,4 +15,18 @@ data class UsageHistoryEntity(
     @ColumnInfo(name = "amount") val amount: Int,
     @ColumnInfo(name = "price") val price: Int,
     @ColumnInfo(name = "name") val name: String
+) {
+    fun mapper() = UsageHistoryInfo(
+        date = date,
+        name = name,
+        price = price,
+        amount = amount
+    )
+}
+
+data class UsageHistoryInfo(
+    val date: Long,
+    val name: String,
+    val price: Int,
+    val amount: Int
 )

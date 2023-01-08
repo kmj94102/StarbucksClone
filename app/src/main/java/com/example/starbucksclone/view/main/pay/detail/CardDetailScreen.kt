@@ -158,7 +158,12 @@ fun CardDetailBody(
         CardDetailBodyItem(
             iconRes = R.drawable.ic_usage_history,
             text = stringResource(id = R.string.usage_history),
-        ) {}
+        ) {
+            routeAction.goToScreenWithCardNumber(
+                page = RouteAction.UsageHistory,
+                cardNumber = viewModel.cardInfo.value.cardNumber
+            )
+        }
         CardDetailBodyItem(
             iconRes = R.drawable.ic_auto_charging,
             text = stringResource(id = R.string.auto_charging),

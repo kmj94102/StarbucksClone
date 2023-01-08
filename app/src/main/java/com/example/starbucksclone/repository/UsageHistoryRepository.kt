@@ -18,7 +18,7 @@ class UsageHistoryRepository @Inject constructor(
         failureListener = failureListener
     )
 
-    fun selectUsageHistoryList(id: String) =
-        client.selectUsageHistoryList(id = id)
+    fun selectUsageHistoryList(id: String, cardNumber: String) =
+        client.selectUsageHistoryList(id = id, cardNumber = cardNumber)
 
 }

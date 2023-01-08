@@ -23,6 +23,7 @@ import com.example.starbucksclone.view.main.pay.charging.ChargingScreen
 import com.example.starbucksclone.view.main.pay.detail.CardDetailScreen
 import com.example.starbucksclone.view.main.pay.list.CardListScreen
 import com.example.starbucksclone.view.main.pay.registration.CardRegistrationScreen
+import com.example.starbucksclone.view.main.pay.usage_history.UsageHistoryScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -162,6 +163,15 @@ fun NavigationGraph() {
             )
         ) {
             PaymentScreen(routeAction = routeAction)
+        }
+        /** 이용내역 화면 **/
+        customComposable(
+            route = "${RouteAction.UsageHistory}?{${Constants.CardNumber}}",
+            arguments = listOf(
+                navArgument(Constants.CardNumber) { NavType.StringType }
+            )
+        ) {
+            UsageHistoryScreen(routeAction = routeAction)
         }
     }
 
