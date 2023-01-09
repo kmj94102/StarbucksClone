@@ -235,6 +235,12 @@ fun PayCardItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 76.dp, end = 76.dp, top = 20.dp, bottom = 40.dp)
+                    .nonRippleClickable {
+                        routeAction.goToScreenWithCardNumber(
+                            page = RouteAction.CardCharging,
+                            cardNumber = card.cardNumber
+                        )
+                    }
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -255,6 +261,12 @@ fun PayCardItem(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .nonRippleClickable {
+                            routeAction.goToScreenWithCardNumber(
+                                page = RouteAction.CardCharging,
+                                cardNumber = card.cardNumber
+                            )
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_charging),
