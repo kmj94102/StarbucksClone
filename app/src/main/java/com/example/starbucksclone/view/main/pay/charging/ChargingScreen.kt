@@ -121,7 +121,20 @@ fun ChargingBody(
                 .background(LightGray)
         )
 
-        Text(text = stringResource(id = R.string.charging_balance), style = getTextStyle(16, true))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = stringResource(id = R.string.charging_balance), style = getTextStyle(16, true))
+            Spacer(modifier = Modifier.weight(1f))
+            if (isDefaultAmountSelect(amount)) {
+                Text(
+                    text = amount.toPriceFormat(),
+                    style = getTextStyle(14),
+                    modifier = Modifier.padding(end = 23.dp)
+                )
+            }
+        }
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
@@ -166,8 +179,7 @@ fun ChargingBody(
                 viewModel.event(ChargingEvent.ChargingAmountChange(100_000))
             }
             SelectButton(
-                isSelected = amount != 10_000L && amount != 30_000L && amount != 50_000L &&
-                        amount != 70_000L && amount != 100_000L && amount != 0L,
+                isSelected = isDefaultAmountSelect(amount),
                 text = stringResource(id = R.string.different_balance)
             ) {
                 viewModel.event(ChargingEvent.ChargingAmountChange(0))
@@ -209,6 +221,11 @@ fun ChargingBody(
         )
     }
 }
+
+/** 다른 금액 선택 여부 **/
+private fun isDefaultAmountSelect(amount: Long) =
+    amount != 10_000L && amount != 30_000L && amount != 50_000L &&
+        amount != 70_000L && amount != 100_000L && amount != 0L
 
 @Composable
 fun DefaultAmountDialog(
