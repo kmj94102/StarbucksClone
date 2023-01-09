@@ -64,6 +64,7 @@ fun CardDetailScreen(
         is CardDetailViewModel.CardDetailStatus.CardDeleteSuccess -> {
             context.toast(R.string.card_delete_complete)
             routeAction.popupBackStack()
+            viewModel.event(CardDetailEvent.ChangeToInitStatus)
         }
         is CardDetailViewModel.CardDetailStatus.Error -> {
             context.toast(status.msg)

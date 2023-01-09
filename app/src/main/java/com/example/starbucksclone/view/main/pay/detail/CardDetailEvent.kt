@@ -10,4 +10,6 @@ sealed class CardDetailEvent {
     object CardNameModify: CardDetailEvent()
 
     object CardDelete: CardDetailEvent()
+
+    object ChangeToInitStatus: CardDetailEvent()
 }

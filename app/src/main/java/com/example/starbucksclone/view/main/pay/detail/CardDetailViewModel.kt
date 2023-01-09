@@ -52,6 +52,9 @@ class CardDetailViewModel @Inject constructor(
             is CardDetailEvent.CardDelete -> {
                 deleteCard()
             }
+            is CardDetailEvent.ChangeToInitStatus -> {
+                _status.value = CardDetailStatus.Init
+            }
         }
     }
 
