@@ -102,6 +102,10 @@ interface StarbucksDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMyMenu(myMenuEntity: MyMenuEntity)
 
+    /** 나만의 메뉴 삭제 **/
+    @Query("DELETE FROM MyMenuEntity WHERE `index` = :index")
+    suspend fun deleteMyMenu(index: Int)
+
     /** 나만의 메뉴 조회 **/
     @Query("SELECT * FROM MyMenuEntity WHERE id = :id ORDER BY date")
     fun selectMyMenu(id: String): Flow<List<MyMenuEntity>>

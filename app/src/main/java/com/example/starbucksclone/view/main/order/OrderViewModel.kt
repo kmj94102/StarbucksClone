@@ -69,6 +69,9 @@ class OrderViewModel @Inject constructor(
             is OrderEvent.StatusInit -> {
                 _status.value = OrderStatus.Init
             }
+            is OrderEvent.MyMenuDelete -> {
+                deleteMyMenu(event.index)
+            }
         }
     }
 
@@ -94,6 +97,15 @@ class OrderViewModel @Inject constructor(
             }
             .catch { _myMenuList.clear() }
             .launchIn(viewModelScope)
+    }
+
+    /** 나만의 메뉴 삭제 **/
+    private fun deleteMyMenu(index: Int) = viewModelScope.launch {
+        myMenuRepository.deleteMyMenu(
+            index = _myMenuList[index].index,
+            successListener = {},
+            failureListener = {}
+        )
     }
 
     /** 장바구니 리스트 조회 **/

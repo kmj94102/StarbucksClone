@@ -8,5 +8,8 @@ sealed class OrderEvent {
     data class Cart(
         val index: Int
     ): OrderEvent()
+    data class MyMenuDelete(
+        val index: Int
+    ): OrderEvent()
     object StatusInit: OrderEvent()
 }

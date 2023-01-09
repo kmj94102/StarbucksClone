@@ -18,6 +18,7 @@ data class MyMenuEntity(
     @ColumnInfo(name = "date") val date: Long
 ) {
     fun mapper() = MyMenuInfo(
+        index = index,
         menuIndex = menuIndex,
         image = image,
         name = name,
@@ -29,6 +30,7 @@ data class MyMenuEntity(
 }
 
 data class MyMenuInfo(
+    val index: Int,
     val menuIndex: Int,
     val image: String,
     val name: String,

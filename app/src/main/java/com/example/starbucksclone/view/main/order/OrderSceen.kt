@@ -276,6 +276,9 @@ fun MyMenuContainer(
                     },
                     cartClickListener = {
                         viewModel.event(OrderEvent.Cart(index))
+                    },
+                    myMenuDeleteClickListener = {
+                        viewModel.event(OrderEvent.MyMenuDelete(index))
                     }
                 )
             }
@@ -288,7 +291,8 @@ fun MyMenuContainer(
 fun MyMenuItem(
     myMenu: MyMenuInfo,
     orderClickListener: () -> Unit,
-    cartClickListener: () -> Unit
+    cartClickListener: () -> Unit,
+    myMenuDeleteClickListener: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -312,7 +316,10 @@ fun MyMenuItem(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_heart),
-                        contentDescription = ""
+                        contentDescription = "",
+                        modifier = Modifier.nonRippleClickable {
+                            myMenuDeleteClickListener()
+                        }
                     )
                     Spacer(modifier = Modifier.width(14.dp))
                     RoundedButton(
