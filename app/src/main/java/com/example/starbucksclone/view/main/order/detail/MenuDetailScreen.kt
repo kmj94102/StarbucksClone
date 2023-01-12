@@ -11,9 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,11 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.starbucksclone.R
+import com.example.starbucksclone.database.entity.CartEntity
 import com.example.starbucksclone.database.entity.MenuDetailInfo
+import com.example.starbucksclone.database.entity.MyMenuEntity
 import com.example.starbucksclone.ui.theme.*
 import com.example.starbucksclone.util.*
 import com.example.starbucksclone.view.common.FooterWithButton
@@ -91,7 +94,8 @@ fun MenuDetailScreen(
                         MenuDetailBody(
                             info = viewModel.info.value,
                             isHotSelected = viewModel.isHotSelect.value,
-                            isOnly = viewModel.info.value.drinkType.contains("ONLY")
+                            isOnly = viewModel.info.value.drinkType.contains("ONLY"),
+                            group = viewModel.group.value
                         ) { isHot ->
                             viewModel.event(MenuDetailEvent.HotIcedChange(isHot))
                         }
@@ -106,10 +110,19 @@ fun MenuDetailScreen(
                 )
             }
             /** 풋터 영역 **/
-            FooterWithButton(text = "주문하기") {
-                scope.launch {
-                    modalState.show()
+            if (viewModel.group.value == Constants.Drink) {
+                FooterWithButton(text = stringResource(id = R.string.do_order)) {
+                    scope.launch {
+                        modalState.show()
+                    }
                 }
+            } else {
+                OrderInfoFooter(
+                    info = viewModel.info.value,
+                    routeAction = routeAction,
+                    viewModel = viewModel,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
@@ -118,14 +131,17 @@ fun MenuDetailScreen(
         is MenuDetailViewModel.MenuDetailStatus.Init -> {}
         is MenuDetailViewModel.MenuDetailStatus.Failure -> {
             context.toast(status.msg)
+            viewModel.event(MenuDetailEvent.StatusInit)
         }
         is MenuDetailViewModel.MenuDetailStatus.MyMenuSuccess -> {
             context.toast(R.string.my_menu_add_complete)
+            viewModel.event(MenuDetailEvent.StatusInit)
         }
         is MenuDetailViewModel.MenuDetailStatus.CartAdditionSuccess -> {
             scope.launch {
                 modalState.show()
             }
+            viewModel.event(MenuDetailEvent.StatusInit)
         }
     }
 }
@@ -217,6 +233,7 @@ fun MenuDetailBody(
     info: MenuDetailInfo,
     isHotSelected: Boolean,
     isOnly: Boolean,
+    group: String,
     hotIcedChange: (Boolean) -> Unit
 ) {
     Column(
@@ -248,13 +265,15 @@ fun MenuDetailBody(
             modifier = Modifier.padding(top = 20.dp)
         )
 
-        HotOrIcedSelector(
-            isHotSelected = isHotSelected,
-            isOnly = isOnly,
-            drinkType = info.drinkType,
-            modifier = Modifier.padding(top = 22.dp)
-        ) {
-            hotIcedChange(it)
+        if (group == Constants.Drink) {
+            HotOrIcedSelector(
+                isHotSelected = isHotSelected,
+                isOnly = isOnly,
+                drinkType = info.drinkType,
+                modifier = Modifier.padding(top = 22.dp)
+            ) {
+                hotIcedChange(it)
+            }
         }
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -283,6 +302,7 @@ fun MenuDetailBody(
     }
 }
 
+/** 아이스 / 핫 선택 영역 **/
 @Composable
 fun HotOrIcedSelector(
     isHotSelected: Boolean,
@@ -339,6 +359,190 @@ fun HotOrIcedSelector(
     }
 }
 
+/** 풋터 영역 **/
+@Composable
+private fun OrderInfoFooter(
+    info: MenuDetailInfo,
+    modifier: Modifier = Modifier,
+    routeAction: RouteAction,
+    viewModel: MenuDetailViewModel
+) {
+    val amount = remember {
+        mutableStateOf(0)
+    }
+    val isShow = remember {
+        mutableStateOf(false)
+    }
+
+    Surface(
+        elevation = 6.dp,
+        color = White,
+        modifier = modifier
+    ) {
+        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+            val (minus, plus, count, priceText, heart, cart, order) = createRefs()
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_minus_circle),
+                contentDescription = "minus",
+                tint = if (amount.value <= 1) Gray else Color(0xFF585858),
+                modifier = Modifier
+                    .constrainAs(minus) {
+                        top.linkTo(count.top)
+                        bottom.linkTo(priceText.bottom)
+                        start.linkTo(parent.start, 20.dp)
+                    }
+                    .nonRippleClickable {
+                        if (amount.value > 1) {
+                            amount.value = amount.value - 1
+                        }
+                    }
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_plus_circle),
+                contentDescription = "plus",
+                tint = if (amount.value > 100) Gray else Color(0xFF585858),
+                modifier = Modifier
+                    .constrainAs(plus) {
+                        top.linkTo(count.top)
+                        bottom.linkTo(count.bottom)
+                        start.linkTo(count.end)
+                    }
+                    .nonRippleClickable {
+                        if (amount.value < 100) {
+                            amount.value = amount.value + 1
+                        }
+                    }
+            )
+            Text(
+                text = "${amount.value}",
+                style = getTextStyle(20),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .constrainAs(count) {
+                        top.linkTo(parent.top, 17.dp)
+                        start.linkTo(minus.end)
+                        end.linkTo(plus.start)
+                        width = Dimension.value(55.dp)
+                    }
+            )
+
+            Text(
+                text = (info.sizePrices.getOrElse(0) { 0 } * amount.value).toPriceFormat(),
+                style = getTextStyle(20, true),
+                modifier = Modifier.constrainAs(priceText) {
+                    top.linkTo(parent.top, 22.dp)
+                    end.linkTo(parent.end, 20.dp)
+                }
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_empty_heart),
+                contentDescription = null,
+                modifier = Modifier
+                    .constrainAs(heart) {
+                        bottom.linkTo(parent.bottom, 18.dp)
+                        start.linkTo(parent.start, 23.dp)
+                    }
+                    .nonRippleClickable {
+                        isShow.value = true
+                    }
+            )
+
+            RoundedButton(
+                text = stringResource(id = R.string.do_cart),
+                isOutline = true,
+                textColor = MainColor,
+                onClick = {
+                    viewModel.event(
+                        MenuDetailEvent.AddCartItem(
+                            createCartItem(
+                                id = viewModel.id ?: "",
+                                info = info,
+                                amount = amount.value
+                            )
+                        )
+                    )
+                },
+                modifier = Modifier
+                    .constrainAs(cart) {
+                        top.linkTo(order.top)
+                        bottom.linkTo(order.bottom)
+                        end.linkTo(order.start, 12.dp)
+                    }
+            )
+
+            RoundedButton(
+                text = stringResource(id = R.string.do_order),
+                onClick = {
+                    routeAction.goToPayment(
+                        Uri.encode(
+                            Gson().toJson(
+                                createCartItem(
+                                    id = viewModel.id ?: "",
+                                    info = info,
+                                    amount = amount.value
+                                ).paymentInfoMapper()
+                            )
+                        )
+                    )
+                },
+                modifier = Modifier.constrainAs(order) {
+                    top.linkTo(priceText.bottom, 15.dp)
+                    bottom.linkTo(parent.bottom, 10.dp)
+                    end.linkTo(parent.end, 20.dp)
+                }
+            )
+        }
+    }
+
+    /** 나만의 메뉴 등록 다이얼로그 **/
+    MyMenuRegisterDialog(
+        isShow = isShow.value,
+        name = info.name,
+        property = "",
+        okClickListener = {
+            isShow.value = false
+            viewModel.event(
+                MenuDetailEvent.MyMenuRegister(
+                    MyMenuEntity(
+                        id = viewModel.id ?: "",
+                        menuIndex = info.index,
+                        name = info.name,
+                        nameEng = info.nameEng,
+                        image = info.image,
+                        anotherName = it,
+                        price = info.sizePrices.getOrElse(0) { 0 }.toInt(),
+                        property = "",
+                        date = System.currentTimeMillis()
+                    )
+                )
+            )
+
+        },
+        cancelClickListener = {
+            isShow.value = false
+        }
+    )
+}
+
+/** 장바구니 아이템 생성 **/
+private fun createCartItem(
+    id: String,
+    info: MenuDetailInfo,
+    amount: Int
+) = CartEntity(
+    id = id,
+    menuIndex = info.index,
+    name = info.name,
+    nameEng = info.nameEng,
+    property = "",
+    image = info.image,
+    price = info.sizePrices.getOrElse(0) { 0 }.toInt(),
+    amount = amount,
+    date = System.currentTimeMillis()
+)
+
+/** 바텀시트 다이얼로 **/
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MenuDetailModalContainer(

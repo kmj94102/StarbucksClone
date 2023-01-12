@@ -3,6 +3,7 @@ package com.example.starbucksclone.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import okhttp3.internal.toLongOrDefault
 
 @Entity
 data class MenuDetailEntity(
@@ -49,7 +50,7 @@ data class MenuDetailInfoResult(
         image = image,
         type = type,
         sizes = size.split(", "),
-        sizePrices = sizePrice.split(",").map { it.toLong() },
+        sizePrices = sizePrice.split(",").map { it.toLongOrDefault(0) },
         color = color,
         drinkType = drinkType,
         isBest = isBest

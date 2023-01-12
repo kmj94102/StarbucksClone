@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.starbucksclone.R
 import com.example.starbucksclone.ui.theme.MainColor
@@ -25,7 +26,10 @@ fun CartAdditionCompleteBottomSheet(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            Text(text = "장바구니에 추가되었습니다.", style = getTextStyle(18, true))
+            Text(
+                text = stringResource(id = R.string.cart_added),
+                style = getTextStyle(18, true)
+            )
             Spacer(modifier = Modifier.weight(1f))
             Image(
                 painter = painterResource(id = R.drawable.ic_close),
@@ -39,7 +43,7 @@ fun CartAdditionCompleteBottomSheet(
                 .padding(start = 20.dp, end = 20.dp, bottom = 12.dp)
         ) {
             RoundedButton(
-                text = "장바구니 가기",
+                text = stringResource(id = R.string.go_to_cart),
                 isOutline = true,
                 textColor = MainColor,
                 modifier = Modifier.weight(1f)
@@ -47,7 +51,7 @@ fun CartAdditionCompleteBottomSheet(
                 goToCartListener()
             }
             RoundedButton(
-                text = "다른 메뉴 더보기",
+                text = stringResource(id = R.string.more_other_menus),
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 10.dp)

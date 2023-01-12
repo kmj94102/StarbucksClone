@@ -34,6 +34,9 @@ class MenuDetailViewModel @Inject constructor(
     private var indexes = ""
     val id = pref.getLoginId()
 
+    private val _group = mutableStateOf("")
+    val group: State<String> = _group
+
     /** Hot 선택 여부 **/
     private val _isHotSelect = mutableStateOf(true)
     val isHotSelect: State<Boolean> = _isHotSelect
@@ -52,6 +55,9 @@ class MenuDetailViewModel @Inject constructor(
         }
         savedStateHandle.get<String>(Constants.Name)?.let {
             name = it
+        }
+        savedStateHandle.get<String>(Constants.Group)?.let {
+            _group.value = it
         }
         selectMenuDetail()
     }
@@ -73,6 +79,9 @@ class MenuDetailViewModel @Inject constructor(
             }
             is MenuDetailEvent.AddCartItem -> {
                 insertCartItem(event.cartEntity)
+            }
+            is MenuDetailEvent.StatusInit -> {
+                _status.value = MenuDetailStatus.Init
             }
         }
     }

@@ -117,8 +117,8 @@ fun MenuSearchResultBody(
             list.forEach {
                 MenuListItem(
                     menu = it
-                ) { indexes, name ->
-                    routeAction.goToMenuDetail(indexes, name)
+                ) { indexes, name, group ->
+                    routeAction.goToMenuDetail(indexes, name, group)
                 }
             }
         }
@@ -129,13 +129,13 @@ fun MenuSearchResultBody(
 @Composable
 fun MenuListItem(
     menu: MenuSearchResult,
-    onClick: (String, String) -> Unit
+    onClick: (String, String, String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .nonRippleClickable { onClick(menu.indexes, menu.name) }
+            .nonRippleClickable { onClick(menu.indexes, menu.name, menu.group) }
             .padding(bottom = 23.dp)
     ) {
         Spacer(modifier = Modifier.width(24.dp))

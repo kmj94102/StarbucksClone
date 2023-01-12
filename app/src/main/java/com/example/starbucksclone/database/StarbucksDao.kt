@@ -39,7 +39,7 @@ interface StarbucksDao {
     fun selectMenuList(group: String, name: String): Flow<List<MenuEntity>>
 
     /** 홈 화면 새로 나온 메뉴 조회 **/
-    @Query("SELECT indexes, name, image FROM MenuEntity WHERE isNew = 1")
+    @Query("SELECT indexes, name, image, orderGroup as `group` FROM MenuEntity WHERE isNew = 1")
     fun selectHomeNewMenuList(): Flow<List<HomeNewMenu>>
 
     /** New 메뉴 조회 **/
@@ -51,7 +51,7 @@ interface StarbucksDao {
     fun selectRecommendMenuList(group: String): Flow<List<MenuEntity>>
 
     /** 검색 메뉴 조회 **/
-    @Query("SELECT name, nameEng, indexes, image, price, color, isBest FROM MenuEntity WHERE name like :name AND orderGroup like :group")
+    @Query("SELECT name, nameEng, indexes, image, price, color, isBest, orderGroup as `group` FROM MenuEntity WHERE name like :name AND orderGroup like :group")
     suspend fun selectSearchMenuList(group: String, name: String): List<MenuSearchResult>
 
     /** 메뉴 상세 등록 **/

@@ -26,7 +26,8 @@ data class MenuEntity(
         name = name,
         nameEng = nameEng,
         image = image,
-        price = price
+        price = price,
+        group = orderGroup
     )
 }
 
@@ -60,13 +61,15 @@ data class MenuSearchResult(
     val image: String,
     val price: Int,
     val color: String,
-    val isBest: Boolean
+    val isBest: Boolean,
+    val group: String
 )
 
 data class HomeNewMenu(
     val indexes: String,
     val name: String,
-    val image: String
+    val image: String,
+    val group: String
 )
 
 data class MenuInfo(
@@ -74,5 +77,6 @@ data class MenuInfo(
     val image: String,
     val name: String,
     val nameEng: String,
-    val price: Int
+    val price: Int,
+    val group: String
 )

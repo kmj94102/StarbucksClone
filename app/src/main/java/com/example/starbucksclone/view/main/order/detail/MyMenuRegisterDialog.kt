@@ -47,16 +47,18 @@ fun MyMenuRegisterDialog(
                         style = getTextStyle(16, true),
                         modifier = Modifier.padding(top = 8.dp, start = 12.dp, end = 12.dp)
                     )
-                    Text(
-                        text = property,
-                        style = getTextStyle(14, false, DarkGray),
-                        modifier = Modifier.padding(
-                            top = 4.dp,
-                            bottom = 8.dp,
-                            start = 12.dp,
-                            end = 12.dp
+                    if (property.isNotEmpty()) {
+                        Text(
+                            text = property,
+                            style = getTextStyle(14, false, DarkGray),
+                            modifier = Modifier.padding(
+                                top = 4.dp,
+                                start = 12.dp,
+                                end = 12.dp
+                            )
                         )
-                    )
+                    }
+                    Spacer(modifier = Modifier.padding(bottom = 8.dp))
                 }
 
                 Text(

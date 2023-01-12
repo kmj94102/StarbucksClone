@@ -120,10 +120,11 @@ fun NavigationGraph() {
         }
         /** 메뉴 상세 화면 **/
         customComposable(
-            route = "${RouteAction.MenuDetail}?{${Constants.Indexes}}/{${Constants.Name}}",
+            route = "${RouteAction.MenuDetail}?{${Constants.Indexes}}/{${Constants.Name}}/{${Constants.Group}}",
             arguments = listOf(
                 navArgument(Constants.Indexes) { type = NavType.StringType },
-                navArgument(Constants.Name) { type = NavType.StringType }
+                navArgument(Constants.Name) { type = NavType.StringType },
+                navArgument(Constants.Group) { type = NavType.StringType }
             )
         ) {
             MenuDetailScreen(routeAction = routeAction)

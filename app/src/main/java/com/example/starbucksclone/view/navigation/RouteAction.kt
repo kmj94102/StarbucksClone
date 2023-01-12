@@ -34,8 +34,8 @@ class RouteAction(private val navController: NavController) {
         navController.navigate("${MenuList}?$group,$name")
     }
 
-    fun goToMenuDetail(indexes: String, name: String) {
-        navController.navigate("${MenuDetail}?$indexes/$name")
+    fun goToMenuDetail(indexes: String, name: String, group: String) {
+        navController.navigate("${MenuDetail}?$indexes/$name/$group")
     }
 
     fun goToMenuSearchResult(value: String) {

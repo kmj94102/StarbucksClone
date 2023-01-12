@@ -72,8 +72,8 @@ fun HomeScreen(
                 if (viewModel.newMenuList.isNotEmpty()){
                     HomeNewMenuContainer(
                         list = viewModel.newMenuList,
-                        onClickListener = { indexes, name ->
-                            routeAction.goToMenuDetail(indexes, name)
+                        onClickListener = { indexes, name, group ->
+                            routeAction.goToMenuDetail(indexes, name, group)
                         }
                     )
                 }
@@ -332,7 +332,7 @@ fun UserHomeInfo(
 @Composable
 fun HomeNewMenuContainer(
     list: List<HomeNewMenu>,
-    onClickListener: (String, String) -> Unit
+    onClickListener: (String, String, String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -356,7 +356,7 @@ fun HomeNewMenuContainer(
                         item = it,
                         modifier = Modifier
                             .nonRippleClickable {
-                                onClickListener(it.indexes, it.name)
+                                onClickListener(it.indexes, it.name, it.group)
                             }
                     )
                 }

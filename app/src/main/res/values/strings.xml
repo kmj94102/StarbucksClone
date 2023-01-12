@@ -152,6 +152,9 @@
     <string name="starbucks_card">스타벅스 카드</string>
     <string name="do_charging">충전하기</string>
     <string name="do_select">선택하기</string>
+    <string name="cart_added">장바구니에 추가되었습니다.</string>
+    <string name="go_to_cart">장바구니 가기</string>
+    <string name="more_other_menus">다른 메뉴 더보기</string>
 
     <!-- 공통 -->
     <string name="new_menu">새로 나온 메뉴</string>
